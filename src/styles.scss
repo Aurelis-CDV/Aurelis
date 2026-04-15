@@ -1,0 +1,17 @@
+@use './styles/fonts' as font;
+@use './styles/colors' as color;
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+
+  font-family: font.$family;
+  color: color.$text;
+  letter-spacing: 0.5px;
+}
+
+html,
+body {
+  height: 100%;
+}
