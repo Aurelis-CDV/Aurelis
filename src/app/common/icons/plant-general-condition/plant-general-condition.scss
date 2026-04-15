@@ -1,0 +1,35 @@
+@use '../mixins' as *;
+@use '../../../../styles/colors' as color;
+
+@mixin condition-icon-style($color) {
+  path {
+    stroke: $color;
+  }
+
+  circle {
+    stroke: $color;
+  }
+
+  circle:not(circle:first-child) {
+    fill: $color;
+  }
+}
+
+:host {
+  @include icon-style;
+  .good {
+    @include condition-icon-style(color.$action-positive);
+  }
+
+  .mid {
+    @include condition-icon-style(color.$action-neutral);
+  }
+
+  .bad {
+    @include condition-icon-style(color.$action-negative);
+  }
+
+  .unknown {
+    @include condition-icon-style(color.$text);
+  }
+}

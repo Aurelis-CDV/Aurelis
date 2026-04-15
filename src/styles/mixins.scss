@@ -1,0 +1,13 @@
+@use './colors' as color;
+
+@mixin inner-shadow {
+  box-shadow: 0 0 10px 0 color.$page-background inset;
+}
+
+@mixin button-shadow {
+  box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
+}
+
+@mixin outer-shadow {
+  box-shadow: 0 10px 50px 0 rgba(0, 0, 0, 0.2);
+}

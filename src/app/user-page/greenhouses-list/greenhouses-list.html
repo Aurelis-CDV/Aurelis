@@ -5,7 +5,7 @@
 >
   @for (greenhouse of exampleJson.greenhouses; track greenhouse.id) {
     <div class="greenhouse-preview-wrapper">
-      <img src="{{ greenhouse.previewUrl }}" alt="Greenhouse preview" />
+      <img src="{{ greenhouse.preview_url }}" alt="Greenhouse preview" />
       @if (showGreenhousesPreviewNames) {
         <div class="greenhouse-name-wrapper">
           <p>{{ greenhouse.name }}</p>
