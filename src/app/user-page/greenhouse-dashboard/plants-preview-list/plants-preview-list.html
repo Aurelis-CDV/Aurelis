@@ -32,7 +32,11 @@
         </div>
       </div>
       <div class="right-side">
-        <div class="chart-wrapper"></div>
+        <div class="chart-wrapper">
+          <canvas id="plant-preview-chart-{{ plant.id }}"
+            >{{plantPreviewChartsByPlantId[plant.id]}</canvas
+          >
+        </div>
       </div>
     </div>
   </div>

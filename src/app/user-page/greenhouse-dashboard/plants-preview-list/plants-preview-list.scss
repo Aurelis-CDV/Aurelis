@@ -8,11 +8,11 @@ $params-icon-size: 24px;
 
 :host {
   width: 100%;
-  height: 100%;
+  height: fit-content;
   padding: margin.$huge;
 
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: margin.$big;
 
   .plant-preview-wrapper {
@@ -21,6 +21,10 @@ $params-icon-size: 24px;
     width: 100%;
     height: fit-content;
     padding: margin.$big;
+
+    display: flex;
+    flex-direction: column;
+    gap: margin.$big;
 
     background: color.$white;
     border-radius: 10px;
@@ -59,8 +63,21 @@ $params-icon-size: 24px;
     }
 
     .plant-preview-params-wrapper {
+      width: 100%;
+      height: fit-content;
+
+      display: flex;
+      flex-direction: row;
+      gap: margin.$big;
+
       .left-side {
+        width: fit-content;
+        height: 100%;
+
         .plant-params {
+          width: fit-content;
+          height: 100%;
+
           display: flex;
           justify-content: center;
           align-items: start;
@@ -86,6 +103,9 @@ $params-icon-size: 24px;
           }
 
           .param-wrapper {
+            width: fit-content;
+            height: 100%;
+
             display: flex;
             justify-content: start;
             align-items: center;
@@ -94,7 +114,18 @@ $params-icon-size: 24px;
           }
         }
       }
+
       .right-side {
+        width: 100%;
+        height: 100%;
+
+        overflow: hidden;
+
+        .chart-wrapper {
+          position: relative;
+          width: 100%;
+          height: 100%;
+        }
       }
     }
   }

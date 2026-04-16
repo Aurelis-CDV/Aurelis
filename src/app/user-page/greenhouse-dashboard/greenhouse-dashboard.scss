@@ -3,7 +3,7 @@
 @use '../../../styles/colors' as color;
 
 :host {
-  width: 100%;
+  max-width: calc(100% - 150px);
   height: 100%;
   padding: margin.$huge;
 }

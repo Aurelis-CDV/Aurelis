@@ -12,6 +12,13 @@ export default {
           preview_url: 'onion.png',
           soil_moisture: 50,
           condition: 'good',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 10 },
+            { date: '13.12.2026', soil_moisture: 20 },
+            { date: '14.12.2026', soil_moisture: 33 },
+            { date: '15.12.2026', soil_moisture: 12 },
+            { date: '16.12.2026', soil_moisture: 43 },
+          ],
         },
         {
           name: 'Plant 2',
@@ -19,6 +26,13 @@ export default {
           preview_url: 'avocado.png',
           soil_moisture: 60,
           condition: 'bad',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 21 },
+            { date: '13.12.2026', soil_moisture: 32 },
+            { date: '14.12.2026', soil_moisture: 15 },
+            { date: '15.12.2026', soil_moisture: 5 },
+            { date: '16.12.2026', soil_moisture: 24 },
+          ],
         },
         {
           name: 'Plant 3',
@@ -26,6 +40,13 @@ export default {
           preview_url: 'carrot.png',
           soil_moisture: 20,
           condition: 'good',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 12 },
+            { date: '13.12.2026', soil_moisture: 11 },
+            { date: '14.12.2026', soil_moisture: 54 },
+            { date: '15.12.2026', soil_moisture: 30 },
+            { date: '16.12.2026', soil_moisture: 43 },
+          ],
         },
         {
           name: 'Plant 4',
@@ -33,6 +54,13 @@ export default {
           preview_url: 'eggplant.png',
           soil_moisture: 30,
           condition: 'mid',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 54 },
+            { date: '13.12.2026', soil_moisture: 32 },
+            { date: '14.12.2026', soil_moisture: 23 },
+            { date: '15.12.2026', soil_moisture: 56 },
+            { date: '16.12.2026', soil_moisture: 12 },
+          ],
         },
         {
           name: 'Plant 5',
@@ -40,6 +68,13 @@ export default {
           preview_url: 'garlic.png',
           soil_moisture: 40,
           condition: 'unknown',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 17 },
+            { date: '13.12.2026', soil_moisture: 43 },
+            { date: '14.12.2026', soil_moisture: 23 },
+            { date: '15.12.2026', soil_moisture: 56 },
+            { date: '16.12.2026', soil_moisture: 32 },
+          ],
         },
         {
           name: 'Plant 6',
@@ -47,6 +82,13 @@ export default {
           preview_url: 'pea.png',
           soil_moisture: 70,
           condition: 'unknown',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 12 },
+            { date: '13.12.2026', soil_moisture: 53 },
+            { date: '14.12.2026', soil_moisture: 23 },
+            { date: '15.12.2026', soil_moisture: 54 },
+            { date: '16.12.2026', soil_moisture: 12 },
+          ],
         },
       ],
     },
@@ -62,6 +104,13 @@ export default {
           preview_url: 'onion.png',
           soil_moisture: 50,
           condition: 'good',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 30 },
+            { date: '13.12.2026', soil_moisture: 40 },
+            { date: '14.12.2026', soil_moisture: 50 },
+            { date: '15.12.2026', soil_moisture: 60 },
+            { date: '16.12.2026', soil_moisture: 70 },
+          ],
         },
         {
           name: 'Plant 2',
@@ -69,6 +118,13 @@ export default {
           preview_url: 'avocado.png',
           soil_moisture: 60,
           condition: 'bad',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 30 },
+            { date: '13.12.2026', soil_moisture: 40 },
+            { date: '14.12.2026', soil_moisture: 50 },
+            { date: '15.12.2026', soil_moisture: 60 },
+            { date: '16.12.2026', soil_moisture: 70 },
+          ],
         },
         {
           name: 'Plant 3',
@@ -76,6 +132,13 @@ export default {
           preview_url: 'carrot.png',
           soil_moisture: 20,
           condition: 'good',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 30 },
+            { date: '13.12.2026', soil_moisture: 40 },
+            { date: '14.12.2026', soil_moisture: 50 },
+            { date: '15.12.2026', soil_moisture: 60 },
+            { date: '16.12.2026', soil_moisture: 70 },
+          ],
         },
         {
           name: 'Plant 4',
@@ -83,6 +146,13 @@ export default {
           preview_url: 'eggplant.png',
           soil_moisture: 30,
           condition: 'mid',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 30 },
+            { date: '13.12.2026', soil_moisture: 40 },
+            { date: '14.12.2026', soil_moisture: 50 },
+            { date: '15.12.2026', soil_moisture: 60 },
+            { date: '16.12.2026', soil_moisture: 70 },
+          ],
         },
         {
           name: 'Plant 5',
@@ -90,6 +160,13 @@ export default {
           preview_url: 'garlic.png',
           soil_moisture: 40,
           condition: 'unknown',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 30 },
+            { date: '13.12.2026', soil_moisture: 40 },
+            { date: '14.12.2026', soil_moisture: 50 },
+            { date: '15.12.2026', soil_moisture: 60 },
+            { date: '16.12.2026', soil_moisture: 70 },
+          ],
         },
         {
           name: 'Plant 6',
@@ -97,6 +174,13 @@ export default {
           preview_url: 'pea.png',
           soil_moisture: 70,
           condition: 'unknown',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 30 },
+            { date: '13.12.2026', soil_moisture: 40 },
+            { date: '14.12.2026', soil_moisture: 50 },
+            { date: '15.12.2026', soil_moisture: 60 },
+            { date: '16.12.2026', soil_moisture: 70 },
+          ],
         },
       ],
     },
@@ -111,6 +195,13 @@ export default {
           preview_url: 'pea.png',
           soil_moisture: 50,
           condition: 'good',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 30 },
+            { date: '13.12.2026', soil_moisture: 40 },
+            { date: '14.12.2026', soil_moisture: 50 },
+            { date: '15.12.2026', soil_moisture: 60 },
+            { date: '16.12.2026', soil_moisture: 70 },
+          ],
         },
         {
           name: 'Plant 2',
@@ -118,6 +209,13 @@ export default {
           preview_url: 'eggplant.png',
           soil_moisture: 60,
           condition: 'bad',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 30 },
+            { date: '13.12.2026', soil_moisture: 40 },
+            { date: '14.12.2026', soil_moisture: 50 },
+            { date: '15.12.2026', soil_moisture: 60 },
+            { date: '16.12.2026', soil_moisture: 70 },
+          ],
         },
         {
           name: 'Plant 3',
@@ -125,6 +223,13 @@ export default {
           preview_url: 'carrot.png',
           soil_moisture: 20,
           condition: 'good',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 30 },
+            { date: '13.12.2026', soil_moisture: 40 },
+            { date: '14.12.2026', soil_moisture: 50 },
+            { date: '15.12.2026', soil_moisture: 60 },
+            { date: '16.12.2026', soil_moisture: 70 },
+          ],
         },
       ],
     },
@@ -140,6 +245,13 @@ export default {
           preview_url: 'avocado.png',
           soil_moisture: 50,
           condition: 'good',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 30 },
+            { date: '13.12.2026', soil_moisture: 40 },
+            { date: '14.12.2026', soil_moisture: 50 },
+            { date: '15.12.2026', soil_moisture: 60 },
+            { date: '16.12.2026', soil_moisture: 70 },
+          ],
         },
         {
           name: 'Plant 2',
@@ -147,6 +259,13 @@ export default {
           preview_url: 'eggplant.png',
           soil_moisture: 60,
           condition: 'bad',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 30 },
+            { date: '13.12.2026', soil_moisture: 40 },
+            { date: '14.12.2026', soil_moisture: 50 },
+            { date: '15.12.2026', soil_moisture: 60 },
+            { date: '16.12.2026', soil_moisture: 70 },
+          ],
         },
         {
           name: 'Plant 3',
@@ -154,6 +273,13 @@ export default {
           preview_url: 'avocado.png',
           soil_moisture: 20,
           condition: 'good',
+          soil_moisture_history: [
+            { date: '12.12.2026', soil_moisture: 30 },
+            { date: '13.12.2026', soil_moisture: 40 },
+            { date: '14.12.2026', soil_moisture: 50 },
+            { date: '15.12.2026', soil_moisture: 60 },
+            { date: '16.12.2026', soil_moisture: 70 },
+          ],
         },
       ],
     },
