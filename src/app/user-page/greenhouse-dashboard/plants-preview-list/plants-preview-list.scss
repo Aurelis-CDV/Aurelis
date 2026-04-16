@@ -111,6 +111,10 @@ $params-icon-size: 24px;
             align-items: center;
             gap: margin.$small;
             flex-direction: row;
+
+            &.general-condition-wrapper {
+              align-items: start;
+            }
           }
         }
       }
