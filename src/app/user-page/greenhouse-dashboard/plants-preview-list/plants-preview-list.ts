@@ -83,6 +83,7 @@ export class PlantsPreviewList implements AfterViewChecked {
         ],
       },
       options: {
+        clip: false,
         responsive: true,
         resizeDelay: 100,
         maintainAspectRatio: false,
@@ -91,7 +92,7 @@ export class PlantsPreviewList implements AfterViewChecked {
         },
         parsing: {
           xAxisKey: 'date',
-          yAxisKey: 'soil_moisture',
+          yAxisKey: 'value',
         },
         scales: {
           x: {
@@ -113,12 +114,12 @@ export class PlantsPreviewList implements AfterViewChecked {
     return {
       min: Math.min(
         ...plants.map((plant: any) =>
-          Math.min(...plant.soil_moisture_history.map((history: any) => history.soil_moisture)),
+          Math.min(...plant.soil_moisture_history.map((history: any) => history.value)),
         ),
       ),
       max: Math.max(
         ...plants.map((plant: any) =>
-          Math.max(...plant.soil_moisture_history.map((history: any) => history.soil_moisture)),
+          Math.max(...plant.soil_moisture_history.map((history: any) => history.value)),
         ),
       ),
     };

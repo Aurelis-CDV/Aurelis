@@ -1,0 +1,26 @@
+@use '../../../../styles/fonts' as font;
+@use '../../../../styles/colors' as color;
+@use '../../../../styles/margins' as margin;
+@use '../../../../styles/mixins' as mixin;
+
+:host {
+  .carrousel-wrapper {
+    .param-wrapper {
+      @include mixin.inner-shadow;
+
+      background: color.$white;
+      border-radius: 10px;
+      padding: margin.$big;
+
+      .chart-title-wrapper {
+        .chart-title {
+          font-size: font.$size-mid;
+          font-weight: font.$weight-semibold;
+        }
+      }
+
+      .chart-wrapper {
+      }
+    }
+  }
+}
