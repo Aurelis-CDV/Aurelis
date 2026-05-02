@@ -1,6 +1,7 @@
 import { AfterViewChecked, Component, ElementRef } from '@angular/core';
 import exampleJson from '../../../../example-json';
 import { Chart } from 'chart.js/auto';
+import { Carousel } from '../../../common/carousel/carousel';
 
 const humidityColor = '108, 171, 215';
 const temperatureColor = '93, 93, 93';
@@ -9,7 +10,7 @@ const textColor = '#2a2a2a';
 
 @Component({
   selector: 'aurelis-chart-carousel',
-  imports: [],
+  imports: [Carousel],
   templateUrl: './chart-carousel.html',
   styleUrl: './chart-carousel.scss',
 })

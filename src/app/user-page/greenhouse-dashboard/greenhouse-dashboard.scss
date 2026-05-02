@@ -5,5 +5,9 @@
 :host {
   max-width: calc(100% - 150px);
   height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
   padding: margin.$huge;
 }

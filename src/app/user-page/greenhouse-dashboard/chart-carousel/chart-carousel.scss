@@ -4,23 +4,37 @@
 @use '../../../../styles/mixins' as mixin;
 
 :host {
-  .carrousel-wrapper {
-    .param-wrapper {
-      @include mixin.inner-shadow;
+  display: flex;
+  flex-grow: 1;
 
-      background: color.$white;
-      border-radius: 10px;
-      padding: margin.$big;
+  width: 100%;
 
-      .chart-title-wrapper {
-        .chart-title {
-          font-size: font.$size-mid;
-          font-weight: font.$weight-semibold;
-        }
+  .param-wrapper {
+    @include mixin.inner-shadow;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    background: color.$white;
+    border-radius: 10px;
+    padding: margin.$big;
+
+    .chart-title-wrapper {
+      flex-shrink: 0;
+
+      .chart-title {
+        font-size: font.$size-mid;
+        font-weight: font.$weight-semibold;
       }
+    }
 
-      .chart-wrapper {
-      }
+    .chart-wrapper {
+      height: calc(100% - 27px);
+      position: relative;
+      flex-grow: 1;
     }
   }
 }

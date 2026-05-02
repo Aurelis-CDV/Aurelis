@@ -11,6 +11,8 @@ $params-icon-size: 24px;
   height: fit-content;
   padding: margin.$huge;
 
+  flex-basis: auto;
+
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: margin.$big;
