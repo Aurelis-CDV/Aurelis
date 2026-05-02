@@ -1,0 +1,11 @@
+@use '../mixins' as *;
+
+:host {
+  @include icon-style;
+
+  svg {
+    path {
+      fill: #33363f;
+    }
+  }
+}

@@ -1,14 +1,13 @@
 import { AfterViewChecked, Component, ElementRef } from '@angular/core';
 import ExampleJson from '../../../../example-json';
-import { WaterDrop } from '../../../common/icons/water-drop/water-drop';
-import { PlantGeneralCondition } from '../../../common/icons/plant-general-condition/plant-general-condition';
 import { Chart } from 'chart.js/auto';
+import { PlantPreview } from './plant-preview/plant-preview';
 
 const chartColor = '#6cabd7';
 
 @Component({
   selector: 'aurelis-plants-preview-list',
-  imports: [WaterDrop, PlantGeneralCondition],
+  imports: [PlantPreview],
   templateUrl: './plants-preview-list.html',
   styleUrl: './plants-preview-list.scss',
 })
@@ -26,22 +25,6 @@ export class PlantsPreviewList implements AfterViewChecked {
     }
 
     this.printPreviewLineCharts();
-  }
-
-  public getPlantConditionDescription(condition: string): string {
-    if (condition === 'good') {
-      return 'All good!';
-    }
-
-    if (condition === 'bad') {
-      return "It's bad!";
-    }
-
-    if (condition === 'mid') {
-      return 'Ok, but not perfect...';
-    }
-
-    return 'Some unknown condition...';
   }
 
   private printPreviewLineCharts() {
