@@ -5,7 +5,7 @@ import { Carousel } from '../../../common/carousel/carousel';
 
 const humidityColor = '108, 171, 215';
 const temperatureColor = '93, 93, 93';
-const lightColor = '217, 186, 131';
+const lightColor = '255, 199, 37';
 const textColor = '#2a2a2a';
 
 @Component({
