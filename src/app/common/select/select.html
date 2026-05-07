@@ -1,0 +1,11 @@
+<select
+  class="select"
+  [attr.id]="id ?? null"
+  [value]="selectedValue"
+  [disabled]="disabled"
+  (change)="onValueChange($event)"
+>
+  @for (option of options; track option.value) {
+    <option [value]="option.value">{{ option.label }}</option>
+  }
+</select>

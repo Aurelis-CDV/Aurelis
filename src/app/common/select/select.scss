@@ -1,0 +1,22 @@
+@use '../../../styles/margins' as margin;
+@use '../../../styles/colors' as color;
+@use '../../../styles/mixins' as mixin;
+
+:host {
+  display: block;
+}
+
+.select {
+  padding: margin.$small;
+  border: none;
+  color: color.$text;
+  cursor: pointer;
+  border-radius: 10px;
+  border-right: margin.$small solid transparent;
+  outline: none;
+
+  &:hover {
+    @include mixin.button-shadow;
+    background: color.$page-background;
+  }
+}

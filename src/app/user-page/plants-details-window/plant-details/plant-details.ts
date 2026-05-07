@@ -3,13 +3,20 @@ import { Chart } from 'chart.js/auto';
 import { Calendar } from '../../../common/calendar/calendar';
 import { PlantData } from '../../../../interfaces/plant-data.interface';
 import { PlantCurrentParams } from '../../../common/plant-current-params/plant-current-params';
+import { Select, SelectOption } from '../../../common/select/select';
 
 const soilMoistureColor = '108, 171, 215';
 const textColor = '#2a2a2a';
+const timeRangeOptions: SelectOption[] = [
+  { value: 'Last 1 hour', label: 'Last 1 hour' },
+  { value: 'Last 24 hours', label: 'Last 24 hours' },
+  { value: 'Last 7 days', label: 'Last 7 days' },
+  { value: 'Last 1 month', label: 'Last 1 month' },
+];
 
 @Component({
   selector: 'aurelis-plant-details',
-  imports: [Calendar, PlantCurrentParams],
+  imports: [Calendar, PlantCurrentParams, Select],
   templateUrl: './plant-details.html',
   styleUrl: './plant-details.scss',
 })
@@ -18,10 +25,16 @@ export class PlantDetails implements AfterViewChecked {
   public plant!: PlantData;
 
   public chart: any;
+  public readonly timeRangeOptions = timeRangeOptions;
+  public selectedTimeRange = timeRangeOptions[0]?.value ?? '';
 
   private chartsPrinted = false;
 
   constructor(private elementRef: ElementRef) {}
+
+  public onSelectedTimeRangeChange(value: string): void {
+    this.selectedTimeRange = value;
+  }
 
   public ngAfterViewChecked(): void {
     if (this.chartsPrinted) {
