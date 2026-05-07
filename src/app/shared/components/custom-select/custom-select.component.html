@@ -1,0 +1,40 @@
+<div class="custom-select" [class.custom-select--disabled]="disabled">
+  <label *ngIf="label" class="custom-select__label" [attr.for]="id">
+    {{ label }}
+    <span *ngIf="required" class="custom-select__required">*</span>
+  </label>
+
+  <button
+    [id]="id"
+    type="button"
+    class="custom-select__trigger"
+    [class.custom-select__trigger--placeholder]="!selectedOption"
+    [attr.aria-expanded]="isOpen"
+    [attr.aria-controls]="id + '-listbox'"
+    [attr.aria-disabled]="disabled"
+    [disabled]="disabled"
+    role="combobox"
+    aria-haspopup="listbox"
+    (click)="toggle()"
+    (blur)="onButtonBlur()"
+  >
+    <span class="custom-select__trigger-text">{{ displayText }}</span>
+    <span class="custom-select__icon" aria-hidden="true"></span>
+  </button>
+
+  <ul *ngIf="isOpen" [id]="id + '-listbox'" class="custom-select__menu" role="listbox">
+    <li
+      *ngFor="let option of options; let i = index; trackBy: trackByValue"
+      class="custom-select__option"
+      [class.custom-select__option--selected]="option.value === value"
+      [class.custom-select__option--active]="isOptionActive(i)"
+      [class.custom-select__option--disabled]="option.disabled"
+      role="option"
+      [attr.aria-selected]="option.value === value"
+      [attr.aria-disabled]="option.disabled"
+      (click)="selectOption(option)"
+    >
+      {{ option.label }}
+    </li>
+  </ul>
+</div>
