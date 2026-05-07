@@ -1,0 +1,70 @@
+@use '../../../styles/margins' as margin;
+@use '../../../styles/colors' as color;
+@use '../../../styles/mixins' as mixin;
+
+$icon-size: 24px;
+
+:host {
+  width: 100vw;
+  height: 100vh;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  backdrop-filter: blur(10px);
+  z-index: 999999;
+
+  .window-border {
+    @include mixin.outer-shadow;
+
+    width: 1000px;
+    height: 500px;
+    padding: margin.$big;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: color.$logo-green;
+    border-radius: 10px;
+
+    .window-wrapper {
+      width: 100%;
+      height: 100%;
+      padding: margin.$big;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: margin.$big;
+
+      background: color.$dashboard-background;
+      border-radius: 10px;
+
+      .top-bar {
+        width: 100%;
+
+        display: flex;
+        justify-content: end;
+
+        .icon-wrapper {
+          width: $icon-size;
+          height: $icon-size;
+          cursor: pointer;
+
+          &.close {
+            ::ng-deep path {
+              stroke: color.$action-negative;
+            }
+          }
+        }
+      }
+    }
+  }
+}

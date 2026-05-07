@@ -1,0 +1,24 @@
+<div class="top-bar">
+  <div class="left">
+    <div class="plant-preview-image-wrapper">
+      <img src="{{ plant.preview_url }}" />
+    </div>
+    <div class="plant-name-wrapper">
+      <p>{{ plant.name }}</p>
+    </div>
+  </div>
+  <div class="right"></div>
+</div>
+<div class="filtered-details-wrapper">
+  <div class="dropdown-wrapper">
+    <select class="filter-dropdown">
+      <option>Last 1 hour</option>
+      <option>Last 24 hours</option>
+      <option>Last 7 days</option>
+      <option>Last 1 month</option>
+    </select>
+  </div>
+  <div class="chart-wrapper">
+    <canvas id="plant-soil-moisture-{{ plant.id }}">{{paramCharts[param.name]}</canvas>
+  </div>
+</div>
