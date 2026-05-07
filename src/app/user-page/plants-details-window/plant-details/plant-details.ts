@@ -3,13 +3,14 @@ import { Chart } from 'chart.js/auto';
 import { Calendar } from '../../../common/calendar/calendar';
 import { PlantData } from '../../../../interfaces/plant-data.interface';
 import { PlantCurrentParams } from '../../../common/plant-current-params/plant-current-params';
+import { Select } from '../../../common/select/select';
 
 const soilMoistureColor = '108, 171, 215';
 const textColor = '#2a2a2a';
 
 @Component({
   selector: 'aurelis-plant-details',
-  imports: [Calendar, PlantCurrentParams],
+  imports: [Calendar, PlantCurrentParams, Select],
   templateUrl: './plant-details.html',
   styleUrl: './plant-details.scss',
 })
