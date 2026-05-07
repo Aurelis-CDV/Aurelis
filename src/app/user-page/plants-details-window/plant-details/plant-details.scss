@@ -3,7 +3,7 @@
 @use '../../../../styles/mixins' as mixin;
 @use '../../../../styles/fonts' as font;
 
-$dropdown-height: 20px;
+$dropdown-height: 40px;
 
 :host {
   @include mixin.inner-shadow;
@@ -67,22 +67,19 @@ $dropdown-height: 20px;
     align-items: end;
 
     .dropdown-wrapper {
-      select.filter-dropdown {
-        padding: margin.$small;
-        border: none;
-        color: color.$text;
-        cursor: pointer;
-        border-radius: 10px;
+      width: 100%;
+      margin-bottom: margin.$small;
 
-        &:hover {
-          @include mixin.button-shadow;
-          background: color.$dashboard-background;
-        }
+      display: flex;
+      justify-content: flex-end;
+
+      .filter-dropdown {
+        width: 180px;
       }
     }
 
     .chart-wrapper {
-      height: calc(100% - #{dropdown-height});
+      height: calc(100% - #{$dropdown-height});
       width: 100%;
       position: relative;
       flex-grow: 1;
