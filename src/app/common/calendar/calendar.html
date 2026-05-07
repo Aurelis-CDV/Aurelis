@@ -1,0 +1,31 @@
+<div class="calendar">
+  <div class="calendar-header">
+    <button type="button" class="month-control" (click)="previousMonth()" aria-label="Previous month">
+      &#10094;
+    </button>
+    <h3>{{ monthLabel }}</h3>
+    <button type="button" class="month-control" (click)="nextMonth()" aria-label="Next month">
+      &#10095;
+    </button>
+  </div>
+
+  <div class="weekdays">
+    @for (weekday of weekdays; track weekday) {
+      <span>{{ weekday }}</span>
+    }
+  </div>
+
+  <div class="days-grid">
+    @for (day of calendarDays; track day.date.getTime()) {
+      <button
+        type="button"
+        class="day-cell"
+        [class.outside-month]="!day.inCurrentMonth"
+        [class.highlighted]="day.isHighlighted"
+        [class.today]="day.isToday"
+      >
+        {{ day.dayNumber }}
+      </button>
+    }
+  </div>
+</div>
