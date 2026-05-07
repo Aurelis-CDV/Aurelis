@@ -8,10 +8,12 @@
         <aurelis-close></aurelis-close>
       </div>
     </div>
-    <aurelis-carousel>
-      @for (plant of exampleJson[0].plants; track plant.id) {
-        <aurelis-plant-details [plant]="plant"></aurelis-plant-details>
-      }
-    </aurelis-carousel>
+    @if (greenhouses().length > 0) {
+      <aurelis-carousel>
+        @for (plant of greenhouses()[0].plants; track plant.id) {
+          <aurelis-plant-details [plant]="plant"></aurelis-plant-details>
+        }
+      </aurelis-carousel>
+    }
   </div>
 </div>

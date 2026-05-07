@@ -1,7 +1,7 @@
-import { AfterViewChecked, Component, ElementRef } from '@angular/core';
-import ExampleJson from '../../../../example-json';
+import { AfterViewChecked, Component, ElementRef, inject } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { PlantPreview } from './plant-preview/plant-preview';
+import { GreenhousesDataService } from '../../../services/greenhouses-data.service';
 
 const chartColor = '#6cabd7';
 
@@ -12,26 +12,47 @@ const chartColor = '#6cabd7';
   styleUrl: './plants-preview-list.scss',
 })
 export class PlantsPreviewList implements AfterViewChecked {
-  protected readonly plants = ExampleJson[0].plants as any;
+  private readonly greenhousesDataService = inject(GreenhousesDataService);
+  protected readonly greenhouses = this.greenhousesDataService.greenhouses;
+  protected get plants(): any[] {
+    return this.getPlants();
+  }
 
   public plantPreviewChartsByPlantId: { [plantId: string]: Chart } = {};
-  private chartsPrinted = false;
+  private plantsDataHash = '';
 
   constructor(private elementRef: ElementRef) {}
 
   public ngAfterViewChecked(): void {
-    if (this.chartsPrinted) {
+    const plants = this.getPlants();
+
+    if (plants.length === 0) {
       return;
     }
 
-    this.printPreviewLineCharts();
+    const nextPlantsDataHash = JSON.stringify(plants.map((plant: any) => plant.soil_moisture_history));
+
+    if (this.plantsDataHash === nextPlantsDataHash) {
+      return;
+    }
+
+    this.destroyPreviewLineCharts();
+    this.printPreviewLineCharts(plants);
+    this.plantsDataHash = nextPlantsDataHash;
   }
 
-  private printPreviewLineCharts() {
-    const minMax = this.getPlantsDataMinMax(this.plants);
-    this.plants.forEach((plant: any) => this.setPlantPreviewLineChart(plant, minMax));
+  private getPlants(): any[] {
+    return this.greenhouses()[0]?.plants ?? [];
+  }
 
-    this.chartsPrinted = true;
+  private printPreviewLineCharts(plants: any[]) {
+    const minMax = this.getPlantsDataMinMax(plants);
+    plants.forEach((plant: any) => this.setPlantPreviewLineChart(plant, minMax));
+  }
+
+  private destroyPreviewLineCharts(): void {
+    Object.values(this.plantPreviewChartsByPlantId).forEach((chart) => chart.destroy());
+    this.plantPreviewChartsByPlantId = {};
   }
 
   private setPlantPreviewLineChart(plant: any, minMax: any) {

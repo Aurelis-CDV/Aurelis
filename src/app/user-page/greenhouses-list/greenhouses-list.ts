@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import ExampleJson from '../../../example-json';
-import { GreenhousesData } from '../../../interfaces/greenhouses-data.interface';
+import { Component, inject } from '@angular/core';
+import { GreenhousesDataService } from '../../services/greenhouses-data.service';
 
 @Component({
   selector: 'aurelis-greenhouses-list',
@@ -9,7 +8,8 @@ import { GreenhousesData } from '../../../interfaces/greenhouses-data.interface'
   styleUrl: './greenhouses-list.scss',
 })
 export class GreenhousesList {
-  protected readonly exampleJson: GreenhousesData = ExampleJson as unknown as GreenhousesData;
+  private readonly greenhousesDataService = inject(GreenhousesDataService);
+  protected readonly greenhouses = this.greenhousesDataService.greenhouses;
 
   public showGreenhousesPreviewNames: boolean = false;
 

@@ -1,4 +1,5 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -7,6 +8,7 @@ import { provideAuth0 } from '@auth0/auth0-angular';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    provideHttpClient(),
     provideRouter(routes),
     provideAuth0({
       domain: 'dev-p6h7ctfzz5fdugp5.eu.auth0.com',
