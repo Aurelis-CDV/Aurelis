@@ -64,9 +64,9 @@ export class PlantDetails implements AfterViewChecked {
   }
 
   private printChart() {
-    const plantCanvasEl = this.elementRef.nativeElement.querySelector<HTMLCanvasElement>(
+    const plantCanvasEl = this.elementRef.nativeElement.querySelector(
       `#plant-soil-moisture-${this.plant.id}`,
-    );
+    ) as HTMLCanvasElement | null;
     if (!plantCanvasEl) {
       return;
     }
@@ -149,7 +149,7 @@ export class PlantDetails implements AfterViewChecked {
   }
 
   private getFilteredHistory(): SoilMoistureHistoryPoint[] {
-    const history = this.plant.soil_moisture_history as SoilMoistureHistoryPoint[];
+    const history = this.plant.soil_moisture_history;
     if (!history.length) {
       return [];
     }

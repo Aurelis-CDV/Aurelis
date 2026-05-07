@@ -11,14 +11,14 @@ export type ChartDropdownOption = {
   styleUrl: './chart-dropdown.scss',
 })
 export class ChartDropdown {
+  private static nextId = 0;
+
   @Input() public options: ChartDropdownOption[] = [];
   @Input() public selectedValue = '';
   @Input() public ariaLabel = 'Chart filter';
   @Output() public selectedValueChange = new EventEmitter<string>();
 
   protected readonly selectId = `chart-dropdown-${ChartDropdown.nextId++}`;
-
-  private static nextId = 0;
 
   public onSelectionChange(event: Event): void {
     const nextValue = (event.target as HTMLSelectElement | null)?.value ?? '';
