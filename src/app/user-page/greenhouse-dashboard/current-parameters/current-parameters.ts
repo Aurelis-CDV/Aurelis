@@ -16,8 +16,6 @@ export class CurrentParameters {
   constructor() {}
 
   public getValue(type: string): number {
-    return (
-      this.exampleJson.greenhouses[0].params.find((param) => param.name === type)?.current || 0
-    );
+    return this.exampleJson[0].params.find((param) => param.name === type)?.current || 0;
   }
 }

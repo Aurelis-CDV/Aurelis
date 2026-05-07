@@ -12,7 +12,7 @@ const chartColor = '#6cabd7';
   styleUrl: './plants-preview-list.scss',
 })
 export class PlantsPreviewList implements AfterViewChecked {
-  protected readonly plants = ExampleJson.greenhouses[0].plants as any;
+  protected readonly plants = ExampleJson[0].plants as any;
 
   public plantPreviewChartsByPlantId: { [plantId: string]: Chart } = {};
   private chartsPrinted = false;

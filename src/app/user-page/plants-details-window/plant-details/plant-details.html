@@ -7,7 +7,9 @@
       <p>{{ plant.name }}</p>
     </div>
   </div>
-  <div class="right"></div>
+  <div class="right">
+    <aurelis-calendar [highlightedDays]="plant.watering_history"></aurelis-calendar>
+  </div>
 </div>
 <div class="filtered-details-wrapper">
   <div class="dropdown-wrapper">

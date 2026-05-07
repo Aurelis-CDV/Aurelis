@@ -15,7 +15,7 @@ const textColor = '#2a2a2a';
   styleUrl: './chart-carousel.scss',
 })
 export class ChartCarousel implements AfterViewChecked {
-  public greenhouseParams = exampleJson.greenhouses[0].params;
+  public greenhouseParams = exampleJson[0].params;
   public paramCharts: any = {};
 
   private chartsPrinted = false;

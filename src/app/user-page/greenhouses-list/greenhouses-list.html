@@ -3,7 +3,7 @@
   (mouseenter)="toggleGreenhousesPreviewNames()"
   (mouseleave)="toggleGreenhousesPreviewNames()"
 >
-  @for (greenhouse of exampleJson.greenhouses; track greenhouse.id) {
+  @for (greenhouse of exampleJson; track greenhouse.id) {
     <div class="greenhouse-preview-wrapper">
       <img src="{{ greenhouse.preview_url }}" alt="Greenhouse preview" />
       @if (showGreenhousesPreviewNames) {
