@@ -1,14 +1,24 @@
 <div class="top-bar">
   <div class="left">
-    <div class="plant-preview-image-wrapper">
-      <img src="{{ plant.preview_url }}" />
+    <div class="plant-edit-wrapper">
+      <div class="plant-preview-image-wrapper">
+        <img src="{{ plant.preview_url }}" />
+      </div>
+      <div class="plant-name-wrapper">
+        <p>{{ plant.name }}</p>
+      </div>
     </div>
-    <div class="plant-name-wrapper">
-      <p>{{ plant.name }}</p>
+    <div class="plant-params-wrapper">
+      <aurelis-plant-current-params [plant]="plant"></aurelis-plant-current-params>
     </div>
   </div>
   <div class="right">
-    <aurelis-calendar [highlightedDays]="plant.watering_history"></aurelis-calendar>
+    <div class="watering-calendar-wrapper">
+      <div class="button-wrapper">
+        <button class="note-watering-button">Note watering</button>
+      </div>
+      <aurelis-calendar [highlightedDays]="plant.watering_history"></aurelis-calendar>
+    </div>
   </div>
 </div>
 <div class="filtered-details-wrapper">
