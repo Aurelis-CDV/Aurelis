@@ -1,13 +1,14 @@
-import { AfterViewChecked, Component, ElementRef, inject } from '@angular/core';
+import { AfterViewChecked, Component, computed, ElementRef, inject } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { PlantPreview } from './plant-preview/plant-preview';
+import { PlantPreviewAddSlot } from './plant-preview-add-slot/plant-preview-add-slot';
 import { DashboardSignalsService } from '../../../services/dashboard-signals.service';
 
 const chartColor = '#6cabd7';
 
 @Component({
   selector: 'aurelis-plants-preview-list',
-  imports: [PlantPreview],
+  imports: [PlantPreview, PlantPreviewAddSlot],
   templateUrl: './plants-preview-list.html',
   styleUrl: './plants-preview-list.scss',
 })
@@ -18,6 +19,10 @@ export class PlantsPreviewList implements AfterViewChecked {
 
   private readonly dashboardSignalsService = inject(DashboardSignalsService);
   public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
+
+  protected readonly showAddPlantSlot = computed(
+    () => (this.greenhouseData()?.plants?.length ?? 0) < 6,
+  );
 
   constructor(private elementRef: ElementRef) {}
 

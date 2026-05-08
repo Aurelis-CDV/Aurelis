@@ -5,10 +5,11 @@ import { GreenhouseDashboard } from './greenhouse-dashboard/greenhouse-dashboard
 import { GreenhousesDataService } from '../services/data.service';
 import { DashboardSignalsService } from '../services/dashboard-signals.service';
 import { PlantsDetailsWindow } from './plants-details-window/plants-details-window';
+import { AddPlantWindow } from './add-plant-window/add-plant-window';
 
 @Component({
   selector: 'aurelis-user-page',
-  imports: [TopBar, GreenhousesList, GreenhouseDashboard, PlantsDetailsWindow],
+  imports: [TopBar, GreenhousesList, GreenhouseDashboard, PlantsDetailsWindow, AddPlantWindow],
   templateUrl: './user-page.html',
   styleUrl: './user-page.scss',
 })
@@ -18,6 +19,9 @@ export class UserPage {
 
   public showPlantDetailsWindow: Signal<boolean> =
     this.dashboardSignalsService.getIsPlantDetailsWindowOpened();
+
+  public showAddPlantWindow: Signal<boolean> =
+    this.dashboardSignalsService.getIsAddPlantWindowOpened();
 
   constructor() {
     this.greenhousesDataService.fetchGreenhousesData();

@@ -1,3 +1,6 @@
 @for (plant of greenhouseData()?.plants; track plant.id) {
   <aurelis-plant-preview [plant]="plant"></aurelis-plant-preview>
 }
+@if (showAddPlantSlot()) {
+  <aurelis-plant-preview-add-slot></aurelis-plant-preview-add-slot>
+}
