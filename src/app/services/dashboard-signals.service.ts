@@ -11,7 +11,7 @@ export class DashboardSignalsService {
   private readonly greenhousesDataService: GreenhousesDataService = inject(GreenhousesDataService);
 
   private readonly dashboardGreenhouseId: WritableSignal<string> = signal<string>(
-    this.greenhousesDataService.greenhousesData()[0].id,
+    this.greenhousesDataService.greenhousesData()[0]?.id,
   );
   private readonly dashboardGreenhouseData: Signal<GreenhouseData | undefined> = computed(
     (): GreenhouseData | undefined =>
