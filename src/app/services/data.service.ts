@@ -24,6 +24,10 @@ export type AddGreenhouseResult =
       reason: 'duplicate_greenhouse_id' | 'dashboard_full' | 'request_failed';
     };
 
+export type UpdateGreenhouseResult =
+  | { ok: true }
+  | { ok: false; reason: 'greenhouse_not_found' | 'request_failed' };
+
 export interface CreatePlantRequestBody {
   name: string;
   id: string;
@@ -33,6 +37,12 @@ export interface CreatePlantRequestBody {
 export interface CreateGreenhouseRequestBody {
   name: string;
   id: string;
+  preview_url: string;
+  location: GreenhouseGeoLocation;
+}
+
+export interface UpdateGreenhouseRequestBody {
+  name: string;
   preview_url: string;
   location: GreenhouseGeoLocation;
 }
@@ -141,6 +151,45 @@ export class GreenhousesDataService {
     //       location,
     //     });
     //     return { ok: true } as AddGreenhouseResult;
+    //   }),
+    //   catchError(() => of({ ok: false, reason: 'request_failed' } as const)),
+    // );
+  }
+
+  public updateGreenhouse(
+    greenhouseId: string,
+    input: {
+      name: string;
+      preview_url: string;
+      location: GreenhouseGeoLocation;
+    },
+  ): Observable<UpdateGreenhouseResult> {
+    const name = input.name.trim();
+    const preview_url = input.preview_url.trim();
+    const location: GreenhouseGeoLocation = {
+      name: input.location.name.trim(),
+      lat: input.location.lat,
+      lon: input.location.lon,
+    };
+
+    const validation = this.validateUpdateGreenhouse(greenhouseId, { name, preview_url, location });
+    if (validation) {
+      return of(validation);
+    }
+
+    //____________________________________________________________________
+    this.applyGreenhouseUpdateLocally(greenhouseId, { name, preview_url, location });
+    return new BehaviorSubject<UpdateGreenhouseResult>({ ok: true }).asObservable();
+    //____________________________________________________________________
+
+    //TODO: When API accepts greenhouse updates
+    // const body: UpdateGreenhouseRequestBody = { name, preview_url, location };
+    // const url = this.greenhouseUrl(`greenhouses/${encodeURIComponent(greenhouseId)}`);
+    //
+    // return this.http.put(url, body).pipe(
+    //   map(() => {
+    //     this.applyGreenhouseUpdateLocally(greenhouseId, { name, preview_url, location });
+    //     return { ok: true } as UpdateGreenhouseResult;
     //   }),
     //   catchError(() => of({ ok: false, reason: 'request_failed' } as const)),
     // );
@@ -422,5 +471,29 @@ export class GreenhousesDataService {
     };
 
     this.greenhousesData.update((greenhouses) => [...greenhouses, newGh]);
+  }
+
+  private validateUpdateGreenhouse(
+    greenhouseId: string,
+    _fields: { name: string; preview_url: string; location: GreenhouseGeoLocation },
+  ): UpdateGreenhouseResult | null {
+    const exists = this.greenhousesData().some((gh) => gh.id === greenhouseId);
+    if (!exists) {
+      return { ok: false, reason: 'greenhouse_not_found' };
+    }
+    return null;
+  }
+
+  private applyGreenhouseUpdateLocally(
+    greenhouseId: string,
+    fields: { name: string; preview_url: string; location: GreenhouseGeoLocation },
+  ): void {
+    this.greenhousesData.update((greenhouses) =>
+      greenhouses.map((gh) =>
+        gh.id === greenhouseId
+          ? { ...gh, name: fields.name, preview_url: fields.preview_url, location: fields.location }
+          : gh,
+      ),
+    );
   }
 }

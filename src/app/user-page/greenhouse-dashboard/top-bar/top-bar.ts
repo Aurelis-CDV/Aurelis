@@ -13,4 +13,8 @@ export class TopBar {
   private readonly dashboardSignalsService = inject(DashboardSignalsService);
 
   public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
+
+  public openGreenhouseSettings(): void {
+    this.dashboardSignalsService.openGreenhouseFormWindow('edit');
+  }
 }

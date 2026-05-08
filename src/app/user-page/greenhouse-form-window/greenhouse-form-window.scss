@@ -65,7 +65,7 @@ $icon-size: 24px;
         }
       }
 
-      .add-greenhouse-content {
+      .greenhouse-form-content {
         flex: 1;
         min-height: 0;
         overflow: auto;
@@ -100,7 +100,7 @@ $icon-size: 24px;
           font-size: font.$size-small;
         }
 
-        .add-greenhouse-form {
+        .greenhouse-form {
           display: flex;
           flex-direction: column;
           gap: margin.$big;
@@ -134,6 +134,19 @@ $icon-size: 24px;
             outline: 2px solid color.$logo-blue;
             outline-offset: 2px;
             border-color: color.$logo-blue;
+          }
+
+          &:disabled {
+            cursor: not-allowed;
+            background: color.$light-gray;
+            color: color.$ashy;
+            border-color: color.$dark-gray;
+            opacity: 0.85;
+
+            &:focus {
+              outline: none;
+              border-color: color.$dark-gray;
+            }
           }
         }
 

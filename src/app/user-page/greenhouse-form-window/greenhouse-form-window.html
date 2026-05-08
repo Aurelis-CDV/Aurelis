@@ -5,8 +5,14 @@
         <aurelis-close></aurelis-close>
       </div>
     </div>
-    <div class="add-greenhouse-content">
-      <h2 class="form-title">Add greenhouse</h2>
+    <div class="greenhouse-form-content">
+      <h2 class="form-title">
+        @if (isEditMode()) {
+          Greenhouse settings
+        } @else {
+          Add greenhouse
+        }
+      </h2>
       @if (!weatherConfigured) {
         <p class="config-hint">
           Add your WeatherAPI key to <code>src/environments/environment.development.ts</code>
@@ -16,7 +22,7 @@
       @if (formError) {
         <p class="form-error-banner" role="alert">{{ formError }}</p>
       }
-      <form class="add-greenhouse-form" (submit)="$event.preventDefault(); addGreenhouse()">
+      <form class="greenhouse-form" (submit)="$event.preventDefault(); submitForm()">
         <label class="field">
           <span class="field-label">Greenhouse name</span>
           <input
@@ -31,20 +37,35 @@
             <span class="field-error" role="alert">{{ nameError }}</span>
           }
         </label>
-        <label class="field">
-          <span class="field-label">Greenhouse ID</span>
-          <input
-            class="field-input"
-            type="text"
-            name="greenhouseId"
-            autocomplete="off"
-            [(ngModel)]="greenhouseId"
-            (ngModelChange)="idError = ''"
-          />
-          @if (idError) {
-            <span class="field-error" role="alert">{{ idError }}</span>
-          }
-        </label>
+        @if (isEditMode()) {
+          <label class="field">
+            <span class="field-label">Greenhouse ID</span>
+            <input
+              class="field-input"
+              type="text"
+              name="greenhouseIdReadonly"
+              autocomplete="off"
+              [value]="greenhouseId"
+              disabled
+              title="Greenhouse ID cannot be changed"
+            />
+          </label>
+        } @else {
+          <label class="field">
+            <span class="field-label">Greenhouse ID</span>
+            <input
+              class="field-input"
+              type="text"
+              name="greenhouseId"
+              autocomplete="off"
+              [(ngModel)]="greenhouseId"
+              (ngModelChange)="idError = ''"
+            />
+            @if (idError) {
+              <span class="field-error" role="alert">{{ idError }}</span>
+            }
+          </label>
+        }
         <label class="field">
           <span class="field-label">Greenhouse preview URL</span>
           <input
@@ -93,9 +114,17 @@
           </button>
           <button type="submit" class="btn btn-primary" [disabled]="isSubmitting()">
             @if (isSubmitting()) {
-              Adding…
+              @if (isEditMode()) {
+                Saving…
+              } @else {
+                Adding…
+              }
             } @else {
-              Add
+              @if (isEditMode()) {
+                Save
+              } @else {
+                Add
+              }
             }
           </button>
         </div>

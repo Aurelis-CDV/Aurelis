@@ -8,7 +8,8 @@ import { GreenhouseData } from '../../interfaces/greenhouses-data.interface';
 export class DashboardSignalsService {
   private isPlantDetailsWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
   private isAddPlantWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
-  private isAddGreenhouseWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
+  private isGreenhouseFormWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
+  private greenhouseFormWindowMode: WritableSignal<'add' | 'edit'> = signal<'add' | 'edit'>('add');
 
   private readonly greenhousesDataService: GreenhousesDataService = inject(GreenhousesDataService);
 
@@ -54,11 +55,23 @@ export class DashboardSignalsService {
     this.isAddPlantWindowOpened.set(value);
   }
 
-  public getIsAddGreenhouseWindowOpened(): Signal<boolean> {
-    return this.isAddGreenhouseWindowOpened.asReadonly();
+  public getIsGreenhouseFormWindowOpened(): Signal<boolean> {
+    return this.isGreenhouseFormWindowOpened.asReadonly();
   }
 
-  public setIsAddGreenhouseWindowOpened(value: boolean): void {
-    this.isAddGreenhouseWindowOpened.set(value);
+  public getGreenhouseFormWindowMode(): Signal<'add' | 'edit'> {
+    return this.greenhouseFormWindowMode.asReadonly();
+  }
+
+  public openGreenhouseFormWindow(mode: 'add' | 'edit' = 'add'): void {
+    this.greenhouseFormWindowMode.set(mode);
+    this.isGreenhouseFormWindowOpened.set(true);
+  }
+
+  public setIsGreenhouseFormWindowOpened(value: boolean): void {
+    this.isGreenhouseFormWindowOpened.set(value);
+    if (!value) {
+      this.greenhouseFormWindowMode.set('add');
+    }
   }
 }

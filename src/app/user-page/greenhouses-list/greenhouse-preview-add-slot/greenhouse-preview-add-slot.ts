@@ -17,10 +17,10 @@ export class GreenhousePreviewAddSlot {
   private readonly dashboardSignals = inject(DashboardSignalsService);
   private readonly greenhousesData = inject(GreenhousesDataService);
 
-  protected openAddGreenhouseWindow(): void {
+  protected openGreenhouseFormWindow(): void {
     if (this.greenhousesData.greenhousesData().length >= MAX_GREENHOUSES_IN_DASHBOARD) {
       return;
     }
-    this.dashboardSignals.setIsAddGreenhouseWindowOpened(true);
+    this.dashboardSignals.openGreenhouseFormWindow('add');
   }
 }
