@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import ExampleJson from '../../../example-json';
+import { Component, EventEmitter, inject, Output, WritableSignal } from '@angular/core';
+import { GreenhousesDataService } from '../../services/data.service';
 import { GreenhousesData } from '../../../interfaces/greenhouses-data.interface';
 
 @Component({
@@ -9,11 +9,19 @@ import { GreenhousesData } from '../../../interfaces/greenhouses-data.interface'
   styleUrl: './greenhouses-list.scss',
 })
 export class GreenhousesList {
-  protected readonly exampleJson: GreenhousesData = ExampleJson as unknown as GreenhousesData;
+  @Output() public onGreenhousePreviewClicked: EventEmitter<string> = new EventEmitter();
 
   public showGreenhousesPreviewNames: boolean = false;
 
+  private readonly greenhousesDataService = inject(GreenhousesDataService);
+  protected readonly greenhouses: WritableSignal<GreenhousesData> =
+    this.greenhousesDataService.greenhousesData;
+
   constructor() {}
+
+  public greenhousePreviewClicked(greenhouseId: string): void {
+    this.onGreenhousePreviewClicked.emit(greenhouseId);
+  }
 
   public toggleGreenhousesPreviewNames(): void {
     this.showGreenhousesPreviewNames = !this.showGreenhousesPreviewNames;

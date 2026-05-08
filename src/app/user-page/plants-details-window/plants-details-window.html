@@ -9,7 +9,7 @@
       </div>
     </div>
     <aurelis-carousel>
-      @for (plant of exampleJson[0].plants; track plant.id) {
+      @for (plant of greenhouseData()?.plants; track plant.id) {
         <aurelis-plant-details [plant]="plant"></aurelis-plant-details>
       }
     </aurelis-carousel>

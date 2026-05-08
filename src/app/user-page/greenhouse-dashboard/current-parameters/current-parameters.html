@@ -1,6 +1,6 @@
 <div class="localization-params">
-  <h1>Localization parameters</h1>
-  <h3>{{ exampleJson[0].location }}</h3>
+  <h1>Location parameters</h1>
+  <h3>{{ greenhouseData()?.location }}</h3>
   <div class="params-wrapper">
     <div class="icons-wrapper">
       <div class="icon-wrapper">
@@ -10,6 +10,8 @@
         <aurelis-water-drop> </aurelis-water-drop>
       </div>
     </div>
+
+    <!--    TODO: values should come from weather API-->
     <div class="values-wrapper">
       <div class="value-wrapper">
         <p>24°C</p>

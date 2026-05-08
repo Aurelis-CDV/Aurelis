@@ -10,7 +10,7 @@ export default [
         name: 'humidity',
         current: 45,
         history: [
-          { date: '12.12.2026', value: 45 },
+          { date: '12.12.2026', value: 10 },
           { date: '13.12.2026', value: 21 },
           { date: '14.12.2026', value: 32 },
           { date: '15.12.2026', value: 12 },
@@ -444,7 +444,7 @@ export default [
     params: [
       {
         name: 'humidity',
-        current: 45,
+        current: 20,
         history: [
           { date: '12.12.2026', value: 45 },
           { date: '13.12.2026', value: 21 },

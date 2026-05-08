@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Temperature } from '../../../common/icons/temperature/temperature';
 import { WaterDrop } from '../../../common/icons/water-drop/water-drop';
 import { Sun } from '../../../common/icons/sun/sun';
-import ExampleJson from '../../../../example-json';
+import { DashboardSignalsService } from '../../../services/dashboard-signals.service';
 
 @Component({
   selector: 'aurelis-current-parameters',
@@ -11,11 +11,13 @@ import ExampleJson from '../../../../example-json';
   styleUrl: './current-parameters.scss',
 })
 export class CurrentParameters {
-  protected readonly exampleJson = ExampleJson;
+  private readonly dashboardSignalsService = inject(DashboardSignalsService);
+
+  public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
 
   constructor() {}
 
   public getValue(type: string): number {
-    return this.exampleJson[0].params.find((param) => param.name === type)?.current || 0;
+    return this.greenhouseData()?.params.find((param) => param.name === type)?.current || 0;
   }
 }

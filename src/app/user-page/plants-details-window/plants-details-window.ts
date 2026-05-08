@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Close } from '../../common/icons/close/close';
 import { Carousel } from '../../common/carousel/carousel';
-import ExampleJson from '../../../example-json';
 import { PlantDetails } from './plant-details/plant-details';
-import { GreenhousesData } from '../../../interfaces/greenhouses-data.interface';
 import { Refresh } from '../../common/icons/refresh/refresh';
+import { DashboardSignalsService } from '../../services/dashboard-signals.service';
 
 @Component({
   selector: 'aurelis-plants-details-window',
@@ -13,5 +12,7 @@ import { Refresh } from '../../common/icons/refresh/refresh';
   styleUrl: './plants-details-window.scss',
 })
 export class PlantsDetailsWindow {
-  protected readonly exampleJson: GreenhousesData = ExampleJson as unknown as GreenhousesData;
+  private readonly dashboardSignalsService = inject(DashboardSignalsService);
+
+  public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
 }
