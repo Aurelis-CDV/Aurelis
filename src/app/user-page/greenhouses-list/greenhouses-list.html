@@ -4,7 +4,11 @@
   (mouseleave)="toggleGreenhousesPreviewNames()"
 >
   @for (greenhouse of greenhouses(); track greenhouse.id) {
-    <div class="greenhouse-preview-wrapper" (click)="greenhousePreviewClicked(greenhouse.id)">
+    <div
+      class="greenhouse-preview-wrapper"
+      [class.active]="activeGreenhouseId() === greenhouse.id"
+      (click)="greenhousePreviewClicked(greenhouse.id)"
+    >
       <img src="{{ greenhouse.preview_url }}" alt="Greenhouse preview" />
       @if (showGreenhousesPreviewNames) {
         <div class="greenhouse-name-wrapper">

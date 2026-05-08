@@ -6,6 +6,8 @@ import { GreenhouseData } from '../../interfaces/greenhouses-data.interface';
   providedIn: 'root',
 })
 export class DashboardSignalsService {
+  private isPlantDetailsWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
+
   private readonly greenhousesDataService: GreenhousesDataService = inject(GreenhousesDataService);
 
   private readonly dashboardGreenhouseId: WritableSignal<string> = signal<string>(
@@ -22,11 +24,23 @@ export class DashboardSignalsService {
 
   public constructor() {}
 
+  public getDashboardGreenhouseId(): Signal<string> {
+    return this.dashboardGreenhouseId.asReadonly();
+  }
+
   public setDashboardGreenhouseId(greenhouseId: string): void {
     this.dashboardGreenhouseId.set(greenhouseId);
   }
 
   public getDashboardGreenhouseData(): Signal<GreenhouseData | undefined> {
     return this.dashboardGreenhouseData;
+  }
+
+  public getIsPlantDetailsWindowOpened(): Signal<boolean> {
+    return this.isPlantDetailsWindowOpened.asReadonly();
+  }
+
+  public setIsPlantDetailsWindowOpened(value: boolean): void {
+    this.isPlantDetailsWindowOpened.set(value);
   }
 }

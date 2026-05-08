@@ -15,4 +15,10 @@ export class PlantsDetailsWindow {
   private readonly dashboardSignalsService = inject(DashboardSignalsService);
 
   public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
+
+  constructor() {}
+
+  public hidePlantDetailsWindow(): void {
+    this.dashboardSignalsService.setIsPlantDetailsWindowOpened(false);
+  }
 }

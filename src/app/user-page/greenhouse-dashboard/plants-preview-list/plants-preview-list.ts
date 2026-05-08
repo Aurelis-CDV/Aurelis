@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, effect, ElementRef, inject } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, inject } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { PlantPreview } from './plant-preview/plant-preview';
 import { DashboardSignalsService } from '../../../services/dashboard-signals.service';

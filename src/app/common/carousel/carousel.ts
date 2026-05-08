@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, viewChild } from '@angular/core';
 import { Arrow } from '../icons/arrow/arrow';
 
 @Component({
@@ -8,6 +8,7 @@ import { Arrow } from '../icons/arrow/arrow';
   styleUrl: './carousel.scss',
 })
 export class Carousel implements AfterViewInit {
+  @Input()
   public currentIndex = 0;
 
   private items = viewChild<ElementRef>('items');
@@ -20,11 +21,11 @@ export class Carousel implements AfterViewInit {
 
     items.forEach((item: any, index: number) => {
       switch (index) {
-        case 0: {
+        case this.currentIndex: {
           this.setActiveItemStyles(item);
           break;
         }
-        case 1: {
+        case this.currentIndex + 1: {
           this.setPreviouslyActiveItemStyles(item);
           break;
         }
