@@ -11,6 +11,9 @@ export class DashboardSignalsService {
   private plantFormWindowMode: WritableSignal<'add' | 'edit'> = signal<'add' | 'edit'>('add');
   private plantFormEditPlantId: WritableSignal<string | null> = signal<string | null>(null);
 
+  private plantDetailsCarouselLayoutRevision: WritableSignal<number> = signal(0);
+  private plantDetailsFocusPlantId: WritableSignal<string | null> = signal<string | null>(null);
+
   private isGreenhouseFormWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
   private greenhouseFormWindowMode: WritableSignal<'add' | 'edit'> = signal<'add' | 'edit'>('add');
 
@@ -48,6 +51,18 @@ export class DashboardSignalsService {
 
   public setIsPlantDetailsWindowOpened(value: boolean): void {
     this.isPlantDetailsWindowOpened.set(value);
+    if (!value) {
+      this.plantDetailsFocusPlantId.set(null);
+    }
+  }
+
+  public getPlantDetailsFocusPlantId(): Signal<string | null> {
+    return this.plantDetailsFocusPlantId.asReadonly();
+  }
+
+  public openPlantDetailsWindow(plantId: string): void {
+    this.plantDetailsFocusPlantId.set(plantId);
+    this.isPlantDetailsWindowOpened.set(true);
   }
 
   public getIsPlantFormWindowOpened(): Signal<boolean> {
@@ -97,5 +112,13 @@ export class DashboardSignalsService {
     if (!value) {
       this.greenhouseFormWindowMode.set('add');
     }
+  }
+
+  public getPlantDetailsCarouselLayoutRevision(): Signal<number> {
+    return this.plantDetailsCarouselLayoutRevision.asReadonly();
+  }
+
+  public notifyPlantRemovedFromGreenhouse(): void {
+    this.plantDetailsCarouselLayoutRevision.update((n) => n + 1);
   }
 }

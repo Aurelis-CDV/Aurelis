@@ -148,8 +148,20 @@ $icon-size: 24px;
         .form-actions {
           display: flex;
           justify-content: flex-end;
+          align-items: center;
           gap: margin.$small;
           margin-top: margin.$small;
+          flex-wrap: wrap;
+
+          &.form-actions-edit {
+            justify-content: space-between;
+          }
+
+          .form-actions-primary {
+            display: flex;
+            gap: margin.$small;
+            margin-left: auto;
+          }
         }
 
         .btn {
@@ -181,6 +193,15 @@ $icon-size: 24px;
 
             &:hover:not(:disabled) {
               filter: brightness(0.97);
+            }
+          }
+
+          &.btn-danger {
+            background: color.$action-negative;
+            color: color.$white;
+
+            &:hover:not(:disabled) {
+              filter: brightness(0.92);
             }
           }
         }

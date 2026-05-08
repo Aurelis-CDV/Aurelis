@@ -1,4 +1,13 @@
-import { AfterViewInit, Component, ElementRef, Input, viewChild } from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  viewChild,
+} from '@angular/core';
 import { Arrow } from '../icons/arrow/arrow';
 
 @Component({
@@ -7,18 +16,55 @@ import { Arrow } from '../icons/arrow/arrow';
   templateUrl: './carousel.html',
   styleUrl: './carousel.scss',
 })
-export class Carousel implements AfterViewInit {
+export class Carousel implements AfterViewInit, AfterViewChecked, OnChanges {
   @Input()
   public currentIndex = 0;
 
+  @Input()
+  public layoutRevision = 0;
+
   private items = viewChild<ElementRef>('items');
+
+  private previousProjectedChildCount: number | null = null;
 
   constructor(private readonly elementRef: ElementRef) {}
 
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes['layoutRevision'] && !changes['layoutRevision'].firstChange) {
+      this.currentIndex = 0;
+      queueMicrotask(() => this.applySlideLayoutForCurrentIndex());
+    }
+  }
+
   public ngAfterViewInit() {
+    this.previousProjectedChildCount = this.getItemsLength();
+    this.applySlideLayoutForCurrentIndex();
+  }
+
+  public ngAfterViewChecked() {
+    const count = this.getItemsLength();
+    if (this.previousProjectedChildCount === null) {
+      this.previousProjectedChildCount = count;
+      return;
+    }
+    if (count !== this.previousProjectedChildCount) {
+      this.previousProjectedChildCount = count;
+      if (count > 0) {
+        this.currentIndex = 0;
+        queueMicrotask(() => this.applySlideLayoutForCurrentIndex());
+      }
+    }
+  }
+
+  private applySlideLayoutForCurrentIndex(): void {
     this.getDots();
     const items: any = this.getItems();
-
+    if (!items?.length) {
+      return;
+    }
+    if (this.currentIndex >= items.length) {
+      this.currentIndex = 0;
+    }
     items.forEach((item: any, index: number) => {
       switch (index) {
         case this.currentIndex: {

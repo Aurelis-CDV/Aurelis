@@ -40,6 +40,16 @@ $button-size: 40px;
       right: margin.$big;
 
       background: color.$action-negative;
+
+      &.disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      ::ng-deep svg path {
+        stroke: color.$white;
+      }
     }
 
     &.watering-button-wrapper {

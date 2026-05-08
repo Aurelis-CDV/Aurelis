@@ -8,8 +8,10 @@
         <aurelis-close></aurelis-close>
       </div>
     </div>
-    <!--    TODO: get proper current index to display correct plant details on init-->
-    <aurelis-carousel [currentIndex]="2">
+    <aurelis-carousel
+      [currentIndex]="plantDetailsCarouselInitialIndex()"
+      [layoutRevision]="plantDetailsCarouselLayoutRevision()"
+    >
       @for (plant of greenhouseData()?.plants; track plant.id) {
         <aurelis-plant-details [plant]="plant"></aurelis-plant-details>
       }

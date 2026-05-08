@@ -213,6 +213,47 @@ export class PlantFormWindow {
     this.cancel();
   }
 
+  protected confirmDeletePlant(): void {
+    if (!this.isEditMode() || !this.editingPlantId) {
+      return;
+    }
+    const displayName = this.plantName.trim() || this.editingPlantId;
+    const confirmed = window.confirm(
+      `Delete plant "${displayName}"? This cannot be undone.`,
+    );
+    if (!confirmed) {
+      return;
+    }
+
+    const plantId = this.editingPlantId;
+    const greenhouseId = this.dashboardSignalsService.getDashboardGreenhouseId()();
+
+    this.isSubmitting.set(true);
+    this.greenhousesDataService
+      .deletePlantFromGreenhouse(greenhouseId, plantId)
+      .pipe(finalize(() => this.isSubmitting.set(false)))
+      .subscribe({
+        next: (result) => {
+          if (!result.ok) {
+            if (result.reason === 'plant_not_found') {
+              this.formError = 'This plant is no longer in the greenhouse.';
+            } else if (result.reason === 'greenhouse_not_found') {
+              this.formError =
+                'Could not find the selected greenhouse. Try selecting a greenhouse again.';
+            } else {
+              this.formError =
+                'Could not delete the plant on the server. Check your connection and API.';
+            }
+            return;
+          }
+
+          this.dashboardSignalsService.notifyPlantRemovedFromGreenhouse();
+          this.resetForm();
+          this.dashboardSignalsService.setIsPlantFormWindowOpened(false);
+        },
+      });
+  }
+
   private closeWithoutConfirm(): void {
     this.resetForm();
     this.dashboardSignalsService.setIsPlantFormWindowOpened(false);

@@ -294,6 +294,48 @@ export class GreenhouseFormWindow {
     this.cancel();
   }
 
+  protected confirmDeleteGreenhouse(): void {
+    if (!this.isEditMode() || !this.editingGreenhouseId) {
+      return;
+    }
+    const displayName = this.greenhouseName.trim() || this.editingGreenhouseId;
+    const confirmed = window.confirm(
+      `Delete greenhouse "${displayName}"? This cannot be undone.`,
+    );
+    if (!confirmed) {
+      return;
+    }
+
+    const greenhouseId = this.editingGreenhouseId;
+    this.isSubmitting.set(true);
+    this.greenhousesDataService
+      .deleteGreenhouse(greenhouseId)
+      .pipe(finalize(() => this.isSubmitting.set(false)))
+      .subscribe({
+        next: (result) => {
+          if (!result.ok) {
+            if (result.reason === 'greenhouse_not_found') {
+              this.formError = 'This greenhouse is no longer in your list.';
+            } else {
+              this.formError =
+                'Could not delete the greenhouse on the server. Check your connection and API.';
+            }
+            return;
+          }
+
+          const dashboardId = this.dashboardSignalsService.getDashboardGreenhouseId()();
+          const remaining = this.greenhousesDataService.greenhousesData();
+          if (dashboardId === greenhouseId) {
+            const nextId = remaining[0]?.id ?? '';
+            this.dashboardSignalsService.setDashboardGreenhouseId(nextId);
+          }
+
+          this.resetForm();
+          this.dashboardSignalsService.setIsGreenhouseFormWindowOpened(false);
+        },
+      });
+  }
+
   private closeWithoutConfirm(): void {
     this.resetForm();
     this.dashboardSignalsService.setIsGreenhouseFormWindowOpened(false);
