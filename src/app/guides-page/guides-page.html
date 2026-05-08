@@ -14,10 +14,10 @@
     <button type="submit">Search</button>
   </form>
 
-  @if (isLoading) {
+  @if (isLoading()) {
     <p class="status-message">Loading plants...</p>
-  } @else if (errorMessage) {
-    <p class="status-message error">{{ errorMessage }}</p>
+  } @else if (errorMessage()) {
+    <p class="status-message error">{{ errorMessage() }}</p>
   } @else if (!plants().length) {
     <p class="status-message">No plants found. Try another search term.</p>
   } @else {
@@ -38,5 +38,12 @@
         </button>
       }
     </section>
+    @if (lastPage() > 1) {
+      <aurelis-guides-pagination
+        [currentPage]="currentPage()"
+        [lastPage]="lastPage()"
+        (pageChange)="onPageChange($event)"
+      />
+    }
   }
 </main>

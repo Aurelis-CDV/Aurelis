@@ -1,0 +1,21 @@
+<nav class="guides-pagination" aria-label="Plant list pages">
+  <button
+    type="button"
+    class="page-nav-btn"
+    [disabled]="currentPage() <= 1"
+    (click)="goPrevious()"
+  >
+    Previous
+  </button>
+
+  <span class="page-indicator"> Page {{ currentPage() }} of {{ lastPage() }} </span>
+
+  <button
+    type="button"
+    class="page-nav-btn"
+    [disabled]="currentPage() >= lastPage()"
+    (click)="goNext()"
+  >
+    Next
+  </button>
+</nav>

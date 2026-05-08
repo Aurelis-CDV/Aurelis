@@ -13,32 +13,25 @@ const PERENUAL_API_KEY = 'sk-Ez2n69fdbc69cd10417097';
 })
 export class PerenualPlantsService {
   private readonly http = inject(HttpClient);
-  private readonly apiKey = window.localStorage.getItem('perenualApiKey') ?? PERENUAL_API_KEY;
+  private readonly apiKey = PERENUAL_API_KEY;
 
   public getPlantsList(page: number = 1): Observable<PerenualPlantListResponse> {
-    console.log(`${PERENUAL_API_BASE_URL}v2/species-list?key=${this.apiKey}&page=${page}`);
-    return this.http.get<PerenualPlantListResponse>(
-      `${PERENUAL_API_BASE_URL}v2/species-list?key=${this.apiKey}&page=${page}`,
-      {
-        params: {
-          key: this.apiKey,
-          page: page,
-        },
+    return this.http.get<PerenualPlantListResponse>(`${PERENUAL_API_BASE_URL}v2/species-list`, {
+      params: {
+        key: this.apiKey,
+        page: String(page),
       },
-    );
+    });
   }
 
-  public searchPlants(query: string): Observable<PerenualPlantListResponse> {
-    console.log(`${PERENUAL_API_BASE_URL}v2/species-list?key=${this.apiKey}&q=${query}`);
-    return this.http.get<PerenualPlantListResponse>(
-      `${PERENUAL_API_BASE_URL}v2/species-list?q=${query}?key=${this.apiKey}`,
-      {
-        params: {
-          key: this.apiKey,
-          q: query,
-        },
+  public searchPlants(query: string, page: number = 1): Observable<PerenualPlantListResponse> {
+    return this.http.get<PerenualPlantListResponse>(`${PERENUAL_API_BASE_URL}v2/species-list`, {
+      params: {
+        key: this.apiKey,
+        q: query,
+        page: String(page),
       },
-    );
+    });
   }
 
   public getPlantDetails(plantId: number): Observable<PerenualPlantDetails> {
