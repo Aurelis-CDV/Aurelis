@@ -8,6 +8,7 @@ import { GreenhouseData } from '../../interfaces/greenhouses-data.interface';
 export class DashboardSignalsService {
   private isPlantDetailsWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
   private isAddPlantWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
+  private isAddGreenhouseWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
 
   private readonly greenhousesDataService: GreenhousesDataService = inject(GreenhousesDataService);
 
@@ -51,5 +52,13 @@ export class DashboardSignalsService {
 
   public setIsAddPlantWindowOpened(value: boolean): void {
     this.isAddPlantWindowOpened.set(value);
+  }
+
+  public getIsAddGreenhouseWindowOpened(): Signal<boolean> {
+    return this.isAddGreenhouseWindowOpened.asReadonly();
+  }
+
+  public setIsAddGreenhouseWindowOpened(value: boolean): void {
+    this.isAddGreenhouseWindowOpened.set(value);
   }
 }

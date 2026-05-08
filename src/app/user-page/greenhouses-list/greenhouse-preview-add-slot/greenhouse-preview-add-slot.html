@@ -1,0 +1,13 @@
+<button
+  type="button"
+  class="greenhouse-add-slot"
+  (click)="openAddGreenhouseWindow()"
+  aria-label="Add greenhouse"
+>
+  <span class="greenhouse-add-slot-circle" aria-hidden="true">+</span>
+  @if (showLabel) {
+    <div class="greenhouse-name-wrapper">
+      <p>Add greenhouse</p>
+    </div>
+  }
+</button>
