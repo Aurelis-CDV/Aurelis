@@ -17,6 +17,8 @@ export class PlantsPreviewList implements AfterViewChecked {
 
   private chartsPrinted: boolean = false;
 
+  private previousPlantFingerprint = '';
+
   private readonly dashboardSignalsService = inject(DashboardSignalsService);
   public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
 
@@ -27,6 +29,20 @@ export class PlantsPreviewList implements AfterViewChecked {
   constructor(private elementRef: ElementRef) {}
 
   public ngAfterViewChecked(): void {
+    const plants = this.greenhouseData()?.plants ?? [];
+    const fingerprint = plants.map((plant: { id: string }) => plant.id).join('|');
+
+    if (fingerprint !== this.previousPlantFingerprint) {
+      if (this.previousPlantFingerprint !== '') {
+        for (const chart of Object.values(this.plantPreviewChartsByPlantId)) {
+          chart.destroy();
+        }
+        this.plantPreviewChartsByPlantId = {};
+        this.chartsPrinted = false;
+      }
+      this.previousPlantFingerprint = fingerprint;
+    }
+
     if (this.chartsPrinted) {
       return;
     }

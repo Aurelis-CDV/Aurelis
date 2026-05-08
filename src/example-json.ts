@@ -119,7 +119,7 @@ export default [
     id: '1234567890',
     preview_url:
       'https://about.oceanstatejoblot.com/wp-content/uploads/2024/02/SF_HowDoGreenhousesWork_Hero.webp',
-    location: 'Poznan',
+    location: { name: 'Poznan', lat: 52.4064, lon: 16.9252 },
     params: [
       {
         name: 'humidity',
@@ -283,7 +283,7 @@ export default [
     id: '1234567891',
     preview_url:
       'https://about.oceanstatejoblot.com/wp-content/uploads/2024/02/SF_HowDoGreenhousesWork_Introduction.webp',
-    location: 'Wronki',
+    location: { name: 'Wronki', lat: 52.7105, lon: 16.3804 },
     params: [
       {
         name: 'humidity',
@@ -445,7 +445,7 @@ export default [
     name: 'Greenhouse 3',
     id: '1234567892',
     preview_url: 'https://www.mysheds.com/wp-content/uploads/2023/08/Seed-Starting.jpg',
-    location: 'London',
+    location: { name: 'London', lat: 51.5074, lon: -0.1278 },
     params: [
       {
         name: 'humidity',
@@ -555,7 +555,7 @@ export default [
     id: '1234567893',
     preview_url:
       'https://fieldreport.caes.uga.edu/wp-content/uploads/2025/11/greenhouse-ventilation-heating-cooling-1500x1000px.jpg',
-    location: 'Amsterdam',
+    location: { name: 'Amsterdam', lat: 52.3676, lon: 4.9041 },
     params: [
       {
         name: 'humidity',

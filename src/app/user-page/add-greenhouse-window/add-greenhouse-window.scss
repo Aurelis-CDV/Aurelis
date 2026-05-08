@@ -1,5 +1,6 @@
 @use '../../../styles/margins' as margin;
 @use '../../../styles/colors' as color;
+@use '../../../styles/fonts' as font;
 @use '../../../styles/mixins' as mixin;
 
 $icon-size: 24px;
@@ -67,6 +68,169 @@ $icon-size: 24px;
       .add-greenhouse-content {
         flex: 1;
         min-height: 0;
+        overflow: auto;
+
+        display: flex;
+        flex-direction: column;
+        gap: margin.$big;
+
+        .form-title {
+          margin: 0;
+          font-size: font.$size-mid;
+          font-weight: font.$weight-semibold;
+          color: color.$text;
+        }
+
+        .config-hint {
+          margin: 0;
+          font-size: font.$size-smallest;
+          color: color.$ashy;
+
+          code {
+            font-size: 0.95em;
+          }
+        }
+
+        .form-error-banner {
+          margin: 0;
+          padding: margin.$small margin.$big;
+          border-radius: 8px;
+          background: rgba(207, 49, 49, 0.12);
+          color: color.$action-negative;
+          font-size: font.$size-small;
+        }
+
+        .add-greenhouse-form {
+          display: flex;
+          flex-direction: column;
+          gap: margin.$big;
+          max-width: 520px;
+        }
+
+        .field {
+          display: flex;
+          flex-direction: column;
+          gap: margin.$smallest;
+        }
+
+        .field-label {
+          font-size: font.$size-small;
+          font-weight: font.$weight-semibold;
+          color: color.$text;
+        }
+
+        .field-input {
+          padding: margin.$small margin.$big;
+          border: 1px solid color.$gray;
+          border-radius: 8px;
+          font: inherit;
+          font-size: font.$size-small;
+          background: color.$white;
+          color: color.$text;
+          width: 100%;
+          box-sizing: border-box;
+
+          &:focus {
+            outline: 2px solid color.$logo-blue;
+            outline-offset: 2px;
+            border-color: color.$logo-blue;
+          }
+        }
+
+        .field-error {
+          font-size: font.$size-smallest;
+          color: color.$action-negative;
+        }
+
+        .location-field {
+          position: relative;
+
+          .location-input-wrap {
+            position: relative;
+          }
+
+          .suggestions {
+            position: absolute;
+            z-index: 10;
+            left: 0;
+            right: 0;
+            top: calc(100% + margin.$smallest);
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            max-height: 220px;
+            overflow-y: auto;
+
+            background: color.$white;
+            border: 1px solid color.$gray;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(42, 42, 42, 0.12);
+
+            li {
+              padding: margin.$small margin.$big;
+              cursor: pointer;
+              display: flex;
+              flex-direction: column;
+              gap: margin.$smallest;
+
+              &:hover,
+              &:focus-visible {
+                background: color.$page-background;
+              }
+            }
+
+            .suggestion-main {
+              font-size: font.$size-small;
+              font-weight: font.$weight-semibold;
+              color: color.$text;
+            }
+
+            .suggestion-meta {
+              font-size: font.$size-smallest;
+              color: color.$ashy;
+            }
+          }
+        }
+
+        .form-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: margin.$small;
+          margin-top: margin.$small;
+        }
+
+        .btn {
+          padding: margin.$small margin.$big;
+          border-radius: 8px;
+          font: inherit;
+          font-size: font.$size-small;
+          font-weight: font.$weight-semibold;
+          cursor: pointer;
+          border: none;
+
+          &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+          }
+
+          &.btn-primary {
+            background: color.$logo-green;
+            color: color.$dashboard-background;
+
+            &:hover:not(:disabled) {
+              filter: brightness(0.95);
+            }
+          }
+
+          &.btn-secondary {
+            background: color.$light-gray;
+            color: color.$text;
+
+            &:hover:not(:disabled) {
+              filter: brightness(0.97);
+            }
+          }
+        }
       }
     }
   }

@@ -1,8 +1,9 @@
 import { Component, inject, Input } from '@angular/core';
 import { DashboardSignalsService } from '../../../services/dashboard-signals.service';
-import { GreenhousesDataService } from '../../../services/data.service';
-
-export const MAX_GREENHOUSES_IN_DASHBOARD = 6;
+import {
+  GreenhousesDataService,
+  MAX_GREENHOUSES_IN_DASHBOARD,
+} from '../../../services/data.service';
 
 @Component({
   selector: 'aurelis-greenhouse-preview-add-slot',
