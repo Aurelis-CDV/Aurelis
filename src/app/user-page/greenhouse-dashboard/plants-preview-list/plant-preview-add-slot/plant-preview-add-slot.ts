@@ -11,11 +11,11 @@ export class PlantPreviewAddSlot {
 
   protected readonly greenhouse = this.dashboardSignals.getDashboardGreenhouseData();
 
-  protected openAddPlantWindow(): void {
+  protected openPlantFormWindow(): void {
     const gh = this.greenhouse();
     if (!gh || gh.plants.length >= 6) {
       return;
     }
-    this.dashboardSignals.setIsAddPlantWindowOpened(true);
+    this.dashboardSignals.openPlantFormWindow('add');
   }
 }

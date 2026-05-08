@@ -7,7 +7,10 @@ import { GreenhouseData } from '../../interfaces/greenhouses-data.interface';
 })
 export class DashboardSignalsService {
   private isPlantDetailsWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
-  private isAddPlantWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
+  private isPlantFormWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
+  private plantFormWindowMode: WritableSignal<'add' | 'edit'> = signal<'add' | 'edit'>('add');
+  private plantFormEditPlantId: WritableSignal<string | null> = signal<string | null>(null);
+
   private isGreenhouseFormWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
   private greenhouseFormWindowMode: WritableSignal<'add' | 'edit'> = signal<'add' | 'edit'>('add');
 
@@ -47,12 +50,33 @@ export class DashboardSignalsService {
     this.isPlantDetailsWindowOpened.set(value);
   }
 
-  public getIsAddPlantWindowOpened(): Signal<boolean> {
-    return this.isAddPlantWindowOpened.asReadonly();
+  public getIsPlantFormWindowOpened(): Signal<boolean> {
+    return this.isPlantFormWindowOpened.asReadonly();
   }
 
-  public setIsAddPlantWindowOpened(value: boolean): void {
-    this.isAddPlantWindowOpened.set(value);
+  public getPlantFormWindowMode(): Signal<'add' | 'edit'> {
+    return this.plantFormWindowMode.asReadonly();
+  }
+
+  public getPlantFormEditPlantId(): Signal<string | null> {
+    return this.plantFormEditPlantId.asReadonly();
+  }
+
+  public openPlantFormWindow(
+    mode: 'add' | 'edit' = 'add',
+    editPlantId: string | null = null,
+  ): void {
+    this.plantFormWindowMode.set(mode);
+    this.plantFormEditPlantId.set(mode === 'edit' && editPlantId ? editPlantId : null);
+    this.isPlantFormWindowOpened.set(true);
+  }
+
+  public setIsPlantFormWindowOpened(value: boolean): void {
+    this.isPlantFormWindowOpened.set(value);
+    if (!value) {
+      this.plantFormWindowMode.set('add');
+      this.plantFormEditPlantId.set(null);
+    }
   }
 
   public getIsGreenhouseFormWindowOpened(): Signal<boolean> {

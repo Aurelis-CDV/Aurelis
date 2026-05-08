@@ -5,7 +5,7 @@ import { GreenhouseDashboard } from './greenhouse-dashboard/greenhouse-dashboard
 import { GreenhousesDataService } from '../services/data.service';
 import { DashboardSignalsService } from '../services/dashboard-signals.service';
 import { PlantsDetailsWindow } from './plants-details-window/plants-details-window';
-import { AddPlantWindow } from './add-plant-window/add-plant-window';
+import { PlantFormWindow } from './plant-form-window/plant-form-window';
 import { GreenhouseFormWindow } from './greenhouse-form-window/greenhouse-form-window';
 
 @Component({
@@ -15,7 +15,7 @@ import { GreenhouseFormWindow } from './greenhouse-form-window/greenhouse-form-w
     GreenhousesList,
     GreenhouseDashboard,
     PlantsDetailsWindow,
-    AddPlantWindow,
+    PlantFormWindow,
     GreenhouseFormWindow,
   ],
   templateUrl: './user-page.html',
@@ -28,8 +28,8 @@ export class UserPage {
   public showPlantDetailsWindow: Signal<boolean> =
     this.dashboardSignalsService.getIsPlantDetailsWindowOpened();
 
-  public showAddPlantWindow: Signal<boolean> =
-    this.dashboardSignalsService.getIsAddPlantWindowOpened();
+  public showPlantFormWindow: Signal<boolean> =
+    this.dashboardSignalsService.getIsPlantFormWindowOpened();
 
   public showGreenhouseFormWindow: Signal<boolean> =
     this.dashboardSignalsService.getIsGreenhouseFormWindowOpened();

@@ -17,6 +17,10 @@ export type AddPlantResult =
       reason: 'greenhouse_not_found' | 'greenhouse_full' | 'duplicate_plant_id' | 'request_failed';
     };
 
+export type UpdatePlantResult =
+  | { ok: true }
+  | { ok: false; reason: 'greenhouse_not_found' | 'plant_not_found' | 'request_failed' };
+
 export type AddGreenhouseResult =
   | { ok: true }
   | {
@@ -31,6 +35,11 @@ export type UpdateGreenhouseResult =
 export interface CreatePlantRequestBody {
   name: string;
   id: string;
+  preview_url: string;
+}
+
+export interface UpdatePlantRequestBody {
+  name: string;
   preview_url: string;
 }
 
@@ -96,6 +105,39 @@ export class GreenhousesDataService {
     //   map(() => {
     //     this.applyPlantLocally(greenhouseId, { name, id, preview_url });
     //     return { ok: true } as AddPlantResult;
+    //   }),
+    //   catchError(() => of({ ok: false, reason: 'request_failed' } as const)),
+    // );
+  }
+
+  public updatePlantInGreenhouse(
+    greenhouseId: string,
+    plantId: string,
+    input: { name: string; preview_url: string },
+  ): Observable<UpdatePlantResult> {
+    const name = input.name.trim();
+    const preview_url = input.preview_url.trim();
+
+    const validation = this.validateUpdatePlant(greenhouseId, plantId, { name, preview_url });
+    if (validation) {
+      return of(validation);
+    }
+
+    //____________________________________________________________________
+    this.applyPlantUpdateLocally(greenhouseId, plantId, { name, preview_url });
+    return new BehaviorSubject<UpdatePlantResult>({ ok: true }).asObservable();
+    //____________________________________________________________________
+
+    //TODO: When API accepts plant updates
+    // const body: UpdatePlantRequestBody = { name, preview_url };
+    // const url = this.greenhouseUrl(
+    //   `greenhouses/${encodeURIComponent(greenhouseId)}/plants/${encodeURIComponent(plantId)}`,
+    // );
+    //
+    // return this.http.put(url, body).pipe(
+    //   map(() => {
+    //     this.applyPlantUpdateLocally(greenhouseId, plantId, { name, preview_url });
+    //     return { ok: true } as UpdatePlantResult;
     //   }),
     //   catchError(() => of({ ok: false, reason: 'request_failed' } as const)),
     // );
@@ -293,6 +335,44 @@ export class GreenhousesDataService {
     }
 
     return null;
+  }
+
+  private validateUpdatePlant(
+    greenhouseId: string,
+    plantId: string,
+    _fields: { name: string; preview_url: string },
+  ): UpdatePlantResult | null {
+    const greenhouses = this.greenhousesData();
+    const ghIndex = greenhouses.findIndex((gh) => gh.id === greenhouseId);
+    if (ghIndex < 0) {
+      return { ok: false, reason: 'greenhouse_not_found' };
+    }
+    const plantExists = greenhouses[ghIndex].plants.some((p) => p.id === plantId);
+    if (!plantExists) {
+      return { ok: false, reason: 'plant_not_found' };
+    }
+    return null;
+  }
+
+  private applyPlantUpdateLocally(
+    greenhouseId: string,
+    plantId: string,
+    fields: { name: string; preview_url: string },
+  ): void {
+    this.greenhousesData.update((greenhouses) =>
+      greenhouses.map((gh): GreenhouseData => {
+        if (gh.id !== greenhouseId) {
+          return gh;
+        }
+        const plants = gh.plants.map((plant): PlantData => {
+          if (plant.id !== plantId) {
+            return plant;
+          }
+          return { ...plant, name: fields.name, preview_url: fields.preview_url };
+        });
+        return { ...gh, plants };
+      }),
+    );
   }
 
   private applyPlantLocally(
