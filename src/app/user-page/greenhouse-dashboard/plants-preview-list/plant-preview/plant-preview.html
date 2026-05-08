@@ -1,8 +1,17 @@
 @if (showHoverMenu()) {
   <aurelis-plant-preview-hover-menu
     [plant]="plant"
+    (wateringNoteRequested)="openWateringNotePopup()"
     (mouseleave)="toggleHoverMenu()"
   ></aurelis-plant-preview-hover-menu>
+}
+
+@if (wateringNotePopupOpen()) {
+  <aurelis-plant-watering-note-popup
+    [plant]="plant"
+    [greenhouseId]="dashboardGreenhouseId()"
+    (closed)="closeWateringNotePopup()"
+  ></aurelis-plant-watering-note-popup>
 }
 
 <div class="plant-preview-wrapper" (mouseover)="toggleHoverMenu()">

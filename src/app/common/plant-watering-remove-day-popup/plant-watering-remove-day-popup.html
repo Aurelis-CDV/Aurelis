@@ -1,0 +1,21 @@
+<div class="backdrop" role="presentation" (mousedown)="onBackdropMouseDown($event)">
+  <div
+    class="popup"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="remove-watering-title"
+    (mousedown)="$event.stopPropagation()"
+  >
+    <h2 class="title" id="remove-watering-title">Watering on calendar</h2>
+    <p class="plant-name">{{ plant().name }}</p>
+    <p class="date-line">{{ formattedDay() }}</p>
+    <p class="hint">Remove this day from watering history?</p>
+
+    <div class="actions">
+      <button type="button" class="btn secondary" (click)="cancel()">Cancel</button>
+      <button type="button" class="btn danger" (click)="removeEntriesForDay()">
+        Remove day
+      </button>
+    </div>
+  </div>
+</div>

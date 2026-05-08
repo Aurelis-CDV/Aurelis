@@ -1,12 +1,12 @@
-import { ChangeDetectorRef, Component, Input, signal } from '@angular/core';
-import { PlantGeneralCondition } from '../../../../common/icons/plant-general-condition/plant-general-condition';
-import { WaterDrop } from '../../../../common/icons/water-drop/water-drop';
+import { Component, inject, Input, signal } from '@angular/core';
 import { PlantPreviewHoverMenu } from '../plant-preview-hover-menu/plant-preview-hover-menu';
 import { PlantCurrentParams } from '../../../../common/plant-current-params/plant-current-params';
+import { PlantWateringNotePopup } from '../../../../common/plant-watering-note-popup/plant-watering-note-popup';
+import { DashboardSignalsService } from '../../../../services/dashboard-signals.service';
 
 @Component({
   selector: 'aurelis-plant-preview',
-  imports: [PlantPreviewHoverMenu, PlantCurrentParams],
+  imports: [PlantPreviewHoverMenu, PlantCurrentParams, PlantWateringNotePopup],
   templateUrl: './plant-preview.html',
   styleUrl: './plant-preview.scss',
 })
@@ -14,10 +14,21 @@ export class PlantPreview {
   @Input() plant!: any;
 
   public showHoverMenu = signal(false);
+  protected readonly wateringNotePopupOpen = signal(false);
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  private readonly dashboardSignalsService = inject(DashboardSignalsService);
+
+  protected readonly dashboardGreenhouseId = this.dashboardSignalsService.getDashboardGreenhouseId();
 
   public toggleHoverMenu() {
     this.showHoverMenu.set(!this.showHoverMenu());
+  }
+
+  protected openWateringNotePopup(): void {
+    this.wateringNotePopupOpen.set(true);
+  }
+
+  protected closeWateringNotePopup(): void {
+    this.wateringNotePopupOpen.set(false);
   }
 }

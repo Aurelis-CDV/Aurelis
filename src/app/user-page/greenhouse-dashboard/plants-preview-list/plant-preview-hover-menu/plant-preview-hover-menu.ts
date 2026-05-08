@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, output } from '@angular/core';
 import { Trash } from '../../../../common/icons/trash/trash';
 import { WaterDrop } from '../../../../common/icons/water-drop/water-drop';
 import { Maximize } from '../../../../common/icons/maximize/maximize';
@@ -14,9 +14,17 @@ import { DashboardSignalsService } from '../../../../services/dashboard-signals.
 export class PlantPreviewHoverMenu {
   @Input() public plant!: PlantData;
 
+  public readonly wateringNoteRequested = output<void>();
+
   private readonly dashboardSignalsService = inject(DashboardSignalsService);
 
   constructor() {}
+
+  public openWateringNote(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.wateringNoteRequested.emit();
+  }
 
   public showPlantDetailsWindow(): void {
     this.dashboardSignalsService.setIsPlantDetailsWindowOpened(true);

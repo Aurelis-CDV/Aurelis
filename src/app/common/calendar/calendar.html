@@ -28,6 +28,7 @@
         [class.outside-month]="!day.inCurrentMonth"
         [class.highlighted]="day.isHighlighted"
         [class.today]="day.isToday"
+        (click)="onDayCellClick(day)"
       >
         {{ day.dayNumber }}
       </button>

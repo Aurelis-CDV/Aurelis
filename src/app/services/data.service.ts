@@ -9,7 +9,6 @@ import {
   GreenhousesData,
 } from '../../interfaces/greenhouses-data.interface';
 import { PlantData } from '../../interfaces/plant-data.interface';
-import { environment } from '../../environments/environment';
 
 export type AddPlantResult =
   | { ok: true }
@@ -189,11 +188,39 @@ export class GreenhousesDataService {
     TimestampUnix: 1778245214;
   }): any {}
 
-  //TODO: to modify when API ready
+  //TODO: watering API sync — restore `environment` import, `HttpErrorResponse`, `catchError`,
+  // `tap` from `rxjs/operators`, optional `wateringApiError` + `wateringRequestErrorMessage()`, and
+  // subscribe blocks in `appendPlantWatering` / `removePlantWateringsOnLocalCalendarDay`.
   // private greenhouseUrl(path: string): string {
   //   const base = environment.greenhouseApiBaseUrl.replace(/\/+$/, '');
   //   const suffix = path.replace(/^\/+/, '');
   //   return `${base}/${suffix}`;
+  // }
+  //
+  // private postPlantWateringAppend(
+  //   greenhouseId: string,
+  //   plantId: string,
+  //   timestampUnix: number,
+  // ): Observable<unknown> {
+  //   const url = this.greenhouseUrl(
+  //     `greenhouses/${encodeURIComponent(greenhouseId)}/plants/${encodeURIComponent(
+  //       plantId,
+  //     )}/watering`,
+  //   );
+  //   return this.http.post(url, { timestamp_unix: timestampUnix });
+  // }
+  //
+  // private postPlantWateringRemoveDay(
+  //   greenhouseId: string,
+  //   plantId: string,
+  //   localCalendarDate: string,
+  // ): Observable<unknown> {
+  //   const url = this.greenhouseUrl(
+  //     `greenhouses/${encodeURIComponent(greenhouseId)}/plants/${encodeURIComponent(
+  //       plantId,
+  //     )}/watering/remove-day`,
+  //   );
+  //   return this.http.post(url, { local_calendar_date: localCalendarDate });
   // }
 
   private validateAddPlant(
@@ -265,6 +292,118 @@ export class GreenhousesDataService {
     }
 
     return null;
+  }
+
+  public appendPlantWatering(greenhouseId: string, plantId: string, unixSeconds: number): void {
+    if (!Number.isFinite(unixSeconds)) {
+      return;
+    }
+
+    this.applyAppendPlantWateringLocally(greenhouseId, plantId, unixSeconds);
+
+    // this.wateringApiError.set(null);
+    // this.postPlantWateringAppend(greenhouseId, plantId, unixSeconds)
+    //   .pipe(
+    //     tap(() => this.applyAppendPlantWateringLocally(greenhouseId, plantId, unixSeconds)),
+    //     catchError((err: unknown) => {
+    //       this.wateringApiError.set(this.wateringRequestErrorMessage(err));
+    //       return of(null);
+    //     }),
+    //   )
+    //   .subscribe();
+  }
+
+  public removePlantWateringsOnLocalCalendarDay(
+    greenhouseId: string,
+    plantId: string,
+    calendarDay: Date,
+  ): void {
+    const targetKey = this.toLocalCalendarDateKey(calendarDay);
+
+    this.applyRemovePlantWateringsForLocalDateKeyLocally(greenhouseId, plantId, targetKey);
+
+    // this.wateringApiError.set(null);
+    // this.postPlantWateringRemoveDay(greenhouseId, plantId, targetKey)
+    //   .pipe(
+    //     tap(() =>
+    //       this.applyRemovePlantWateringsForLocalDateKeyLocally(greenhouseId, plantId, targetKey),
+    //     ),
+    //     catchError((err: unknown) => {
+    //       this.wateringApiError.set(this.wateringRequestErrorMessage(err));
+    //       return of(null);
+    //     }),
+    //   )
+    //   .subscribe();
+  }
+
+  private applyAppendPlantWateringLocally(
+    greenhouseId: string,
+    plantId: string,
+    unixSeconds: number,
+  ): void {
+    this.greenhousesData.update((greenhouses) =>
+      greenhouses.map((greenhouse): GreenhouseData => {
+        if (greenhouse.id !== greenhouseId) {
+          return greenhouse;
+        }
+
+        const plants = greenhouse.plants.map((plant): PlantData => {
+          if (plant.id !== plantId) {
+            return plant;
+          }
+
+          const nextHistory = [...plant.watering_history, unixSeconds];
+
+          return { ...plant, watering_history: nextHistory };
+        });
+
+        return { ...greenhouse, plants };
+      }),
+    );
+  }
+
+  private applyRemovePlantWateringsForLocalDateKeyLocally(
+    greenhouseId: string,
+    plantId: string,
+    localCalendarDateKey: string,
+  ): void {
+    this.greenhousesData.update((greenhouses) =>
+      greenhouses.map((greenhouse): GreenhouseData => {
+        if (greenhouse.id !== greenhouseId) {
+          return greenhouse;
+        }
+
+        const plants = greenhouse.plants.map((plant): PlantData => {
+          if (plant.id !== plantId) {
+            return plant;
+          }
+
+          const nextHistory = plant.watering_history.filter(
+            (unixSeconds) =>
+              this.toLocalCalendarDateKeyFromUnix(unixSeconds) !== localCalendarDateKey,
+          );
+
+          return { ...plant, watering_history: nextHistory };
+        });
+
+        return { ...greenhouse, plants };
+      }),
+    );
+  }
+
+  private toLocalCalendarDateKey(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+
+  private toLocalCalendarDateKeyFromUnix(unixSeconds: number): string {
+    const timestampMs =
+      Math.abs(unixSeconds) < 1_000_000_000_000 ? unixSeconds * 1000 : unixSeconds;
+
+    return this.toLocalCalendarDateKey(new Date(timestampMs));
   }
 
   private applyGreenhouseLocally(input: {
