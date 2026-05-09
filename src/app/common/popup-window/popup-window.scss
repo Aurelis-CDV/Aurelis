@@ -1,46 +1,121 @@
 @use '../../../styles/margins' as margin;
 @use '../../../styles/colors' as color;
 @use '../../../styles/mixins' as mixin;
+@use '../../../styles/breakpoints' as bp;
 
 $icon-size: 24px;
 
+$popup-overlay-padding: #{margin.$big * 2};
+// fit-content parents make % min-width collapse to zero — carousel popups use vw below.
+
 :host {
+  box-sizing: border-box;
   width: 100vw;
   height: 100vh;
+  max-width: 100%;
+  overflow: hidden;
 
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
 
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
 
   backdrop-filter: blur(10px);
   z-index: 999999;
+
+  @media (max-width: bp.$tablet) {
+    align-items: center;
+    padding: margin.$big;
+    padding-block-start: calc(#{margin.$big} + env(safe-area-inset-top));
+    padding-block-end: calc(#{margin.$big} + env(safe-area-inset-bottom));
+  }
+
+  @media (max-width: bp.$phone) {
+    padding: margin.$small;
+  }
 }
 
 .window-border {
   @include mixin.outer-shadow;
 
-  width: 1000px;
-  max-width: calc(100vw - #{margin.$big * 2});
-  height: 800px;
-  max-height: calc(100vh - #{margin.$big * 2});
+  box-sizing: border-box;
+
+  width: fit-content;
+  max-width: min(1000px, calc(100vw - #{$popup-overlay-padding}));
+  height: auto;
+  max-height: calc(100vh - #{$popup-overlay-padding});
   padding: margin.$big;
 
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: stretch;
+  overflow: hidden;
 
   background: color.$logo-green;
   border-radius: 10px;
+
+  @supports (height: 100dvh) {
+    max-height: calc(100dvh - #{$popup-overlay-padding});
+  }
+
+  &:has(aurelis-carousel) {
+    box-sizing: border-box;
+    max-width: 100%;
+    width: min(960px, calc(100vw - #{$popup-overlay-padding}));
+
+    @supports (width: 1dvw) {
+      width: min(960px, calc(100dvw - #{$popup-overlay-padding}));
+    }
+  }
+
+  @media (max-width: bp.$tablet) {
+    &:not(:has(aurelis-carousel)) {
+      width: fit-content;
+      max-width: calc(100vw - #{margin.$big * 2});
+    }
+
+    &:has(aurelis-carousel) {
+      width: calc(100vw - #{margin.$big * 2});
+      max-width: 100%;
+
+      @supports (width: 1dvw) {
+        width: calc(100dvw - #{margin.$big * 2});
+      }
+    }
+
+    max-height: calc(100vh - #{$popup-overlay-padding});
+    border-radius: 12px;
+    padding: margin.$small;
+    box-shadow: none;
+    filter: drop-shadow(0 12px 40px rgba(45, 55, 50, 0.18));
+
+    @supports (height: 100dvh) {
+      max-height: calc(100dvh - #{$popup-overlay-padding});
+    }
+  }
 }
 
 .window-wrapper {
-  width: 100%;
-  height: 100%;
+  box-sizing: border-box;
+
+  width: fit-content;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
   padding: margin.$big;
+
+  &:has(aurelis-carousel) {
+    width: 100%;
+    min-width: 0;
+
+    @media (max-width: bp.$tablet) {
+      width: 100%;
+    }
+  }
 
   display: flex;
   flex-direction: column;
@@ -50,6 +125,12 @@ $icon-size: 24px;
   background: color.$dashboard-background;
   border-radius: 10px;
   min-height: 0;
+
+  @media (max-width: bp.$tablet) {
+    padding: margin.$big margin.$small;
+    border-radius: 8px;
+    min-width: 0;
+  }
 }
 
 .top-bar {
@@ -80,10 +161,52 @@ $icon-size: 24px;
 }
 
 .window-content {
-  flex: 1;
+  $content-cap: #{margin.$huge + margin.$big * 4 + margin.$small};
+
+  flex: 0 1 auto;
   min-height: 0;
+  align-self: stretch;
 
   display: flex;
   flex-direction: column;
   align-items: stretch;
+
+  max-height: calc(100vh - #{$content-cap});
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  @supports (height: 100dvh) {
+    max-height: calc(100dvh - #{$content-cap});
+  }
+
+  &:not(:has(aurelis-carousel)) {
+    height: auto;
+  }
+
+  &:has(aurelis-carousel) {
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+
+    $carousel-h: min(620px, calc(100vh - #{$content-cap}));
+
+    height: $carousel-h;
+    max-height: $carousel-h;
+    overflow: hidden;
+
+    @supports (height: 100dvh) {
+      $carousel-h-dvh: min(620px, calc(100dvh - #{$content-cap}));
+
+      height: $carousel-h-dvh;
+      max-height: $carousel-h-dvh;
+    }
+
+    // Carousel uses height %; outer box needs definite block size.
+    ::ng-deep aurelis-carousel {
+      flex: 1 1 auto;
+      min-height: 0;
+      min-width: 0;
+      width: 100%;
+    }
+  }
 }

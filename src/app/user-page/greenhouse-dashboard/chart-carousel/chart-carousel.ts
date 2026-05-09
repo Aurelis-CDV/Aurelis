@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, effect, ElementRef, inject } from '@angular/core';
+import { AfterViewChecked, Component, DestroyRef, ElementRef, inject } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { Carousel } from '../../../common/carousel/carousel';
 import { DashboardSignalsService } from '../../../services/dashboard-signals.service';
@@ -17,47 +17,80 @@ const textColor = '#2a2a2a';
 })
 export class ChartCarousel implements AfterViewChecked {
   private readonly dashboardSignalsService = inject(DashboardSignalsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
 
   public paramCharts: { [key: string]: Chart } = {};
 
-  private chartsPrinted = false;
+  private chartSyncFingerprint = '';
+
+  private resizeObserver?: ResizeObserver;
 
   constructor(private elementRef: ElementRef) {
-    effect(() => {
-      this.printPreviewLineCharts();
-    });
+    queueMicrotask(() => this.observeHostResize());
   }
 
   public ngAfterViewChecked(): void {
-    if (this.chartsPrinted) {
-      return;
-    }
-
-    this.printPreviewLineCharts();
+    this.syncParamChartsWithDomAndData();
   }
 
   public getParamName(paramName: string): string {
     return paramName.charAt(0).toUpperCase() + paramName.slice(1);
   }
 
-  private printPreviewLineCharts() {
-    if (this.chartsPrinted) {
-      this.destroyParamCharts();
+  private syncParamChartsWithDomAndData(): void {
+    const params = this.greenhouseData()?.params ?? [];
+
+    if (params.length === 0) {
+      if (Object.keys(this.paramCharts).length > 0) {
+        this.destroyParamCharts();
+      }
+      this.chartSyncFingerprint = '';
+      return;
     }
 
-    this.greenhouseData()?.params.forEach((param: any) => this.setParamLineChart(param));
+    const root = this.elementRef.nativeElement as HTMLElement;
+    if (!params.every((p) => root.querySelector(`#param-chart-${p.name}`))) {
+      return;
+    }
 
-    this.chartsPrinted = true;
+    const ghId = this.dashboardSignalsService.getDashboardGreenhouseId()();
+    const fingerprint = `${ghId}:${params.map((p) => `${p.name}:${(p.history ?? []).length}:${this.historyTail(p.history)}`).join('|')}`;
+
+    if (
+      fingerprint === this.chartSyncFingerprint &&
+      Object.keys(this.paramCharts).length === params.length &&
+      params.every((p) => this.paramCharts[p.name])
+    ) {
+      return;
+    }
+
+    this.destroyParamCharts();
+    params.forEach((param) => this.setParamLineChart(param));
+
+    if (Object.keys(this.paramCharts).length === params.length) {
+      this.chartSyncFingerprint = fingerprint;
+      queueMicrotask(() => Object.values(this.paramCharts).forEach((c) => c.resize?.()));
+    }
+  }
+
+  private historyTail(history: GreenhouseParam['history'] | undefined): string {
+    const h = history ?? [];
+    const last = h[h.length - 1] as { value?: number } | undefined;
+    return last ? String(last.value ?? '') : '';
   }
 
   private setParamLineChart(param: GreenhouseParam) {
-    const plantCanvasEl = this.elementRef.nativeElement.querySelector(`#param-chart-${param.name}`);
+    const plantCanvasEl = this.elementRef.nativeElement.querySelector(
+      `#param-chart-${param.name}`,
+    );
 
-    if (!param || !plantCanvasEl) {
+    if (!param || !(plantCanvasEl instanceof HTMLCanvasElement)) {
       return;
     }
+
+    const history = param.history ?? [];
 
     const paramColor =
       param.name === 'humidity'
@@ -71,7 +104,7 @@ export class ChartCarousel implements AfterViewChecked {
       data: {
         datasets: [
           {
-            data: [{ date: '', value: 0 }, ...param.history],
+            data: [{ date: '', value: 0 }, ...history],
             pointStyle: false,
             borderColor: `rgb(${paramColor})`,
             fill: true,
@@ -138,5 +171,22 @@ export class ChartCarousel implements AfterViewChecked {
     });
 
     this.paramCharts = {};
+  }
+
+  private observeHostResize(): void {
+    const el = this.elementRef.nativeElement as HTMLElement;
+
+    const notify = (): void =>
+      queueMicrotask(() => {
+        Object.values(this.paramCharts).forEach((c) => c.resize?.());
+      });
+
+    notify();
+    this.resizeObserver = new ResizeObserver(notify);
+    this.resizeObserver.observe(el);
+    this.destroyRef.onDestroy(() => {
+      this.resizeObserver?.disconnect();
+      this.resizeObserver = undefined;
+    });
   }
 }

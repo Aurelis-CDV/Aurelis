@@ -15,11 +15,11 @@
   ></aurelis-plant-watering-remove-day-popup>
 }
 
-<div class="top-bar">
-  <div class="left">
+<div class="plant-summary">
+  <div class="plant-summary-details">
     <div class="plant-edit-wrapper">
       <div class="plant-preview-image-wrapper">
-        <img src="{{ plant.preview_url }}" />
+        <img src="{{ plant.preview_url }}" alt="" />
       </div>
       <div class="plant-name-wrapper">
         <p>{{ plant.name }}</p>
@@ -31,21 +31,20 @@
     <div class="plant-params-wrapper">
       <aurelis-plant-current-params [plant]="plant"></aurelis-plant-current-params>
     </div>
-  </div>
-  <div class="right">
-    <div class="watering-calendar-wrapper">
-      <div class="button-wrapper">
-        <button type="button" class="note-watering-button" (click)="openWateringNotePopup()">
-          Note watering
-        </button>
-      </div>
-      <aurelis-calendar
-        [highlightedDays]="plant.watering_history"
-        (wateringHighlightedDaySelected)="openRemoveWateringDayPopup($event)"
-      ></aurelis-calendar>
+    <div class="plant-actions">
+      <button type="button" class="note-watering-button" (click)="openWateringNotePopup()">
+        Note watering
+      </button>
     </div>
   </div>
+  <div class="plant-summary-calendar">
+    <aurelis-calendar
+      [highlightedDays]="plant.watering_history"
+      (wateringHighlightedDaySelected)="openRemoveWateringDayPopup($event)"
+    ></aurelis-calendar>
+  </div>
 </div>
+
 <div class="filtered-details-wrapper">
   <div class="dropdown-wrapper">
     <aurelis-select
@@ -58,6 +57,6 @@
     ></aurelis-select>
   </div>
   <div class="chart-wrapper">
-    <canvas id="plant-soil-moisture-{{ plant.id }}">{{paramCharts[param.name]}</canvas>
+    <canvas id="plant-soil-moisture-{{ plant.id }}"></canvas>
   </div>
 </div>

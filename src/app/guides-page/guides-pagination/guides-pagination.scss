@@ -1,10 +1,24 @@
+@use '../../../styles/breakpoints' as bp;
+
 .guides-pagination {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: clamp(10px, 3vw, 16px);
   margin: 24px 0 8px;
   flex-wrap: wrap;
+  padding-inline: clamp(4px, 2vw, 12px);
+
+  @media (max-width: bp.$phone) {
+    flex-direction: column;
+
+    .page-nav-btn {
+      width: 100%;
+      max-width: 280px;
+      justify-content: center;
+      padding-block: 12px;
+    }
+  }
 }
 
 .page-nav-btn {
@@ -16,6 +30,9 @@
   color: #2f3f45;
   font-weight: 600;
   font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover:not(:disabled) {
     border-color: #4aa866;
@@ -31,6 +48,6 @@
 .page-indicator {
   font-size: 15px;
   color: #4d5b63;
-  min-width: 9em;
+  min-width: min(9em, 100%);
   text-align: center;
 }

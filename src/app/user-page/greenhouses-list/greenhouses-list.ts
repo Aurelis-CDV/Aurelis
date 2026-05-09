@@ -1,4 +1,14 @@
-import { Component, computed, EventEmitter, inject, Output, WritableSignal } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  computed,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Output,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import {
   GreenhousesDataService,
   MAX_GREENHOUSES_IN_DASHBOARD,
@@ -18,6 +28,8 @@ export class GreenhousesList {
 
   public showGreenhousesPreviewNames: boolean = false;
 
+  protected readonly compactGreenhouseRail = signal(false);
+
   private readonly greenhousesDataService = inject(GreenhousesDataService);
   private readonly dashboardSignalsService = inject(DashboardSignalsService);
 
@@ -29,7 +41,20 @@ export class GreenhousesList {
     () => this.greenhouses().length < MAX_GREENHOUSES_IN_DASHBOARD,
   );
 
-  constructor() {}
+  constructor() {
+    const destroyRef = inject(DestroyRef);
+
+    afterNextRender(() => {
+      const mq = window.matchMedia('(max-width: 768px)');
+      const sync = (): void => {
+        this.compactGreenhouseRail.set(mq.matches);
+      };
+
+      sync();
+      mq.addEventListener('change', sync);
+      destroyRef.onDestroy(() => mq.removeEventListener('change', sync));
+    });
+  }
 
   public greenhousePreviewClicked(greenhouseId: string): void {
     this.onGreenhousePreviewClicked.emit(greenhouseId);

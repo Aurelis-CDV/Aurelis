@@ -1,6 +1,7 @@
 @use '../../../../styles/margins' as margin;
 @use '../../../../styles/fonts' as font;
 @use '../../../../styles/colors' as color;
+@use '../../../../styles/breakpoints' as bp;
 
 $icon-size: 36px;
 
@@ -8,25 +9,49 @@ $icon-size: 36px;
   flex-shrink: 0;
   display: flex;
   justify-content: space-between;
-  align-items: start;
+  align-items: flex-start;
   flex-direction: row;
+  flex-wrap: wrap;
+  gap: margin.$small;
+  row-gap: margin.$big;
+
+  @media (max-width: bp.$tablet) {
+    align-items: center;
+  }
 
   .left-side {
+    flex: 1 1 200px;
+    min-width: 0;
+
     .greenhouse-name-wrapper {
       padding: margin.$huge;
+
+      @media (max-width: bp.$tablet) {
+        padding: margin.$big margin.$small margin.$big margin.$big;
+      }
 
       p {
         font-size: font.$size-big;
         font-weight: font.$weight-semibold;
+        word-break: break-word;
+        line-height: 1.2;
+
+        @media (max-width: bp.$tablet) {
+          font-size: clamp(1.1rem, 4.2vw, #{font.$size-mid});
+        }
       }
     }
   }
 
   .right-side {
+    flex-shrink: 0;
+
     .buttons-wrapper {
       display: flex;
       flex-direction: row;
       gap: margin.$small;
+      flex-wrap: wrap;
+      justify-content: flex-end;
 
       .button-wrapper {
         width: $icon-size;

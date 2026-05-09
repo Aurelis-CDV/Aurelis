@@ -1,4 +1,11 @@
-import { AfterViewChecked, Component, computed, ElementRef, inject } from '@angular/core';
+import {
+  AfterViewChecked,
+  Component,
+  computed,
+  DestroyRef,
+  ElementRef,
+  inject,
+} from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { PlantPreview } from './plant-preview/plant-preview';
 import { PlantPreviewAddSlot } from './plant-preview-add-slot/plant-preview-add-slot';
@@ -20,13 +27,32 @@ export class PlantsPreviewList implements AfterViewChecked {
   private previousPlantFingerprint = '';
 
   private readonly dashboardSignalsService = inject(DashboardSignalsService);
+  private readonly destroyRef = inject(DestroyRef);
   public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
 
   protected readonly showAddPlantSlot = computed(
     () => (this.greenhouseData()?.plants?.length ?? 0) < 6,
   );
 
-  constructor(private elementRef: ElementRef) {}
+  private resizeObserver?: ResizeObserver;
+
+  constructor(private elementRef: ElementRef) {
+    queueMicrotask(() => {
+      const el = this.elementRef.nativeElement as HTMLElement;
+      const notify = (): void =>
+        queueMicrotask(() => {
+          Object.values(this.plantPreviewChartsByPlantId).forEach((chart) => chart.resize?.());
+        });
+
+      notify();
+      this.resizeObserver = new ResizeObserver(notify);
+      this.resizeObserver.observe(el);
+      this.destroyRef.onDestroy(() => {
+        this.resizeObserver?.disconnect();
+        this.resizeObserver = undefined;
+      });
+    });
+  }
 
   public ngAfterViewChecked(): void {
     const plants = this.greenhouseData()?.plants ?? [];
@@ -61,6 +87,9 @@ export class PlantsPreviewList implements AfterViewChecked {
     plants.forEach((plant: any) => this.setPlantPreviewLineChart(plant, minMax));
 
     this.chartsPrinted = true;
+    queueMicrotask(() =>
+      Object.values(this.plantPreviewChartsByPlantId).forEach((chart) => chart.resize?.()),
+    );
   }
 
   private setPlantPreviewLineChart(plant: any, minMax: any) {
@@ -71,6 +100,10 @@ export class PlantsPreviewList implements AfterViewChecked {
     const plantCanvasEl = this.elementRef.nativeElement.querySelector(
       `#plant-preview-chart-${plant.id}`,
     );
+
+    if (!(plantCanvasEl instanceof HTMLCanvasElement)) {
+      return;
+    }
 
     const config = {
       type: 'line',
@@ -120,6 +153,7 @@ export class PlantsPreviewList implements AfterViewChecked {
     } as any;
 
     this.plantPreviewChartsByPlantId[plant.id] = new Chart(plantCanvasEl, config);
+    queueMicrotask(() => this.plantPreviewChartsByPlantId[plant.id]?.resize?.());
   }
 
   private getPlantsDataMinMax(plants: any[]) {

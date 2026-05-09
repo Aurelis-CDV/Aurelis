@@ -1,10 +1,15 @@
 @use '../../../styles/colors' as color;
 @use '../../../styles/margins' as margin;
 @use '../../../styles/fonts' as font;
+@use '../../../styles/breakpoints' as bp;
 
 :host {
+  flex-shrink: 0;
+
   .greenhouses-list-wrapper {
     width: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
     height: 100%;
     padding: margin.$huge;
 
@@ -15,6 +20,31 @@
     gap: margin.$huge;
 
     background: color.$logo-green;
+
+    @media (max-width: bp.$tablet) {
+      width: 100%;
+      height: auto;
+      min-height: 0;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: margin.$big;
+      padding: margin.$big margin.$small;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+
+      &::-webkit-scrollbar {
+        height: 6px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.35);
+        border-radius: 4px;
+      }
+    }
 
     .greenhouse-preview-wrapper {
       display: flex;
@@ -38,12 +68,35 @@
         height: 70px;
         object-fit: cover;
         border-radius: 100%;
+        flex-shrink: 0;
       }
 
       p {
         font-size: font.$size-mid;
         font-weight: font.$weight-semibold;
         color: color.$dashboard-background;
+        word-break: break-word;
+      }
+
+      @media (max-width: bp.$tablet) {
+        flex: 0 0 auto;
+        flex-direction: column;
+        gap: margin.$small;
+        align-items: center;
+        text-align: center;
+        max-width: 112px;
+
+        img {
+          width: 56px;
+          height: 56px;
+        }
+
+        p {
+          font-size: font.$size-small;
+          line-height: 1.25;
+          max-width: 11ch;
+          overflow-wrap: anywhere;
+        }
       }
     }
   }

@@ -1,5 +1,6 @@
 @use '../../../styles/margins' as margin;
 @use '../../../styles/colors' as color;
+@use '../../../styles/breakpoints' as bp;
 
 $button-size: margin.$huge;
 $item-transition: left 0.5s linear;
@@ -24,44 +25,52 @@ $item-transition: left 0.5s linear;
 :host {
   width: 100%;
   height: 100%;
+  min-width: 0;
+  min-height: 0;
 
   display: grid;
-  place-items: center;
-  grid-template-columns: $button-size auto $button-size;
+  place-items: stretch;
+  align-items: stretch;
+  grid-template-columns: $button-size minmax(0, 1fr) $button-size;
 
   overflow: hidden;
 
   .carousel-window {
     width: 100%;
+    min-width: 0;
     height: 100%;
+    min-height: 0;
 
     display: flex;
     flex-direction: column;
 
     .items-wrapper {
       width: 100%;
-      height: 100%;
+      min-width: 0;
+      flex: 1 1 auto;
+      min-height: 0;
 
       position: relative;
-      display: flex;
-      flex-direction: row;
       overflow: hidden;
 
-      flex-grow: 1;
+      ::ng-deep > * {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+      }
 
       ::ng-deep {
         .active {
-          position: absolute;
           transition: $item-transition;
           z-index: 2;
         }
         .prevActive {
-          position: absolute;
           transition: $item-transition;
           z-index: 1;
         }
         .inActive {
-          position: absolute;
           transition: $item-transition;
           z-index: 0;
         }
@@ -91,11 +100,37 @@ $item-transition: left 0.5s linear;
   }
 
   .prev-button {
+    align-self: center;
     @include button-style;
   }
 
   .next-button {
+    align-self: center;
     @include button-style;
     transform: rotate(180deg);
+  }
+
+  @media (max-width: bp.$tablet) {
+    grid-template-columns: 36px minmax(0, 1fr) 36px;
+
+    .prev-button,
+    .next-button {
+      min-width: 36px;
+      width: 36px;
+      min-height: 36px;
+      height: 36px;
+    }
+  }
+
+  @media (max-width: bp.$phone) {
+    grid-template-columns: 32px minmax(0, 1fr) 32px;
+
+    .prev-button,
+    .next-button {
+      min-width: 32px;
+      width: 32px;
+      min-height: 32px;
+      height: 32px;
+    }
   }
 }
