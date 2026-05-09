@@ -9,6 +9,16 @@
       type="button"
       role="tab"
       class="guide-tab"
+      [class.active]="activeTab() === 'favorites'"
+      [attr.aria-selected]="activeTab() === 'favorites'"
+      (click)="selectTab('favorites')"
+    >
+      Favourite plants
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="guide-tab"
       [class.active]="activeTab() === 'plants'"
       [attr.aria-selected]="activeTab() === 'plants'"
       (click)="selectTab('plants')"
@@ -34,7 +44,9 @@
       [placeholder]="
         activeTab() === 'plants'
           ? 'Search plants (e.g. Monstera, Rose, Aloe)'
-          : 'Search diseases (e.g. Aphids, Powdery Mildew, Rust)'
+          : activeTab() === 'diseases'
+            ? 'Search diseases (e.g. Aphids, Powdery Mildew, Rust)'
+            : 'Search your favourite plants by name'
       "
       [(ngModel)]="searchQuery"
     />
@@ -45,6 +57,52 @@
     <p class="status-message">Loading {{ activeTab() }}...</p>
   } @else if (errorMessage()) {
     <p class="status-message error">{{ errorMessage() }}</p>
+  } @else if (activeTab() === 'favorites') {
+    @if (!filteredFavoritePlants().length) {
+      <p class="status-message">
+        @if (!favoriteIds().length) {
+          You haven't saved any favourite plants yet. Browse the Plants tab and tap the heart on
+          any plant to add it here.
+        } @else {
+          No favourite plants match your search.
+        }
+      </p>
+    } @else {
+      <section class="plants-grid">
+        @for (plant of filteredFavoritePlants(); track plant.id) {
+          <button class="plant-card" type="button" (click)="openPlantDetailsWindow(plant.id)">
+            <div class="plant-card-image-wrapper">
+              <img
+                [src]="
+                  plant?.default_image?.thumbnail ||
+                  plant?.default_image?.regular_url ||
+                  'https://via.placeholder.com/250x160?text=No+Image'
+                "
+                [alt]="plant?.common_name || plant?.scientific_name?.[0] || 'Plant preview image'"
+              />
+              <button
+                type="button"
+                class="favorite-toggle"
+                [attr.aria-label]="
+                  isPlantFavorite(plant.id)
+                    ? 'Remove from favourites'
+                    : 'Add to favourites'
+                "
+                [attr.aria-pressed]="isPlantFavorite(plant.id)"
+                (click)="toggleFavorite(plant.id, $event)"
+              >
+                <aurelis-heart-icon [filled]="isPlantFavorite(plant.id)" />
+              </button>
+            </div>
+            <div class="plant-card-body">
+              <h2>{{ plant?.common_name || 'Unnamed plant' }}</h2>
+              <p>{{ plant?.scientific_name?.[0] || 'Unknown scientific name' }}</p>
+              <span>{{ plant?.watering || 'Watering info unavailable' }}</span>
+            </div>
+          </button>
+        }
+      </section>
+    }
   } @else if (activeTab() === 'plants') {
     @if (!plants().length) {
       <p class="status-message">No plants found. Try another search term.</p>
@@ -52,13 +110,28 @@
       <section class="plants-grid">
         @for (plant of plants(); track plant.id) {
           <button class="plant-card" type="button" (click)="openPlantDetailsWindow(plant.id)">
-            <img
-              [src]="
-                plant?.default_image?.thumbnail ||
-                'https://via.placeholder.com/250x160?text=No+Image'
-              "
-              [alt]="plant?.common_name || plant?.scientific_name?.[0] || 'Plant preview image'"
-            />
+            <div class="plant-card-image-wrapper">
+              <img
+                [src]="
+                  plant?.default_image?.thumbnail ||
+                  'https://via.placeholder.com/250x160?text=No+Image'
+                "
+                [alt]="plant?.common_name || plant?.scientific_name?.[0] || 'Plant preview image'"
+              />
+              <button
+                type="button"
+                class="favorite-toggle"
+                [attr.aria-label]="
+                  isPlantFavorite(plant.id)
+                    ? 'Remove from favourites'
+                    : 'Add to favourites'
+                "
+                [attr.aria-pressed]="isPlantFavorite(plant.id)"
+                (click)="toggleFavorite(plant.id, $event)"
+              >
+                <aurelis-heart-icon [filled]="isPlantFavorite(plant.id)" />
+              </button>
+            </div>
             <div class="plant-card-body">
               <h2>{{ plant?.common_name || 'Unnamed plant' }}</h2>
               <p>{{ plant?.scientific_name?.[0] || 'Unknown scientific name' }}</p>

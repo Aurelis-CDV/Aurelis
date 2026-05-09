@@ -96,12 +96,47 @@ h1 {
   background: #fff;
   text-align: left;
   cursor: pointer;
+  padding: 0;
 
   img {
     width: 100%;
     height: 160px;
     object-fit: cover;
     display: block;
+  }
+
+  .plant-card-image-wrapper {
+    position: relative;
+  }
+
+  .favorite-toggle {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+      background 0.15s ease,
+      transform 0.15s ease;
+
+    &:hover {
+      background: #fff;
+      transform: scale(1.05);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #cf3131;
+      outline-offset: 2px;
+    }
   }
 
   .plant-card-body {

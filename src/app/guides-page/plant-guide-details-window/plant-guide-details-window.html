@@ -5,15 +5,32 @@
     } @else if (errorMessage()) {
       <p class="status-message error">{{ errorMessage() }}</p>
     } @else if (plantDetails()) {
-      <img
-        [src]="
-          plantDetails()?.default_image?.regular_url ||
-          'https://via.placeholder.com/600x320?text=No+Image'
-        "
-        [alt]="plantDetails()?.common_name || plantDetails()?.scientific_name?.[0] || 'Plant image'"
-      />
+      <div class="image-wrapper">
+        <img
+          [src]="
+            plantDetails()?.default_image?.regular_url ||
+            'https://via.placeholder.com/600x320?text=No+Image'
+          "
+          [alt]="
+            plantDetails()?.common_name || plantDetails()?.scientific_name?.[0] || 'Plant image'
+          "
+        />
+        <button
+          type="button"
+          class="favorite-toggle"
+          [attr.aria-label]="
+            isFavorite() ? 'Remove from favourites' : 'Add to favourites'
+          "
+          [attr.aria-pressed]="isFavorite()"
+          (click)="toggleFavorite()"
+        >
+          <aurelis-heart-icon [filled]="isFavorite()" />
+        </button>
+      </div>
 
-      <h1>{{ plantDetails()?.common_name || 'Unnamed plant' }}</h1>
+      <div class="title-row">
+        <h1>{{ plantDetails()?.common_name || 'Unnamed plant' }}</h1>
+      </div>
       <p class="scientific-name">
         {{ plantDetails()?.scientific_name?.[0] || 'Unknown scientific name' }}
       </p>

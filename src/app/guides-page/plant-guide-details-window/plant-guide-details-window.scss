@@ -13,7 +13,53 @@
     max-height: 360px;
     object-fit: cover;
     border-radius: 12px;
-    margin-bottom: 14px;
+    display: block;
+  }
+}
+
+.image-wrapper {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.favorite-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover {
+    background: #fff;
+    transform: scale(1.05);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #cf3131;
+    outline-offset: 2px;
+  }
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+
+  h1 {
+    margin: 0;
   }
 }
 

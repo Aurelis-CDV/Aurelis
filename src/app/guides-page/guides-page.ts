@@ -1,18 +1,30 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  Signal,
+  signal,
+  untracked,
+  WritableSignal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { finalize } from 'rxjs';
+import { finalize, forkJoin, of } from 'rxjs';
 import {
   PerenualDiseasePreview,
+  PerenualPlantDetails,
   PerenualPlantPreview,
 } from '../../interfaces/perenual.interface';
+import { Heart } from '../common/icons/heart/heart';
 import { TopBar } from '../common/top-bar/top-bar';
 import { PerenualPlantsService } from '../services/perenual-plants.service';
+import { UserDataService } from '../services/user-data.service';
 import { DiseaseGuideDetailsWindow } from './disease-guide-details-window/disease-guide-details-window';
 import { GuidesPagination } from './guides-pagination/guides-pagination';
 import { PlantGuideDetailsWindow } from './plant-guide-details-window/plant-guide-details-window';
 
-export type GuidesTab = 'plants' | 'diseases';
+export type GuidesTab = 'favorites' | 'plants' | 'diseases';
 
 @Component({
   selector: 'aurelis-guides-page',
@@ -20,6 +32,7 @@ export type GuidesTab = 'plants' | 'diseases';
     CommonModule,
     FormsModule,
     TopBar,
+    Heart,
     GuidesPagination,
     PlantGuideDetailsWindow,
     DiseaseGuideDetailsWindow,
@@ -27,14 +40,19 @@ export type GuidesTab = 'plants' | 'diseases';
   templateUrl: './guides-page.html',
   styleUrl: './guides-page.scss',
 })
-export class GuidesPage implements OnInit {
+export class GuidesPage {
   private readonly perenualPlantsService = inject(PerenualPlantsService);
+  private readonly userDataService = inject(UserDataService);
 
-  public activeTab: WritableSignal<GuidesTab> = signal<GuidesTab>('plants');
+  public activeTab: WritableSignal<GuidesTab> = signal<GuidesTab>('favorites');
   public searchQuery = '';
 
   public plants: WritableSignal<PerenualPlantPreview[]> = signal<PerenualPlantPreview[]>([]);
   public diseases: WritableSignal<PerenualDiseasePreview[]> = signal<PerenualDiseasePreview[]>([]);
+  public favoritePlants: WritableSignal<PerenualPlantDetails[]> = signal<PerenualPlantDetails[]>(
+    [],
+  );
+
   public isLoading: WritableSignal<boolean> = signal<boolean>(false);
   public errorMessage: WritableSignal<string | null> = signal<string | null>(null);
   public currentPage: WritableSignal<number> = signal(1);
@@ -43,8 +61,40 @@ export class GuidesPage implements OnInit {
   public selectedPlantId: WritableSignal<number | null> = signal<number | null>(null);
   public selectedDiseaseId: WritableSignal<number | null> = signal<number | null>(null);
 
-  public ngOnInit(): void {
-    this.loadPage(1);
+  public readonly favoriteIds: Signal<number[]> = this.userDataService.favoriteIds;
+
+  public readonly filteredFavoritePlants = computed(() => {
+    const all = this.favoritePlants();
+    const query = this.searchQuery.trim().toLowerCase();
+    if (!query) {
+      return all;
+    }
+    return all.filter((plant) => {
+      const common = (plant.common_name ?? '').toLowerCase();
+      const scientific = (plant.scientific_name?.[0] ?? '').toLowerCase();
+      return common.includes(query) || scientific.includes(query);
+    });
+  });
+
+  public constructor() {
+    effect(() => {
+      const ids = this.favoriteIds();
+      const tab = this.activeTab();
+
+      if (tab === 'favorites') {
+        untracked(() => this.syncFavoritesList(ids));
+      }
+    });
+  }
+
+  public isPlantFavorite(plantId: number): boolean {
+    return this.userDataService.isFavorite(plantId);
+  }
+
+  public toggleFavorite(plantId: number, event?: MouseEvent): void {
+    event?.stopPropagation();
+    event?.preventDefault();
+    this.userDataService.toggleFavorite(plantId);
   }
 
   private loadPage(page: number): void {
@@ -68,7 +118,7 @@ export class GuidesPage implements OnInit {
           this.errorMessage.set('Could not load plant guides. Please check your Perenual API key.');
         },
       });
-    } else {
+    } else if (this.activeTab() === 'diseases') {
       const request$ = query
         ? this.perenualPlantsService.searchDiseases(query, page)
         : this.perenualPlantsService.getDiseasesList(page);
@@ -85,7 +135,36 @@ export class GuidesPage implements OnInit {
           );
         },
       });
+    } else {
+      this.syncFavoritesList(this.favoriteIds());
     }
+  }
+
+  private syncFavoritesList(ids: number[]): void {
+    if (!ids.length) {
+      this.favoritePlants.set([]);
+      return;
+    }
+
+    const cachedById = new Map(this.favoritePlants().map((plant) => [plant.id, plant]));
+    const requests = ids.map((id) => {
+      const cached = cachedById.get(id);
+      return cached ? of(cached) : this.perenualPlantsService.getPlantDetails(id);
+    });
+
+    this.isLoading.set(true);
+    forkJoin(requests)
+      .pipe(finalize(() => this.isLoading.set(false)))
+      .subscribe({
+        next: (details) => {
+          this.favoritePlants.set(details);
+        },
+        error: () => {
+          this.errorMessage.set(
+            'Could not load favourite plants. Please check your Perenual API key.',
+          );
+        },
+      });
   }
 
   public selectTab(tab: GuidesTab): void {
@@ -96,10 +175,19 @@ export class GuidesPage implements OnInit {
     this.searchQuery = '';
     this.plants.set([]);
     this.diseases.set([]);
-    this.loadPage(1);
+    this.currentPage.set(1);
+    this.lastPage.set(1);
+    this.errorMessage.set(null);
+
+    if (tab !== 'favorites') {
+      this.loadPage(1);
+    }
   }
 
   public search(): void {
+    if (this.activeTab() === 'favorites') {
+      return;
+    }
     this.loadPage(1);
   }
 
