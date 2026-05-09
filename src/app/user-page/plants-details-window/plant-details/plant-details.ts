@@ -128,7 +128,10 @@ export class PlantDetails implements AfterViewChecked, OnChanges {
               fill: true,
               tension: 0.5,
               backgroundColor: (context: any) => {
-                const gradientBg = context.chart.ctx.createLinearGradient(0, 0, 0, 200);
+                const chart = context.chart;
+                const h =
+                  typeof chart.height === 'number' && chart.height > 1 ? chart.height : 220;
+                const gradientBg = context.chart.ctx.createLinearGradient(0, 0, 0, h);
 
                 gradientBg.addColorStop(0, `rgba(${soilMoistureColor}, 0.3)`);
                 gradientBg.addColorStop(0.5, `rgba(${soilMoistureColor}, 0.15)`);
@@ -144,6 +147,10 @@ export class PlantDetails implements AfterViewChecked, OnChanges {
           responsive: true,
           resizeDelay: 100,
           maintainAspectRatio: false,
+          layout: {
+            autoPadding: true,
+            padding: { left: 2, right: 4, top: 6, bottom: 36 },
+          },
           plugins: {
             legend: false,
           },
@@ -156,10 +163,16 @@ export class PlantDetails implements AfterViewChecked, OnChanges {
               grid: {
                 display: false,
               },
+              border: {
+                display: false,
+              },
               ticks: {
                 color: textColor,
+                maxRotation: 0,
+                padding: 8,
+                autoSkip: true,
                 font: {
-                  size: 12,
+                  size: 11,
                   family: `'Manrope', sans-serif`,
                 },
               },
@@ -168,8 +181,12 @@ export class PlantDetails implements AfterViewChecked, OnChanges {
               grid: {
                 display: false,
               },
+              border: {
+                display: false,
+              },
               ticks: {
                 color: textColor,
+                padding: 2,
                 font: {
                   size: 12,
                   family: `'Manrope', sans-serif`,
@@ -186,7 +203,10 @@ export class PlantDetails implements AfterViewChecked, OnChanges {
 
       queueMicrotask(() => {
         this.chart?.resize();
-        requestAnimationFrame(() => this.chart?.resize());
+        requestAnimationFrame(() => {
+          this.chart?.resize();
+          window.setTimeout(() => this.chart?.resize(), 140);
+        });
       });
     } catch {
       this.destroyChart();

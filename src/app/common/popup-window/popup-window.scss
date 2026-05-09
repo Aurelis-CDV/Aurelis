@@ -188,14 +188,16 @@ $popup-overlay-padding: #{margin.$big * 2};
     min-width: 0;
     overflow-x: hidden;
 
-    $carousel-h: min(620px, calc(100vh - #{$content-cap}));
+    $carousel-max-h: 760px;
+
+    $carousel-h: min($carousel-max-h, calc(100vh - #{$content-cap}));
 
     height: $carousel-h;
     max-height: $carousel-h;
     overflow: hidden;
 
     @supports (height: 100dvh) {
-      $carousel-h-dvh: min(620px, calc(100dvh - #{$content-cap}));
+      $carousel-h-dvh: min($carousel-max-h, calc(100dvh - #{$content-cap}));
 
       height: $carousel-h-dvh;
       max-height: $carousel-h-dvh;
