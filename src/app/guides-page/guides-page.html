@@ -108,3 +108,17 @@
     }
   }
 </main>
+
+@if (selectedPlantId() !== null) {
+  <aurelis-plant-guide-details-window
+    [plantId]="selectedPlantId()!"
+    (closeWindow)="closePlantDetailsWindow()"
+  />
+}
+
+@if (selectedDiseaseId() !== null) {
+  <aurelis-disease-guide-details-window
+    [diseaseId]="selectedDiseaseId()!"
+    (closeWindow)="closeDiseaseDetailsWindow()"
+  />
+}

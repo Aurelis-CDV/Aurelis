@@ -1,13 +1,12 @@
 :host {
-  min-height: 100%;
-  background: #f5f7f8;
-  display: block;
+  display: contents;
 }
 
 .details-page {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 32px 32px;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 8px;
 
   img {
     width: 100%;

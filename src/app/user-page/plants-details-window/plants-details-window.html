@@ -1,20 +1,10 @@
-<div class="window-border">
-  <div class="window-wrapper">
-    <div class="top-bar">
-      <div class="icon-wrapper refresh">
-        <aurelis-refresh-icon></aurelis-refresh-icon>
-      </div>
-      <div class="icon-wrapper close" (click)="hidePlantDetailsWindow()">
-        <aurelis-close></aurelis-close>
-      </div>
-    </div>
-    <aurelis-carousel
-      [currentIndex]="plantDetailsCarouselInitialIndex()"
-      [layoutRevision]="plantDetailsCarouselLayoutRevision()"
-    >
-      @for (plant of greenhouseData()?.plants; track plant.id) {
-        <aurelis-plant-details [plant]="plant"></aurelis-plant-details>
-      }
-    </aurelis-carousel>
-  </div>
-</div>
+<aurelis-popup-window [showRefresh]="true" (closeWindow)="hidePlantDetailsWindow()">
+  <aurelis-carousel
+    [currentIndex]="plantDetailsCarouselInitialIndex()"
+    [layoutRevision]="plantDetailsCarouselLayoutRevision()"
+  >
+    @for (plant of greenhouseData()?.plants; track plant.id) {
+      <aurelis-plant-details [plant]="plant"></aurelis-plant-details>
+    }
+  </aurelis-carousel>
+</aurelis-popup-window>

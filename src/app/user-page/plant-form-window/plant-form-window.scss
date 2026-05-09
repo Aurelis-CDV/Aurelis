@@ -1,210 +1,148 @@
 @use '../../../styles/margins' as margin;
 @use '../../../styles/colors' as color;
 @use '../../../styles/fonts' as font;
-@use '../../../styles/mixins' as mixin;
-
-$icon-size: 24px;
 
 :host {
-  width: 100vw;
-  height: 100vh;
+  display: contents;
+}
 
-  position: absolute;
-  top: 0;
-  left: 0;
+.plant-form-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
 
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap: margin.$big;
 
-  backdrop-filter: blur(10px);
-  z-index: 999999;
+  .form-title {
+    margin: 0;
+    font-size: font.$size-mid;
+    font-weight: font.$weight-semibold;
+    color: color.$text;
+  }
 
-  .window-border {
-    @include mixin.outer-shadow;
+  .form-error-banner {
+    margin: 0;
+    padding: margin.$small margin.$big;
+    border-radius: 8px;
+    background: rgba(207, 49, 49, 0.12);
+    color: color.$action-negative;
+    font-size: font.$size-small;
+  }
 
-    width: 1000px;
-    height: 800px;
-    padding: margin.$big;
-
+  .plant-form {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    gap: margin.$big;
+    max-width: 480px;
+  }
 
-    background: color.$logo-green;
-    border-radius: 10px;
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: margin.$smallest;
+  }
 
-    .window-wrapper {
-      width: 100%;
-      height: 100%;
-      padding: margin.$big;
+  .field-label {
+    font-size: font.$size-small;
+    font-weight: font.$weight-semibold;
+    color: color.$text;
+  }
 
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: margin.$big;
+  .field-input {
+    padding: margin.$small margin.$big;
+    border: 1px solid color.$gray;
+    border-radius: 8px;
+    font: inherit;
+    font-size: font.$size-small;
+    background: color.$white;
+    color: color.$text;
+    width: 100%;
+    box-sizing: border-box;
 
-      background: color.$dashboard-background;
-      border-radius: 10px;
+    &:focus {
+      outline: 2px solid color.$logo-blue;
+      outline-offset: 2px;
+      border-color: color.$logo-blue;
+    }
 
-      .top-bar {
-        width: 100%;
-        flex-shrink: 0;
+    &:disabled {
+      cursor: not-allowed;
+      background: color.$light-gray;
+      color: color.$ashy;
+      border-color: color.$dark-gray;
+      opacity: 0.85;
 
-        display: flex;
-        justify-content: end;
-
-        .icon-wrapper.close {
-          width: $icon-size;
-          height: $icon-size;
-          cursor: pointer;
-
-          ::ng-deep path {
-            stroke: color.$action-negative;
-          }
-        }
+      &:focus {
+        outline: none;
+        border-color: color.$dark-gray;
       }
+    }
+  }
 
-      .plant-form-content {
-        flex: 1;
-        min-height: 0;
-        overflow: auto;
+  .field-error {
+    font-size: font.$size-smallest;
+    color: color.$action-negative;
+  }
 
-        display: flex;
-        flex-direction: column;
-        gap: margin.$big;
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: margin.$small;
+    margin-top: margin.$small;
+    flex-wrap: wrap;
 
-        .form-title {
-          margin: 0;
-          font-size: font.$size-mid;
-          font-weight: font.$weight-semibold;
-          color: color.$text;
-        }
+    &.form-actions-edit {
+      justify-content: space-between;
+    }
 
-        .form-error-banner {
-          margin: 0;
-          padding: margin.$small margin.$big;
-          border-radius: 8px;
-          background: rgba(207, 49, 49, 0.12);
-          color: color.$action-negative;
-          font-size: font.$size-small;
-        }
+    .form-actions-primary {
+      display: flex;
+      gap: margin.$small;
+      margin-left: auto;
+    }
+  }
 
-        .plant-form {
-          display: flex;
-          flex-direction: column;
-          gap: margin.$big;
-          max-width: 480px;
-        }
+  .btn {
+    padding: margin.$small margin.$big;
+    border-radius: 8px;
+    font: inherit;
+    font-size: font.$size-small;
+    font-weight: font.$weight-semibold;
+    cursor: pointer;
+    border: none;
 
-        .field {
-          display: flex;
-          flex-direction: column;
-          gap: margin.$smallest;
-        }
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
-        .field-label {
-          font-size: font.$size-small;
-          font-weight: font.$weight-semibold;
-          color: color.$text;
-        }
+    &.btn-primary {
+      background: color.$logo-green;
+      color: color.$dashboard-background;
 
-        .field-input {
-          padding: margin.$small margin.$big;
-          border: 1px solid color.$gray;
-          border-radius: 8px;
-          font: inherit;
-          font-size: font.$size-small;
-          background: color.$white;
-          color: color.$text;
-          width: 100%;
-          box-sizing: border-box;
+      &:hover:not(:disabled) {
+        filter: brightness(0.95);
+      }
+    }
 
-          &:focus {
-            outline: 2px solid color.$logo-blue;
-            outline-offset: 2px;
-            border-color: color.$logo-blue;
-          }
+    &.btn-secondary {
+      background: color.$light-gray;
+      color: color.$text;
 
-          &:disabled {
-            cursor: not-allowed;
-            background: color.$light-gray;
-            color: color.$ashy;
-            border-color: color.$dark-gray;
-            opacity: 0.85;
+      &:hover:not(:disabled) {
+        filter: brightness(0.97);
+      }
+    }
 
-            &:focus {
-              outline: none;
-              border-color: color.$dark-gray;
-            }
-          }
-        }
+    &.btn-danger {
+      background: color.$action-negative;
+      color: color.$white;
 
-        .field-error {
-          font-size: font.$size-smallest;
-          color: color.$action-negative;
-        }
-
-        .form-actions {
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
-          gap: margin.$small;
-          margin-top: margin.$small;
-          flex-wrap: wrap;
-
-          &.form-actions-edit {
-            justify-content: space-between;
-          }
-
-          .form-actions-primary {
-            display: flex;
-            gap: margin.$small;
-            margin-left: auto;
-          }
-        }
-
-        .btn {
-          padding: margin.$small margin.$big;
-          border-radius: 8px;
-          font: inherit;
-          font-size: font.$size-small;
-          font-weight: font.$weight-semibold;
-          cursor: pointer;
-          border: none;
-
-          &:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-          }
-
-          &.btn-primary {
-            background: color.$logo-green;
-            color: color.$dashboard-background;
-
-            &:hover:not(:disabled) {
-              filter: brightness(0.95);
-            }
-          }
-
-          &.btn-secondary {
-            background: color.$light-gray;
-            color: color.$text;
-
-            &:hover:not(:disabled) {
-              filter: brightness(0.97);
-            }
-          }
-
-          &.btn-danger {
-            background: color.$action-negative;
-            color: color.$white;
-
-            &:hover:not(:disabled) {
-              filter: brightness(0.92);
-            }
-          }
-        }
+      &:hover:not(:disabled) {
+        filter: brightness(0.92);
       }
     }
   }

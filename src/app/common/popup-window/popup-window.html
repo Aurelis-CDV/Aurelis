@@ -1,0 +1,17 @@
+<div class="window-border">
+  <div class="window-wrapper">
+    <div class="top-bar">
+      @if (showRefresh()) {
+        <div class="icon-wrapper refresh" (click)="onRefresh()">
+          <aurelis-refresh-icon></aurelis-refresh-icon>
+        </div>
+      }
+      <div class="icon-wrapper close" (click)="onClose()">
+        <aurelis-close></aurelis-close>
+      </div>
+    </div>
+    <div class="window-content">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

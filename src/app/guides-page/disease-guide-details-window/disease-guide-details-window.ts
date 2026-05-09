@@ -1,51 +1,54 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal, WritableSignal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, effect, inject, input, output, signal, WritableSignal } from '@angular/core';
 import { finalize } from 'rxjs';
 import { PerenualDiseaseDetails } from '../../../interfaces/perenual.interface';
-import { TopBar } from '../../common/top-bar/top-bar';
+import { PopupWindow } from '../../common/popup-window/popup-window';
 import { PerenualPlantsService } from '../../services/perenual-plants.service';
 
 @Component({
   selector: 'aurelis-disease-guide-details-window',
-  imports: [CommonModule, TopBar],
+  imports: [CommonModule, PopupWindow],
   templateUrl: './disease-guide-details-window.html',
   styleUrl: './disease-guide-details-window.scss',
 })
 export class DiseaseGuideDetailsWindow {
-  private readonly route = inject(ActivatedRoute);
   private readonly perenualPlantsService = inject(PerenualPlantsService);
+
+  public readonly diseaseId = input.required<number>();
+  public readonly closeWindow = output<void>();
 
   public diseaseDetails: WritableSignal<PerenualDiseaseDetails | null> =
     signal<PerenualDiseaseDetails | null>(null);
-  public isLoading = false;
-  public errorMessage: string | null = null;
+  public isLoading = signal<boolean>(false);
+  public errorMessage = signal<string | null>(null);
 
-  public ngOnInit(): void {
-    const diseaseIdParam = this.route.snapshot.paramMap.get('id');
-    const diseaseId = diseaseIdParam ? Number(diseaseIdParam) : NaN;
+  public constructor() {
+    effect(() => {
+      const id = this.diseaseId();
+      if (Number.isFinite(id)) {
+        this.loadDiseaseDetails(id);
+      }
+    });
+  }
 
-    if (Number.isNaN(diseaseId)) {
-      this.errorMessage = 'Invalid disease id.';
-      return;
-    }
-
-    this.loadDiseaseDetails(diseaseId);
+  protected onClose(): void {
+    this.closeWindow.emit();
   }
 
   private loadDiseaseDetails(diseaseId: number): void {
-    this.isLoading = true;
-    this.errorMessage = null;
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+    this.diseaseDetails.set(null);
 
     this.perenualPlantsService
       .getDiseaseDetails(diseaseId)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
         next: (details) => {
           this.diseaseDetails.set(details);
         },
         error: () => {
-          this.errorMessage = 'Could not load disease details from Perenual API.';
+          this.errorMessage.set('Could not load disease details from Perenual API.');
         },
       });
   }

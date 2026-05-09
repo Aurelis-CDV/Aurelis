@@ -1,41 +1,41 @@
-<aurelis-top-bar />
+<aurelis-popup-window (closeWindow)="onClose()">
+  <div class="details-page">
+    @if (isLoading()) {
+      <p class="status-message">Loading details...</p>
+    } @else if (errorMessage()) {
+      <p class="status-message error">{{ errorMessage() }}</p>
+    } @else if (plantDetails()) {
+      <img
+        [src]="
+          plantDetails()?.default_image?.regular_url ||
+          'https://via.placeholder.com/600x320?text=No+Image'
+        "
+        [alt]="plantDetails()?.common_name || plantDetails()?.scientific_name?.[0] || 'Plant image'"
+      />
 
-<main class="details-page">
-  @if (isLoading) {
-    <p class="status-message">Loading details...</p>
-  } @else if (errorMessage) {
-    <p class="status-message error">{{ errorMessage }}</p>
-  } @else if (plantDetails()) {
-    <img
-      [src]="
-        plantDetails()?.default_image?.regular_url ||
-        'https://via.placeholder.com/600x320?text=No+Image'
-      "
-      [alt]="plantDetails()?.common_name || plantDetails()?.scientific_name?.[0] || 'Plant image'"
-    />
-
-    <h1>{{ plantDetails()?.common_name || 'Unnamed plant' }}</h1>
-    <p class="scientific-name">
-      {{ plantDetails()?.scientific_name?.[0] || 'Unknown scientific name' }}
-    </p>
-
-    <div class="details-grid">
-      <p><strong>Family:</strong> {{ plantDetails()?.family || 'N/A' }}</p>
-      <p><strong>Cycle:</strong> {{ plantDetails()?.cycle || 'N/A' }}</p>
-      <p><strong>Watering:</strong> {{ plantDetails()?.watering || 'N/A' }}</p>
-      <p><strong>Care level:</strong> {{ plantDetails()?.care_level || 'N/A' }}</p>
-      <p><strong>Type:</strong> {{ plantDetails()?.type || 'N/A' }}</p>
-      <p>
-        <strong>Sunlight:</strong>
-        {{ plantDetails()?.sunlight?.length ? plantDetails()?.sunlight?.join(', ') : 'N/A' }}
+      <h1>{{ plantDetails()?.common_name || 'Unnamed plant' }}</h1>
+      <p class="scientific-name">
+        {{ plantDetails()?.scientific_name?.[0] || 'Unknown scientific name' }}
       </p>
-      <p><strong>Dimension:</strong> {{ plantDetails()?.dimension || 'N/A' }}</p>
-      <p>
-        <strong>Origin:</strong>
-        {{ plantDetails()?.origin?.length ? plantDetails()?.origin?.join(', ') : 'N/A' }}
-      </p>
-    </div>
 
-    <p class="description">{{ plantDetails()?.description || 'No description available.' }}</p>
-  }
-</main>
+      <div class="details-grid">
+        <p><strong>Family:</strong> {{ plantDetails()?.family || 'N/A' }}</p>
+        <p><strong>Cycle:</strong> {{ plantDetails()?.cycle || 'N/A' }}</p>
+        <p><strong>Watering:</strong> {{ plantDetails()?.watering || 'N/A' }}</p>
+        <p><strong>Care level:</strong> {{ plantDetails()?.care_level || 'N/A' }}</p>
+        <p><strong>Type:</strong> {{ plantDetails()?.type || 'N/A' }}</p>
+        <p>
+          <strong>Sunlight:</strong>
+          {{ plantDetails()?.sunlight?.length ? plantDetails()?.sunlight?.join(', ') : 'N/A' }}
+        </p>
+        <p><strong>Dimension:</strong> {{ plantDetails()?.dimension || 'N/A' }}</p>
+        <p>
+          <strong>Origin:</strong>
+          {{ plantDetails()?.origin?.length ? plantDetails()?.origin?.join(', ') : 'N/A' }}
+        </p>
+      </div>
+
+      <p class="description">{{ plantDetails()?.description || 'No description available.' }}</p>
+    }
+  </div>
+</aurelis-popup-window>

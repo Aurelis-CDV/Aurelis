@@ -8,13 +8,22 @@ import {
 } from '../../interfaces/perenual.interface';
 import { TopBar } from '../common/top-bar/top-bar';
 import { PerenualPlantsService } from '../services/perenual-plants.service';
+import { DiseaseGuideDetailsWindow } from './disease-guide-details-window/disease-guide-details-window';
 import { GuidesPagination } from './guides-pagination/guides-pagination';
+import { PlantGuideDetailsWindow } from './plant-guide-details-window/plant-guide-details-window';
 
 export type GuidesTab = 'plants' | 'diseases';
 
 @Component({
   selector: 'aurelis-guides-page',
-  imports: [CommonModule, FormsModule, TopBar, GuidesPagination],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TopBar,
+    GuidesPagination,
+    PlantGuideDetailsWindow,
+    DiseaseGuideDetailsWindow,
+  ],
   templateUrl: './guides-page.html',
   styleUrl: './guides-page.scss',
 })
@@ -30,6 +39,9 @@ export class GuidesPage implements OnInit {
   public errorMessage: WritableSignal<string | null> = signal<string | null>(null);
   public currentPage: WritableSignal<number> = signal(1);
   public lastPage: WritableSignal<number> = signal(1);
+
+  public selectedPlantId: WritableSignal<number | null> = signal<number | null>(null);
+  public selectedDiseaseId: WritableSignal<number | null> = signal<number | null>(null);
 
   public ngOnInit(): void {
     this.loadPage(1);
@@ -96,11 +108,19 @@ export class GuidesPage implements OnInit {
   }
 
   public openPlantDetailsWindow(plantId: number): void {
-    window.open(`/guides/${plantId}`, '_blank', 'noopener,noreferrer');
+    this.selectedPlantId.set(plantId);
+  }
+
+  public closePlantDetailsWindow(): void {
+    this.selectedPlantId.set(null);
   }
 
   public openDiseaseDetailsWindow(diseaseId: number): void {
-    window.open(`/guides/diseases/${diseaseId}`, '_blank', 'noopener,noreferrer');
+    this.selectedDiseaseId.set(diseaseId);
+  }
+
+  public closeDiseaseDetailsWindow(): void {
+    this.selectedDiseaseId.set(null);
   }
 
   public getDiseaseThumbnail(disease: PerenualDiseasePreview): string {
