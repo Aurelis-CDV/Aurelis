@@ -16,10 +16,17 @@
       <p>Error: {{ error.message }}</p>
     }
 
-    <button (click)="auth.loginWithRedirect({ authorizationParams: { screen_hint: 'signup' } })">
+    <button
+      (click)="
+        auth.loginWithRedirect({
+          authorizationParams: { screen_hint: 'signup' },
+          appState: { target: '/dashboard' },
+        })
+      "
+    >
       Sign Up
     </button>
-    <button (click)="auth.loginWithRedirect()">Log In</button>
+    <button (click)="auth.loginWithRedirect({ appState: { target: '/dashboard' } })">Log In</button>
 
   }
 }
