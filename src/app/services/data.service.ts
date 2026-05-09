@@ -1,4 +1,5 @@
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { UserDataService } from './user-data.service';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import ExampleJson from '../../example-json';
@@ -66,6 +67,15 @@ export interface UpdateGreenhouseRequestBody {
 
 export const MAX_GREENHOUSES_IN_DASHBOARD = 6;
 
+const PLANT_WATERING_HISTORY_STORAGE_PREFIX = 'aurelis.plant_watering_history';
+const PLANT_WATERING_KEY_SEP = '\x1e';
+
+function wateringHistoryCompoundKey(greenhouseId: string, plantId: string): string {
+  return `${greenhouseId}${PLANT_WATERING_KEY_SEP}${plantId}`;
+}
+
+type PersistedPlantWateringMap = Record<string, number[]>;
+
 function defaultGreenhouseParams(): GreenhouseParam[] {
   return [
     { name: 'humidity', current: 0, history: [] },
@@ -79,6 +89,7 @@ function defaultGreenhouseParams(): GreenhouseParam[] {
 })
 export class GreenhousesDataService {
   private readonly http = inject(HttpClient);
+  private readonly userDataService = inject(UserDataService);
 
   public readonly greenhousesData: WritableSignal<GreenhousesData> = signal<GreenhousesData>([]);
   public readonly isLoading: WritableSignal<boolean> = signal<boolean>(false);
@@ -101,21 +112,8 @@ export class GreenhousesDataService {
       return of(validation);
     }
 
-    //____________________________________________________________________
     this.applyPlantLocally(greenhouseId, { name, id, preview_url });
     return new BehaviorSubject<AddPlantResult>({ ok: true }).asObservable();
-    //____________________________________________________________________
-
-    //TODO: If API accepts adding new plant to greenhouse
-    // const body: CreatePlantRequestBody = { name, id, preview_url };
-    // const url = this.greenhouseUrl(`greenhouses/${encodeURIComponent(greenhouseId)}/plants`);
-    // return this.http.post(url, body).pipe(
-    //   map(() => {
-    //     this.applyPlantLocally(greenhouseId, { name, id, preview_url });
-    //     return { ok: true } as AddPlantResult;
-    //   }),
-    //   catchError(() => of({ ok: false, reason: 'request_failed' } as const)),
-    // );
   }
 
   public updatePlantInGreenhouse(
@@ -131,24 +129,8 @@ export class GreenhousesDataService {
       return of(validation);
     }
 
-    //____________________________________________________________________
     this.applyPlantUpdateLocally(greenhouseId, plantId, { name, preview_url });
     return new BehaviorSubject<UpdatePlantResult>({ ok: true }).asObservable();
-    //____________________________________________________________________
-
-    //TODO: When API accepts plant updates
-    // const body: UpdatePlantRequestBody = { name, preview_url };
-    // const url = this.greenhouseUrl(
-    //   `greenhouses/${encodeURIComponent(greenhouseId)}/plants/${encodeURIComponent(plantId)}`,
-    // );
-    //
-    // return this.http.put(url, body).pipe(
-    //   map(() => {
-    //     this.applyPlantUpdateLocally(greenhouseId, plantId, { name, preview_url });
-    //     return { ok: true } as UpdatePlantResult;
-    //   }),
-    //   catchError(() => of({ ok: false, reason: 'request_failed' } as const)),
-    // );
   }
 
   public deletePlantFromGreenhouse(
@@ -160,23 +142,8 @@ export class GreenhousesDataService {
       return of(validation);
     }
 
-    //____________________________________________________________________
     this.applyPlantDeleteLocally(greenhouseId, plantId);
     return new BehaviorSubject<DeletePlantResult>({ ok: true }).asObservable();
-    //____________________________________________________________________
-
-    //TODO: When API accepts plant deletion
-    // const url = this.greenhouseUrl(
-    //   `greenhouses/${encodeURIComponent(greenhouseId)}/plants/${encodeURIComponent(plantId)}`,
-    // );
-    //
-    // return this.http.delete(url).pipe(
-    //   map(() => {
-    //     this.applyPlantDeleteLocally(greenhouseId, plantId);
-    //     return { ok: true } as DeletePlantResult;
-    //   }),
-    //   catchError(() => of({ ok: false, reason: 'request_failed' } as const)),
-    // );
   }
 
   public addGreenhouse(input: {
@@ -200,7 +167,6 @@ export class GreenhousesDataService {
       return of(validation);
     }
 
-    //____________________________________________________________________
     this.applyGreenhouseLocally({
       name,
       id,
@@ -208,30 +174,6 @@ export class GreenhousesDataService {
       location,
     });
     return new BehaviorSubject<AddGreenhouseResult>({ ok: true }).asObservable();
-    //____________________________________________________________________
-
-    //TODO: If API accepts adding new plant to greenhouse
-    // const body: CreateGreenhouseRequestBody = {
-    //   name,
-    //   id,
-    //   preview_url,
-    //   location,
-    // };
-    //
-    // const url = this.greenhouseUrl('greenhouses');
-    //
-    // return this.http.post(url, body).pipe(
-    //   map(() => {
-    //     this.applyGreenhouseLocally({
-    //       name,
-    //       id,
-    //       preview_url,
-    //       location,
-    //     });
-    //     return { ok: true } as AddGreenhouseResult;
-    //   }),
-    //   catchError(() => of({ ok: false, reason: 'request_failed' } as const)),
-    // );
   }
 
   public updateGreenhouse(
@@ -255,22 +197,8 @@ export class GreenhousesDataService {
       return of(validation);
     }
 
-    //____________________________________________________________________
     this.applyGreenhouseUpdateLocally(greenhouseId, { name, preview_url, location });
     return new BehaviorSubject<UpdateGreenhouseResult>({ ok: true }).asObservable();
-    //____________________________________________________________________
-
-    //TODO: When API accepts greenhouse updates
-    // const body: UpdateGreenhouseRequestBody = { name, preview_url, location };
-    // const url = this.greenhouseUrl(`greenhouses/${encodeURIComponent(greenhouseId)}`);
-    //
-    // return this.http.put(url, body).pipe(
-    //   map(() => {
-    //     this.applyGreenhouseUpdateLocally(greenhouseId, { name, preview_url, location });
-    //     return { ok: true } as UpdateGreenhouseResult;
-    //   }),
-    //   catchError(() => of({ ok: false, reason: 'request_failed' } as const)),
-    // );
   }
 
   public deleteGreenhouse(greenhouseId: string): Observable<DeleteGreenhouseResult> {
@@ -279,50 +207,16 @@ export class GreenhousesDataService {
       return of(validation);
     }
 
-    //____________________________________________________________________
     this.applyGreenhouseDeleteLocally(greenhouseId);
     return new BehaviorSubject<DeleteGreenhouseResult>({ ok: true }).asObservable();
-    //____________________________________________________________________
-
-    //TODO: When API accepts greenhouse deletion
-    // const url = this.greenhouseUrl(`greenhouses/${encodeURIComponent(greenhouseId)}`);
-    //
-    // return this.http.delete(url).pipe(
-    //   map(() => {
-    //     this.applyGreenhouseDeleteLocally(greenhouseId);
-    //     return { ok: true } as DeleteGreenhouseResult;
-    //   }),
-    //   catchError(() => of({ ok: false, reason: 'request_failed' } as const)),
-    // );
   }
 
   public fetchGreenhousesData(): void {
     this.isLoading.set(true);
     this.loadError.set(null);
-    const api =
-      'https://greenhouse-api-python-zuzanna-bycnfkakf2emg8dt.canadacentral-01.azurewebsites.net/api/greenhouses/2/measurements/latest';
-    this.greenhousesData.set(
-      (ExampleJson as unknown as { greenhouses: GreenhousesData }).greenhouses,
-    );
-
-    //TODO: If API ready to fetch data
-    // this.http
-    //   .get<GreenhousesData>(api)
-    //   .pipe(
-    //     tap((data) => {
-    //       console.log(data);
-    //       this.greenhousesData.set(data);
-    //     }),
-    //     catchError((error: unknown) => {
-    //       this.loadError.set(
-    //         error instanceof Error ? error.message : 'Failed to fetch greenhouse data',
-    //       );
-    //
-    //       return of(this.greenhousesData());
-    //     }),
-    //     finalize(() => this.isLoading.set(false)),
-    //   )
-    //   .subscribe();
+    const seed = (ExampleJson as unknown as { greenhouses: GreenhousesData }).greenhouses;
+    this.greenhousesData.set(this.mergeWateringHistoryFromStorage(seed));
+    this.isLoading.set(false);
   }
 
   public mapData(data: {
@@ -339,41 +233,6 @@ export class GreenhousesDataService {
     Unit: 'C';
     TimestampUnix: 1778245214;
   }): any {}
-
-  //TODO: watering API sync — restore `environment` import, `HttpErrorResponse`, `catchError`,
-  // `tap` from `rxjs/operators`, optional `wateringApiError` + `wateringRequestErrorMessage()`, and
-  // subscribe blocks in `appendPlantWatering` / `removePlantWateringsOnLocalCalendarDay`.
-  // private greenhouseUrl(path: string): string {
-  //   const base = environment.greenhouseApiBaseUrl.replace(/\/+$/, '');
-  //   const suffix = path.replace(/^\/+/, '');
-  //   return `${base}/${suffix}`;
-  // }
-  //
-  // private postPlantWateringAppend(
-  //   greenhouseId: string,
-  //   plantId: string,
-  //   timestampUnix: number,
-  // ): Observable<unknown> {
-  //   const url = this.greenhouseUrl(
-  //     `greenhouses/${encodeURIComponent(greenhouseId)}/plants/${encodeURIComponent(
-  //       plantId,
-  //     )}/watering`,
-  //   );
-  //   return this.http.post(url, { timestamp_unix: timestampUnix });
-  // }
-  //
-  // private postPlantWateringRemoveDay(
-  //   greenhouseId: string,
-  //   plantId: string,
-  //   localCalendarDate: string,
-  // ): Observable<unknown> {
-  //   const url = this.greenhouseUrl(
-  //     `greenhouses/${encodeURIComponent(greenhouseId)}/plants/${encodeURIComponent(
-  //       plantId,
-  //     )}/watering/remove-day`,
-  //   );
-  //   return this.http.post(url, { local_calendar_date: localCalendarDate });
-  // }
 
   private validateAddPlant(
     greenhouseId: string,
@@ -450,6 +309,8 @@ export class GreenhousesDataService {
   }
 
   private applyPlantDeleteLocally(greenhouseId: string, plantId: string): void {
+    this.removePersistedWateringForPlantKeys(greenhouseId, plantId);
+
     this.greenhousesData.update((greenhouses) =>
       greenhouses.map((gh): GreenhouseData => {
         if (gh.id !== greenhouseId) {
@@ -497,6 +358,7 @@ export class GreenhousesDataService {
   }): AddGreenhouseResult | null {
     const { id } = fields;
     const greenhouses = this.greenhousesData();
+
     if (greenhouses.length >= MAX_GREENHOUSES_IN_DASHBOARD) {
       return { ok: false, reason: 'dashboard_full' };
     }
@@ -514,17 +376,6 @@ export class GreenhousesDataService {
     }
 
     this.applyAppendPlantWateringLocally(greenhouseId, plantId, unixSeconds);
-
-    // this.wateringApiError.set(null);
-    // this.postPlantWateringAppend(greenhouseId, plantId, unixSeconds)
-    //   .pipe(
-    //     tap(() => this.applyAppendPlantWateringLocally(greenhouseId, plantId, unixSeconds)),
-    //     catchError((err: unknown) => {
-    //       this.wateringApiError.set(this.wateringRequestErrorMessage(err));
-    //       return of(null);
-    //     }),
-    //   )
-    //   .subscribe();
   }
 
   public removePlantWateringsOnLocalCalendarDay(
@@ -535,19 +386,6 @@ export class GreenhousesDataService {
     const targetKey = this.toLocalCalendarDateKey(calendarDay);
 
     this.applyRemovePlantWateringsForLocalDateKeyLocally(greenhouseId, plantId, targetKey);
-
-    // this.wateringApiError.set(null);
-    // this.postPlantWateringRemoveDay(greenhouseId, plantId, targetKey)
-    //   .pipe(
-    //     tap(() =>
-    //       this.applyRemovePlantWateringsForLocalDateKeyLocally(greenhouseId, plantId, targetKey),
-    //     ),
-    //     catchError((err: unknown) => {
-    //       this.wateringApiError.set(this.wateringRequestErrorMessage(err));
-    //       return of(null);
-    //     }),
-    //   )
-    //   .subscribe();
   }
 
   private applyAppendPlantWateringLocally(
@@ -574,6 +412,7 @@ export class GreenhousesDataService {
         return { ...greenhouse, plants };
       }),
     );
+    this.persistCurrentWateringForPlant(greenhouseId, plantId);
   }
 
   private applyRemovePlantWateringsForLocalDateKeyLocally(
@@ -603,6 +442,7 @@ export class GreenhousesDataService {
         return { ...greenhouse, plants };
       }),
     );
+    this.persistCurrentWateringForPlant(greenhouseId, plantId);
   }
 
   private toLocalCalendarDateKey(date: Date): string {
@@ -671,6 +511,116 @@ export class GreenhousesDataService {
   }
 
   private applyGreenhouseDeleteLocally(greenhouseId: string): void {
-    this.greenhousesData.update((greenhouses) => greenhouses.filter((gh) => gh.id !== greenhouseId));
+    this.removePersistedWateringForGreenhousePrefix(greenhouseId);
+    this.greenhousesData.update((greenhouses) =>
+      greenhouses.filter((gh) => gh.id !== greenhouseId),
+    );
+  }
+
+  private get plantWateringStorageKey(): string {
+    return `${PLANT_WATERING_HISTORY_STORAGE_PREFIX}.${this.userDataService.browserStorageNamespace}`;
+  }
+
+  private readWateringHistoryMapFromStorage(): PersistedPlantWateringMap | null {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return null;
+    }
+    try {
+      const raw = window.localStorage.getItem(this.plantWateringStorageKey);
+      if (!raw) {
+        return null;
+      }
+      const parsed: unknown = JSON.parse(raw);
+      if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        return null;
+      }
+      return parsed as PersistedPlantWateringMap;
+    } catch {
+      return null;
+    }
+  }
+
+  private writeWateringHistoryMapToStorage(map: PersistedPlantWateringMap): void {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return;
+    }
+    try {
+      window.localStorage.setItem(this.plantWateringStorageKey, JSON.stringify(map));
+    } catch {}
+  }
+
+  private normalizeWateringHistory(value: unknown): number[] | null {
+    if (!Array.isArray(value)) {
+      return null;
+    }
+    return value.filter((v): v is number => typeof v === 'number' && Number.isFinite(v));
+  }
+
+  private mergeWateringHistoryFromStorage(seed: GreenhousesData): GreenhousesData {
+    const persisted = this.readWateringHistoryMapFromStorage();
+    if (!persisted) {
+      return seed;
+    }
+
+    return seed.map(
+      (gh): GreenhouseData => ({
+        ...gh,
+        plants: gh.plants.map((plant): PlantData => {
+          const compoundKey = wateringHistoryCompoundKey(gh.id, plant.id);
+          if (!Object.prototype.hasOwnProperty.call(persisted, compoundKey)) {
+            return plant;
+          }
+          const normalized = this.normalizeWateringHistory(persisted[compoundKey]);
+          if (normalized === null) {
+            return plant;
+          }
+          return { ...plant, watering_history: [...normalized].sort((a, b) => a - b) };
+        }),
+      }),
+    );
+  }
+
+  private persistCurrentWateringForPlant(greenhouseId: string, plantId: string): void {
+    const greenhouses = this.greenhousesData();
+    const greenhouse = greenhouses.find((gh) => gh.id === greenhouseId);
+    const plant = greenhouse?.plants.find((p) => p.id === plantId);
+
+    if (!plant) {
+      return;
+    }
+
+    const key = wateringHistoryCompoundKey(greenhouseId, plantId);
+    const stored = this.readWateringHistoryMapFromStorage() ?? {};
+    stored[key] = [...plant.watering_history];
+    this.writeWateringHistoryMapToStorage(stored);
+  }
+
+  private removePersistedWateringForPlantKeys(greenhouseId: string, plantId: string): void {
+    const map = this.readWateringHistoryMapFromStorage();
+
+    if (!map) {
+      return;
+    }
+
+    delete map[wateringHistoryCompoundKey(greenhouseId, plantId)];
+    this.writeWateringHistoryMapToStorage(map);
+  }
+
+  private removePersistedWateringForGreenhousePrefix(greenhouseId: string): void {
+    const map = this.readWateringHistoryMapFromStorage();
+
+    if (!map) {
+      return;
+    }
+
+    const prefix = `${greenhouseId}${PLANT_WATERING_KEY_SEP}`;
+
+    for (const k of Object.keys(map)) {
+      if (k.startsWith(prefix)) {
+        delete map[k];
+      }
+    }
+
+    this.writeWateringHistoryMapToStorage(map);
   }
 }
