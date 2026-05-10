@@ -1,0 +1,52 @@
+@use '../../../styles/margins' as margin;
+@use '../../../styles/colors' as color;
+
+$image-size: 60px;
+
+:host {
+  width: 100%;
+  height: 150px;
+  padding: margin.$big margin.$huge;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  overflow: hidden;
+
+  .left-side {
+    .aurelis-logo-wrapper {
+      #logo {
+        height: calc($image-size + (2 * #{margin.$big}));
+        width: auto;
+      }
+    }
+  }
+
+  .right-side {
+    display: flex;
+    gap: margin.$big;
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+
+    .guides-btn-wrapper {
+      padding: margin.$small;
+    }
+
+    [class$='-wrapper'] {
+      width: $image-size;
+      height: auto;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      background: color.$dashboard-background;
+      border-radius: 100%;
+      overflow: hidden;
+    }
+  }
+}

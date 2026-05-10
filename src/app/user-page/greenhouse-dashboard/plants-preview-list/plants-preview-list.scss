@@ -1,0 +1,12 @@
+@use '../../../../styles/margins' as margin;
+
+:host {
+  width: 100%;
+  height: fit-content;
+
+  flex-basis: auto;
+
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: margin.$big;
+}

@@ -1,0 +1,20 @@
+@use '../mixins' as *;
+
+:host {
+  @include icon-style;
+
+  svg {
+    path:first-of-type {
+      fill: #33363f;
+    }
+
+    path:not(:first-of-type) {
+      stroke: #33363f;
+      stroke-width: 2;
+    }
+
+    circle {
+      fill: #33363f;
+    }
+  }
+}

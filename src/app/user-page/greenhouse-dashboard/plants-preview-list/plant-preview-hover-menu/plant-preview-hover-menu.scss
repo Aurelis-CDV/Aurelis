@@ -1,0 +1,53 @@
+@use '../../../../../styles/margins' as margin;
+@use '../../../../../styles/colors' as color;
+@use '../../../../../styles/mixins' as mixin;
+
+$button-size: 40px;
+
+:host {
+  @include mixin.inner-shadow;
+
+  height: 100%;
+  width: 100%;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: margin.$big;
+
+  border-radius: 10px;
+  background: transparent;
+  backdrop-filter: blur(4px);
+
+  z-index: 999999;
+
+  div {
+    @include mixin.button-shadow();
+
+    width: $button-size;
+    height: $button-size;
+    padding: margin.$small;
+    border-radius: 100%;
+    cursor: pointer;
+
+    &.delete-button-wrapper {
+      position: absolute;
+      top: margin.$big;
+      right: margin.$big;
+
+      background: color.$action-negative;
+    }
+
+    &.watering-button-wrapper {
+      background: color.$logo-blue;
+    }
+
+    &.maximize-button-wrapper {
+      background: color.$light-gray;
+    }
+  }
+}

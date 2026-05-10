@@ -1,0 +1,40 @@
+@use '../../../../styles/fonts' as font;
+@use '../../../../styles/colors' as color;
+@use '../../../../styles/margins' as margin;
+@use '../../../../styles/mixins' as mixin;
+
+:host {
+  display: flex;
+  flex-grow: 1;
+
+  width: 100%;
+
+  .param-wrapper {
+    @include mixin.inner-shadow;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    background: color.$white;
+    border-radius: 10px;
+    padding: margin.$big;
+
+    .chart-title-wrapper {
+      flex-shrink: 0;
+
+      .chart-title {
+        font-size: font.$size-mid;
+        font-weight: font.$weight-semibold;
+      }
+    }
+
+    .chart-wrapper {
+      height: calc(100% - 27px);
+      position: relative;
+      flex-grow: 1;
+    }
+  }
+}

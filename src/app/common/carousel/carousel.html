@@ -1,0 +1,19 @@
+<div class="prev-button" (click)="prevItem()">
+  <aurelis-arrow></aurelis-arrow>
+</div>
+<div class="carousel-window">
+  <div class="items-wrapper" #items>
+    <ng-content></ng-content>
+  </div>
+  <div class="index-dots-wrapper">
+    @for (dot of getDots(); track dot) {
+      <div class="dot">
+        <p [class.full-opacity]="isDotActive(dot)">●</p>
+      </div>
+    }
+  </div>
+</div>
+
+<div class="next-button" (click)="nextItem()">
+  <aurelis-arrow></aurelis-arrow>
+</div>

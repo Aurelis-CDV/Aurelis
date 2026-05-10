@@ -1,0 +1,50 @@
+<div class="localization-params">
+  <h1>Localization parameters</h1>
+  <h3>{{ exampleJson.greenhouses[0].localisation }}</h3>
+  <div class="params-wrapper">
+    <div class="icons-wrapper">
+      <div class="icon-wrapper">
+        <aurelis-temperature></aurelis-temperature>
+      </div>
+      <div class="icon-wrapper">
+        <aurelis-water-drop> </aurelis-water-drop>
+      </div>
+    </div>
+    <div class="values-wrapper">
+      <div class="value-wrapper">
+        <p>24°C</p>
+      </div>
+      <div class="value-wrapper">
+        <p>45%</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="current-params">
+  <h1>Today's greenhouse parameters</h1>
+  <div class="params-wrapper">
+    <div class="icons-wrapper">
+      <div class="icon-wrapper">
+        <aurelis-temperature></aurelis-temperature>
+      </div>
+      <div class="icon-wrapper">
+        <aurelis-water-drop> </aurelis-water-drop>
+      </div>
+      <div class="icon-wrapper">
+        <aurelis-sun></aurelis-sun>
+      </div>
+    </div>
+    <div class="values-wrapper">
+      <div class="value-wrapper">
+        <p>{{ getValue('temperature') }}°C</p>
+      </div>
+      <div class="value-wrapper">
+        <p>{{ getValue('humidity') }}%</p>
+      </div>
+      <div class="value-wrapper">
+        <p>{{ getValue('light') }}%</p>
+      </div>
+    </div>
+  </div>
+</div>

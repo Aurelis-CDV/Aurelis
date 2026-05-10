@@ -1,0 +1,12 @@
+<aurelis-carousel>
+  @for (param of greenhouseParams; track param.name) {
+    <div class="param-wrapper">
+      <div class="chart-title-wrapper">
+        <p class="chart-title">{{ getParamName(param.name) }}</p>
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="param-chart-{{ param.name }}">{{paramCharts[param.name]}</canvas>
+      </div>
+    </div>
+  }
+</aurelis-carousel>

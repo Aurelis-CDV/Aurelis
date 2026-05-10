@@ -1,0 +1,40 @@
+@use '../../../styles/colors' as color;
+@use '../../../styles/margins' as margin;
+@use '../../../styles/fonts' as font;
+
+:host {
+  .greenhouses-list-wrapper {
+    width: fit-content;
+    height: 100%;
+    padding: margin.$huge;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: margin.$huge;
+
+    background: color.$logo-green;
+
+    .greenhouse-preview-wrapper {
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      flex-direction: row;
+      gap: margin.$huge;
+
+      img {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 100%;
+      }
+
+      p {
+        font-size: font.$size-mid;
+        font-weight: font.$weight-semibold;
+        color: color.$dashboard-background;
+      }
+    }
+  }
+}
