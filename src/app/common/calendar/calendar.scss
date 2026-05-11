@@ -1,0 +1,84 @@
+@use '../../../styles/colors' as color;
+@use '../../../styles/margins' as margin;
+@use '../../../styles/fonts' as font;
+
+@use '../../../styles/mixins' as mixin;
+
+:host {
+  display: block;
+  width: 100%;
+
+  .calendar {
+    @include mixin.inner-shadow;
+
+    background: color.$white;
+    border-radius: 10px;
+    padding: margin.$big;
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: margin.$small;
+
+      h3 {
+        margin: 0;
+        font-size: font.$size-small;
+        font-weight: font.$weight-semibold;
+      }
+
+      .month-control {
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 50%;
+        background: color.$logo-blue;
+        color: color.$white;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+    }
+
+    .weekdays,
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: margin.$smallest;
+    }
+
+    .weekdays {
+      margin-bottom: 8px;
+
+      span {
+        text-align: center;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: color.$logo-green;
+      }
+    }
+
+    .days-grid {
+      .day-cell {
+        border: 2px solid transparent;
+        background: color.$white;
+        border-radius: 10px;
+        min-height: 34px;
+        color: color.$text;
+
+        &.outside-month {
+          opacity: 0.45;
+        }
+
+        &.highlighted {
+          background: color.$logo-blue;
+          color: color.$white;
+          font-weight: font.$weight-semibold;
+        }
+
+        &.today {
+          border-color: color.$ashy;
+        }
+      }
+    }
+  }
+}

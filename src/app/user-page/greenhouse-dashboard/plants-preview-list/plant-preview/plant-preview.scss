@@ -4,7 +4,6 @@
 @use '../../../../../styles/fonts' as font;
 
 $plant-icon-size: 40px;
-$params-icon-size: 24px;
 
 :host {
   position: relative;
@@ -52,77 +51,6 @@ $params-icon-size: 24px;
           width: 100%;
           height: 100%;
           object-fit: cover;
-        }
-      }
-    }
-
-    .plant-preview-params-wrapper {
-      width: 100%;
-      height: fit-content;
-
-      display: flex;
-      flex-direction: row;
-      gap: margin.$big;
-
-      .left-side {
-        width: fit-content;
-        height: 100%;
-
-        .plant-params {
-          width: fit-content;
-          height: 100%;
-
-          display: flex;
-          justify-content: center;
-          align-items: start;
-          gap: margin.$small;
-          flex-direction: column;
-
-          p {
-            font-size: font.$size-smallest;
-          }
-
-          .icon-wrapper {
-            width: $params-icon-size;
-            height: $params-icon-size;
-            object-fit: cover;
-
-            ::ng-deep {
-              aurelis-water-drop {
-                path {
-                  stroke: color.$logo-blue;
-                }
-              }
-            }
-          }
-
-          .param-wrapper {
-            width: fit-content;
-            height: 100%;
-
-            display: flex;
-            justify-content: start;
-            align-items: center;
-            gap: margin.$small;
-            flex-direction: row;
-
-            &.general-condition-wrapper {
-              align-items: start;
-            }
-          }
-        }
-      }
-
-      .right-side {
-        width: 100%;
-        height: 100%;
-
-        overflow: hidden;
-
-        .chart-wrapper {
-          position: relative;
-          width: 100%;
-          height: 100%;
         }
       }
     }

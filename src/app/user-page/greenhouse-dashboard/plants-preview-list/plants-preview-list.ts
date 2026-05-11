@@ -1,7 +1,7 @@
-import { AfterViewChecked, Component, ElementRef } from '@angular/core';
-import ExampleJson from '../../../../example-json';
+import { AfterViewChecked, Component, ElementRef, inject } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { PlantPreview } from './plant-preview/plant-preview';
+import { DashboardSignalsService } from '../../../services/dashboard-signals.service';
 
 const chartColor = '#6cabd7';
 
@@ -12,10 +12,12 @@ const chartColor = '#6cabd7';
   styleUrl: './plants-preview-list.scss',
 })
 export class PlantsPreviewList implements AfterViewChecked {
-  protected readonly plants = ExampleJson.greenhouses[0].plants as any;
-
   public plantPreviewChartsByPlantId: { [plantId: string]: Chart } = {};
-  private chartsPrinted = false;
+
+  private chartsPrinted: boolean = false;
+
+  private readonly dashboardSignalsService = inject(DashboardSignalsService);
+  public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
 
   constructor(private elementRef: ElementRef) {}
 
@@ -28,8 +30,14 @@ export class PlantsPreviewList implements AfterViewChecked {
   }
 
   private printPreviewLineCharts() {
-    const minMax = this.getPlantsDataMinMax(this.plants);
-    this.plants.forEach((plant: any) => this.setPlantPreviewLineChart(plant, minMax));
+    const { plants } = this.greenhouseData() || {};
+
+    if (!plants?.length) {
+      return;
+    }
+
+    const minMax = this.getPlantsDataMinMax(plants);
+    plants.forEach((plant: any) => this.setPlantPreviewLineChart(plant, minMax));
 
     this.chartsPrinted = true;
   }

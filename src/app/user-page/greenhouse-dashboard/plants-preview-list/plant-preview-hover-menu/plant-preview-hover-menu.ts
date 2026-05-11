@@ -1,7 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { Trash } from '../../../../common/icons/trash/trash';
 import { WaterDrop } from '../../../../common/icons/water-drop/water-drop';
 import { Maximize } from '../../../../common/icons/maximize/maximize';
+import { PlantData } from '../../../../../interfaces/plant-data.interface';
+import { DashboardSignalsService } from '../../../../services/dashboard-signals.service';
 
 @Component({
   selector: 'aurelis-plant-preview-hover-menu',
@@ -10,5 +12,13 @@ import { Maximize } from '../../../../common/icons/maximize/maximize';
   styleUrl: './plant-preview-hover-menu.scss',
 })
 export class PlantPreviewHoverMenu {
-  @Input() plant!: any;
+  @Input() public plant!: PlantData;
+
+  private readonly dashboardSignalsService = inject(DashboardSignalsService);
+
+  constructor() {}
+
+  public showPlantDetailsWindow(): void {
+    this.dashboardSignalsService.setIsPlantDetailsWindowOpened(true);
+  }
 }

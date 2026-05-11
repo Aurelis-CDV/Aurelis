@@ -1,7 +1,13 @@
 <aurelis-top-bar></aurelis-top-bar>
 <div class="user-dashboard-container">
   <div class="user-dashboard">
-    <aurelis-greenhouses-list></aurelis-greenhouses-list>
+    <aurelis-greenhouses-list
+      (onGreenhousePreviewClicked)="setDashboardGreenhouseId($event)"
+    ></aurelis-greenhouses-list>
     <aurelis-greenhouse-dashboard></aurelis-greenhouse-dashboard>
   </div>
 </div>
+
+@if (showPlantDetailsWindow()) {
+  <aurelis-plants-details-window></aurelis-plants-details-window>
+}

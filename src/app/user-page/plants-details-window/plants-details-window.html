@@ -1,0 +1,18 @@
+<div class="window-border">
+  <div class="window-wrapper">
+    <div class="top-bar">
+      <div class="icon-wrapper refresh">
+        <aurelis-refresh-icon></aurelis-refresh-icon>
+      </div>
+      <div class="icon-wrapper close" (click)="hidePlantDetailsWindow()">
+        <aurelis-close></aurelis-close>
+      </div>
+    </div>
+    <!--    TODO: get proper current index to display correct plant details on init-->
+    <aurelis-carousel [currentIndex]="2">
+      @for (plant of greenhouseData()?.plants; track plant.id) {
+        <aurelis-plant-details [plant]="plant"></aurelis-plant-details>
+      }
+    </aurelis-carousel>
+  </div>
+</div>

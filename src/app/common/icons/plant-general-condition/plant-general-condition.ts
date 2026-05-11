@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { PlantCondition } from '../../../../interfaces/plant-condition.type';
 
 @Component({
   selector: 'aurelis-plant-general-condition',
@@ -7,5 +8,5 @@ import { Component, Input } from '@angular/core';
   styleUrl: './plant-general-condition.scss',
 })
 export class PlantGeneralCondition {
-  @Input() condition: 'good' | 'bad' | 'mid' | 'unknown' = 'unknown';
+  @Input() condition: PlantCondition = 'unknown';
 }

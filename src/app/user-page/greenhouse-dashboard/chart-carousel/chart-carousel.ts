@@ -1,11 +1,12 @@
-import { AfterViewChecked, Component, ElementRef } from '@angular/core';
-import exampleJson from '../../../../example-json';
+import { AfterViewChecked, Component, effect, ElementRef, inject } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { Carousel } from '../../../common/carousel/carousel';
+import { DashboardSignalsService } from '../../../services/dashboard-signals.service';
+import { GreenhouseParam } from '../../../../interfaces/greenhouses-data.interface';
 
 const humidityColor = '108, 171, 215';
 const temperatureColor = '93, 93, 93';
-const lightColor = '217, 186, 131';
+const lightColor = '255, 199, 37';
 const textColor = '#2a2a2a';
 
 @Component({
@@ -15,12 +16,19 @@ const textColor = '#2a2a2a';
   styleUrl: './chart-carousel.scss',
 })
 export class ChartCarousel implements AfterViewChecked {
-  public greenhouseParams = exampleJson.greenhouses[0].params;
-  public paramCharts: any = {};
+  private readonly dashboardSignalsService = inject(DashboardSignalsService);
+
+  public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
+
+  public paramCharts: { [key: string]: Chart } = {};
 
   private chartsPrinted = false;
 
-  constructor(private elementRef: ElementRef) {}
+  constructor(private elementRef: ElementRef) {
+    effect(() => {
+      this.printPreviewLineCharts();
+    });
+  }
 
   public ngAfterViewChecked(): void {
     if (this.chartsPrinted) {
@@ -35,17 +43,22 @@ export class ChartCarousel implements AfterViewChecked {
   }
 
   private printPreviewLineCharts() {
-    this.greenhouseParams.forEach((param: any) => this.setParamLineChart(param));
+    if (this.chartsPrinted) {
+      this.destroyParamCharts();
+    }
+
+    this.greenhouseData()?.params.forEach((param: any) => this.setParamLineChart(param));
 
     this.chartsPrinted = true;
   }
 
-  private setParamLineChart(param: any) {
-    if (!param) {
+  private setParamLineChart(param: GreenhouseParam) {
+    const plantCanvasEl = this.elementRef.nativeElement.querySelector(`#param-chart-${param.name}`);
+
+    if (!param || !plantCanvasEl) {
       return;
     }
 
-    const plantCanvasEl = this.elementRef.nativeElement.querySelector(`#param-chart-${param.name}`);
     const paramColor =
       param.name === 'humidity'
         ? humidityColor
@@ -117,5 +130,13 @@ export class ChartCarousel implements AfterViewChecked {
     } as any;
 
     this.paramCharts[param.name] = new Chart(plantCanvasEl, config);
+  }
+
+  private destroyParamCharts(): void {
+    Object.values(this.paramCharts).forEach((paramChart) => {
+      paramChart.destroy();
+    });
+
+    this.paramCharts = {};
   }
 }

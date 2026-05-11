@@ -1,0 +1,38 @@
+<div class="top-bar">
+  <div class="left">
+    <div class="plant-edit-wrapper">
+      <div class="plant-preview-image-wrapper">
+        <img src="{{ plant.preview_url }}" />
+      </div>
+      <div class="plant-name-wrapper">
+        <p>{{ plant.name }}</p>
+      </div>
+    </div>
+    <div class="plant-params-wrapper">
+      <aurelis-plant-current-params [plant]="plant"></aurelis-plant-current-params>
+    </div>
+  </div>
+  <div class="right">
+    <div class="watering-calendar-wrapper">
+      <div class="button-wrapper">
+        <button class="note-watering-button">Note watering</button>
+      </div>
+      <aurelis-calendar [highlightedDays]="plant.watering_history"></aurelis-calendar>
+    </div>
+  </div>
+</div>
+<div class="filtered-details-wrapper">
+  <div class="dropdown-wrapper">
+    <aurelis-select
+      [options]="[
+        { label: 'Last 1 hour', value: 'last-1-hour' },
+        { label: 'Last 24 hours', value: 'last-24-hours' },
+        { label: 'Last 7 days', value: 'last-7-days' },
+        { label: 'Last 1 month', value: 'last-1-month' },
+      ]"
+    ></aurelis-select>
+  </div>
+  <div class="chart-wrapper">
+    <canvas id="plant-soil-moisture-{{ plant.id }}">{{paramCharts[param.name]}</canvas>
+  </div>
+</div>

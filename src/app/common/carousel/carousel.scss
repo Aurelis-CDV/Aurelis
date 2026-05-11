@@ -48,6 +48,24 @@ $item-transition: left 0.5s linear;
       overflow: hidden;
 
       flex-grow: 1;
+
+      ::ng-deep {
+        .active {
+          position: absolute;
+          transition: $item-transition;
+          z-index: 2;
+        }
+        .prevActive {
+          position: absolute;
+          transition: $item-transition;
+          z-index: 1;
+        }
+        .inActive {
+          position: absolute;
+          transition: $item-transition;
+          z-index: 0;
+        }
+      }
     }
 
     .index-dots-wrapper {
@@ -79,25 +97,5 @@ $item-transition: left 0.5s linear;
   .next-button {
     @include button-style;
     transform: rotate(180deg);
-  }
-
-  ::ng-deep {
-    .active {
-      position: absolute;
-      left: 0 !important;
-      transition: $item-transition;
-      z-index: 1;
-    }
-    .prevActive {
-      position: absolute;
-      left: -100% !important;
-      transition: $item-transition;
-      z-index: 1;
-    }
-    .inActive {
-      position: absolute;
-      left: 100%;
-      transition: $item-transition;
-    }
   }
 }
