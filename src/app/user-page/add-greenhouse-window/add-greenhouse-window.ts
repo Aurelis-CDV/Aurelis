@@ -37,8 +37,6 @@ export class AddGreenhouseWindow {
 
   private locationSearchTimer: ReturnType<typeof setTimeout> | undefined;
 
-  protected readonly weatherConfigured = !!environment.weatherApiKey?.trim();
-
   protected addGreenhouse(): void {
     this.clearFieldErrors();
     this.formError = '';
@@ -59,12 +57,7 @@ export class AddGreenhouseWindow {
       this.previewUrlError = 'Enter a valid URL that starts with http:// or https://';
     }
 
-    if (!this.weatherConfigured) {
-      this.formError =
-        'Set `weatherApiKey` in `src/environments/environment.development.ts` (from weatherapi.com).';
-    }
-
-    if (this.weatherConfigured && !this.selectedLocation) {
+    if (!this.selectedLocation) {
       this.locationError = 'Pick a location from the WeatherAPI search results.';
     }
 
@@ -148,7 +141,7 @@ export class AddGreenhouseWindow {
       clearTimeout(this.locationSearchTimer);
     }
 
-    if (!this.weatherConfigured || q.length < 2) {
+    if (q.length < 2) {
       this.locationSuggestions.set([]);
       return;
     }
