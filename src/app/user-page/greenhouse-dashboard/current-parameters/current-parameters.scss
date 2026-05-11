@@ -1,0 +1,103 @@
+@use '../../../../styles/margins' as margin;
+@use '../../../../styles/colors' as color;
+@use '../../../../styles/mixins' as mixin;
+@use '../../../../styles/fonts' as font;
+
+$icon-size: 30px;
+
+:host {
+  @include mixin.inner-shadow;
+
+  display: flex;
+  flex-direction: column;
+  gap: margin.$huge;
+
+  padding: margin.$big;
+
+  background: color.$white;
+  border-radius: 10px;
+
+  h1 {
+    font-size: font.$size-mid;
+    font-weight: font.$weight-semibold;
+  }
+
+  h3 {
+    font-size: font.$size-small;
+    font-weight: font.$weight-regular;
+  }
+
+  p {
+    font-size: font.$size-small;
+  }
+
+  .current-params,
+  .localization-params {
+    display: flex;
+    flex-direction: column;
+    gap: margin.$small;
+  }
+
+  .params-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: margin.$smallest;
+    padding: margin.$smallest;
+
+    .icons-wrapper,
+    .values-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: margin.$smallest;
+    }
+
+    .icons-wrapper {
+      .icon-wrapper {
+        width: $icon-size;
+        height: $icon-size;
+
+        ::ng-deep {
+          aurelis-temperature {
+            path:first-of-type {
+              fill: color.$ashy;
+            }
+
+            path:not(:first-of-type) {
+              stroke: color.$ashy;
+            }
+
+            circle {
+              fill: color.$ashy;
+            }
+          }
+
+          aurelis-water-drop {
+            path {
+              stroke: color.$logo-blue;
+            }
+          }
+
+          aurelis-sun {
+            circle {
+              fill: color.$yellow;
+            }
+            path {
+              stroke: color.$yellow;
+            }
+          }
+        }
+      }
+    }
+
+    .values-wrapper {
+      .value-wrapper {
+        height: $icon-size;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+      }
+    }
+  }
+}
