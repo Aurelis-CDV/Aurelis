@@ -1,4 +1,4 @@
-import { computed, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { Injectable, signal, Signal, WritableSignal } from '@angular/core';
 import ExampleJson from '../../example-json';
 
 const FAVORITE_PLANTS_STORAGE_KEY_PREFIX = 'aurelis.favorite_plants';
@@ -10,6 +10,8 @@ const FALLBACK_USER_ID = 'mock-user';
 export class UserDataService {
   private readonly favoritePlantIds: WritableSignal<number[]> = signal<number[]>([]);
   private readonly userId = this.readUserIdFromExampleJson();
+
+  public readonly browserStorageNamespace: string = this.userId;
 
   public readonly favoriteIds: Signal<number[]> = this.favoritePlantIds.asReadonly();
 
@@ -37,20 +39,6 @@ export class UserDataService {
     const next = [...this.favoritePlantIds(), plantId];
     this.favoritePlantIds.set(next);
     this.persistFavoritePlants(next);
-
-    //____________________________________________________________________
-    // TODO: When user-favorites API is ready, replace local-only persistence
-    // above with the request below (and revert to the original signal value
-    // if the request fails).
-    //
-    // this.postFavoritePlant(plantId).subscribe({
-    //   error: () => {
-    //     const reverted = this.favoritePlantIds().filter((id) => id !== plantId);
-    //     this.favoritePlantIds.set(reverted);
-    //     this.persistFavoritePlants(reverted);
-    //   },
-    // });
-    //____________________________________________________________________
   }
 
   public removeFavorite(plantId: number): void {
@@ -60,43 +48,7 @@ export class UserDataService {
     const next = this.favoritePlantIds().filter((id) => id !== plantId);
     this.favoritePlantIds.set(next);
     this.persistFavoritePlants(next);
-
-    //____________________________________________________________________
-    // TODO: When user-favorites API is ready, replace local-only persistence
-    // above with the request below (and re-add the favorite locally if the
-    // request fails).
-    //
-    // this.deleteFavoritePlant(plantId).subscribe({
-    //   error: () => {
-    //     const reverted = [...this.favoritePlantIds(), plantId];
-    //     this.favoritePlantIds.set(reverted);
-    //     this.persistFavoritePlants(reverted);
-    //   },
-    // });
-    //____________________________________________________________________
   }
-
-  // TODO: Wire to the real backend once the user data endpoint is ready.
-  // private postFavoritePlant(plantId: number): Observable<unknown> {
-  //   const url = `${environment.greenhouseApiBaseUrl}/users/${encodeURIComponent(
-  //     this.userId,
-  //   )}/favorites/plants`;
-  //   return this.http.post(url, { plant_id: plantId });
-  // }
-  //
-  // private deleteFavoritePlant(plantId: number): Observable<unknown> {
-  //   const url = `${environment.greenhouseApiBaseUrl}/users/${encodeURIComponent(
-  //     this.userId,
-  //   )}/favorites/plants/${plantId}`;
-  //   return this.http.delete(url);
-  // }
-  //
-  // private fetchFavoritePlants(): Observable<number[]> {
-  //   const url = `${environment.greenhouseApiBaseUrl}/users/${encodeURIComponent(
-  //     this.userId,
-  //   )}/favorites/plants`;
-  //   return this.http.get<{ plant_ids: number[] }>(url).pipe(map((r) => r.plant_ids));
-  // }
 
   private loadFromStorageOrSeed(): void {
     const stored = this.readFavoritePlantsFromStorage();
@@ -135,9 +87,7 @@ export class UserDataService {
     }
     try {
       window.localStorage.setItem(this.favoritePlantsStorageKey, JSON.stringify(ids));
-    } catch {
-      /* ignore quota / privacy mode errors */
-    }
+    } catch {}
   }
 
   private get favoritePlantsStorageKey(): string {
