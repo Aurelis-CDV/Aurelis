@@ -1,2 +1,87 @@
-<aurelis-top-bar></aurelis-top-bar>
-<aurelis-log-in-window></aurelis-log-in-window>
+<aurelis-top-bar class="home-top-bar"></aurelis-top-bar>
+
+<main class="home-main">
+  @if (auth.error$ | async; as err) {
+    <p class="auth-banner" role="alert">Sign-in issue: {{ err.message }}</p>
+  }
+
+  <section class="hero" aria-labelledby="home-hero-heading">
+    <div class="hero-copy">
+      <p class="eyebrow">Compact home greenhouse</p>
+      <h1 id="home-hero-heading">Welcome to Aurelis</h1>
+      <p class="lead">
+        Sensors in your enclosure stream <strong>soil moisture</strong>, temperature, humidity, and
+        light to the app—chiefly so you can see moisture change over time and
+        <strong>remember when you watered</strong>. <strong>Guides</strong> are optional: search
+        plants or diseases anytime; they stay separate from dashboards.
+      </p>
+      <div class="hero-actions">
+        <a routerLink="/guides" class="cta cta--secondary">Guides</a>
+        @if (auth.isLoading$ | async) {
+          <span class="hero-hint" aria-live="polite">Checking your session…</span>
+        } @else if (auth.isAuthenticated$ | async) {
+          <a routerLink="/dashboard" class="cta cta--primary">Dashboard</a>
+        } @else {
+          <span class="hero-hint"><strong>Sign in</strong> above for sensor data.</span>
+        }
+      </div>
+    </div>
+    <div class="hero-art">
+      <img
+        src="home-hero-illustration.png"
+        alt="Small home greenhouse with plants"
+        width="640"
+        height="400"
+      />
+    </div>
+  </section>
+
+  <section class="trail" aria-labelledby="trail-heading">
+    <h2 id="trail-heading" class="section-heading">At a glance</h2>
+    <ol class="trail-steps">
+      <li>
+        <span class="trail-step-marker" aria-hidden="true">1</span>
+        <div class="trail-step-body">
+          <strong>Install</strong>
+          <span>Sensors in your small home greenhouse, including soil probes.</span>
+        </div>
+      </li>
+      <li>
+        <span class="trail-step-marker" aria-hidden="true">2</span>
+        <div class="trail-step-body">
+          <strong>Read</strong>
+          <span>Dashboard shows moisture history and other readings—no guide tie-in.</span>
+        </div>
+      </li>
+      <li>
+        <span class="trail-step-marker" aria-hidden="true">3</span>
+        <div class="trail-step-body">
+          <strong>Look up</strong>
+          <span>Search guides only when you want extra help.</span>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="care-band" aria-labelledby="care-band-heading">
+    <div class="care-band-art">
+      <img
+        src="home-strip-care.png"
+        alt="Seedlings and watering can"
+        width="480"
+        height="640"
+        decoding="async"
+        loading="lazy"
+      />
+    </div>
+    <div class="care-band-copy">
+      <p class="eyebrow eyebrow-on-dark">Watering</p>
+      <h2 id="care-band-heading">Less guesswork on dry pots</h2>
+      <p>Moisture plots show whether trays dried down; other sensors show as plain values.</p>
+      <div class="care-band-links">
+        <a routerLink="/dashboard" class="cta cta--primary">Readings</a>
+        <a routerLink="/guides" class="cta care-band-link-secondary">Guides</a>
+      </div>
+    </div>
+  </section>
+</main>
