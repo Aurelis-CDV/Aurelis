@@ -7,15 +7,14 @@ import {
   PerenualPlantDetails,
   PerenualPlantListResponse,
 } from '../../interfaces/perenual.interface';
-import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PerenualPlantsService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = environment.guidesApiBaseUrl;
-  private readonly apiKey = environment.guidesApiKey;
+  private readonly baseUrl = process.env['GUIDES_BASE_API_URL'] || '';
+  private readonly apiKey = process.env['GUIDES_API_KEY'] || '';
 
   public getPlantsList(page: number = 1): Observable<PerenualPlantListResponse> {
     return this.http.get<PerenualPlantListResponse>(`${this.baseUrl}v2/species-list`, {

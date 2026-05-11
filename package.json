@@ -11,8 +11,8 @@
   "private": true,
   "packageManager": "npm@11.11.1",
   "dependencies": {
+    "@angular-devkit/build-angular": "^21.2.10",
     "@angular/common": "^21.2.0",
-    "@angular/compiler": "^21.2.0",
     "@angular/core": "^21.2.0",
     "@angular/forms": "^21.2.0",
     "@angular/platform-browser": "^21.2.0",
@@ -32,5 +32,10 @@
     "prettier": "^3.8.1",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"
+  },
+  "browser": {
+    "crypto": false,
+    "os": false,
+    "path": false
   }
 }
