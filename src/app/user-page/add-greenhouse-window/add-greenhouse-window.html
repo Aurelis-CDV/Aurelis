@@ -1,0 +1,105 @@
+<div class="window-border">
+  <div class="window-wrapper">
+    <div class="top-bar">
+      <div class="icon-wrapper close" (click)="close()">
+        <aurelis-close></aurelis-close>
+      </div>
+    </div>
+    <div class="add-greenhouse-content">
+      <h2 class="form-title">Add greenhouse</h2>
+      @if (!weatherConfigured) {
+        <p class="config-hint">
+          Add your WeatherAPI key to <code>src/environments/environment.development.ts</code>
+          (<code>weatherApiKey</code>) to enable location search and outdoor weather.
+        </p>
+      }
+      @if (formError) {
+        <p class="form-error-banner" role="alert">{{ formError }}</p>
+      }
+      <form class="add-greenhouse-form" (submit)="$event.preventDefault(); addGreenhouse()">
+        <label class="field">
+          <span class="field-label">Greenhouse name</span>
+          <input
+            class="field-input"
+            type="text"
+            name="greenhouseName"
+            autocomplete="off"
+            [(ngModel)]="greenhouseName"
+            (ngModelChange)="nameError = ''"
+          />
+          @if (nameError) {
+            <span class="field-error" role="alert">{{ nameError }}</span>
+          }
+        </label>
+        <label class="field">
+          <span class="field-label">Greenhouse ID</span>
+          <input
+            class="field-input"
+            type="text"
+            name="greenhouseId"
+            autocomplete="off"
+            [(ngModel)]="greenhouseId"
+            (ngModelChange)="idError = ''"
+          />
+          @if (idError) {
+            <span class="field-error" role="alert">{{ idError }}</span>
+          }
+        </label>
+        <label class="field">
+          <span class="field-label">Greenhouse preview URL</span>
+          <input
+            class="field-input"
+            type="url"
+            name="previewUrl"
+            placeholder="https://"
+            [(ngModel)]="previewUrl"
+            (ngModelChange)="onPreviewUrlInput()"
+            (blur)="onPreviewUrlBlur()"
+          />
+          @if (previewUrlError) {
+            <span class="field-error" role="alert">{{ previewUrlError }}</span>
+          }
+        </label>
+        <div class="field location-field">
+          <span class="field-label">Location (WeatherAPI search)</span>
+          <div class="location-input-wrap">
+            <input
+              class="field-input"
+              type="text"
+              name="locationQuery"
+              autocomplete="off"
+              placeholder="Type at least 2 characters to search…"
+              [(ngModel)]="locationQuery"
+              (ngModelChange)="onLocationQueryChange()"
+            />
+            @if (locationSuggestions().length) {
+              <ul class="suggestions" role="listbox">
+                @for (item of locationSuggestions(); track item.id) {
+                  <li role="option" tabindex="0" (click)="pickLocation(item)">
+                    <span class="suggestion-main">{{ item.name }}</span>
+                    <span class="suggestion-meta">{{ item.region }}, {{ item.country }}</span>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+          @if (locationError) {
+            <span class="field-error" role="alert">{{ locationError }}</span>
+          }
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="isSubmitting()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="isSubmitting()">
+            @if (isSubmitting()) {
+              Adding…
+            } @else {
+              Add
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
