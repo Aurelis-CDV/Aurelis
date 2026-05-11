@@ -2,7 +2,8 @@ import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { UserDataService } from './user-data.service';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import ExampleJson from '../../example-json';
+import { catchError, finalize, tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 import {
   GreenhouseData,
   GreenhouseGeoLocation,
@@ -10,6 +11,175 @@ import {
   GreenhousesData,
 } from '../../interfaces/greenhouses-data.interface';
 import { PlantData } from '../../interfaces/plant-data.interface';
+import { PlantCondition } from '../../interfaces/plant-condition.type';
+
+/** Raw JSON from `GET .../greenhouses/{id}/frontend` (field names may differ from app models). */
+interface GreenhouseFrontendApiDto {
+  name?: unknown;
+  id?: unknown;
+  preview_url?: unknown;
+  localisation?: unknown;
+  location?: unknown;
+  params?: unknown;
+  plants?: unknown;
+}
+
+interface GreenhouseParamApiDto {
+  name?: unknown;
+  current?: unknown;
+  history?: unknown;
+}
+
+interface PlantApiDto {
+  name?: unknown;
+  id?: unknown;
+  preview_url?: unknown;
+  soil_moisture?: unknown;
+  condition?: unknown;
+  soil_moisture_history?: unknown;
+  watering_history?: unknown;
+}
+
+const PLANT_CONDITIONS: ReadonlySet<PlantCondition> = new Set(['good', 'bad', 'mid', 'unknown']);
+
+function asFiniteNumber(v: unknown, fallback = 0): number {
+  return typeof v === 'number' && Number.isFinite(v) ? v : fallback;
+}
+
+function asNonEmptyString(v: unknown, fallback = ''): string {
+  return typeof v === 'string' ? v : fallback;
+}
+
+function normalizeParamHistory(
+  history: unknown,
+): Array<{ date: string; value: number }> {
+  if (!Array.isArray(history)) {
+    return [];
+  }
+  const out: Array<{ date: string; value: number }> = [];
+  for (const row of history) {
+    if (!row || typeof row !== 'object') {
+      continue;
+    }
+    const r = row as { date?: unknown; value?: unknown };
+    const date = typeof r.date === 'string' ? r.date : '';
+    const value = asFiniteNumber(r.value, 0);
+    out.push({ date, value });
+  }
+  return out;
+}
+
+function normalizeGreenhouseParamsFromApi(raw: unknown): GreenhouseParam[] {
+  if (!Array.isArray(raw)) {
+    return [];
+  }
+  const out: GreenhouseParam[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== 'object') {
+      continue;
+    }
+    const p = item as GreenhouseParamApiDto;
+    const name = asNonEmptyString(p.name, 'unknown');
+    out.push({
+      name,
+      current: asFiniteNumber(p.current, 0),
+      history: normalizeParamHistory(p.history),
+    });
+  }
+  return out;
+}
+
+function normalizePlantCondition(v: unknown): PlantCondition {
+  return typeof v === 'string' && PLANT_CONDITIONS.has(v as PlantCondition)
+    ? (v as PlantCondition)
+    : 'unknown';
+}
+
+function normalizePlantFromApi(raw: unknown): PlantData | null {
+  if (!raw || typeof raw !== 'object') {
+    return null;
+  }
+  const p = raw as PlantApiDto;
+  const id = p.id != null && String(p.id).trim() ? String(p.id).trim() : '';
+  if (!id) {
+    return null;
+  }
+  const soilHistory = normalizeParamHistory(p.soil_moisture_history);
+  const wh = Array.isArray(p.watering_history)
+    ? p.watering_history.filter((x): x is number => typeof x === 'number' && Number.isFinite(x))
+    : [];
+
+  return {
+    name: asNonEmptyString(p.name, '').trim() || 'Plant',
+    id,
+    preview_url: asNonEmptyString(p.preview_url, '').trim(),
+    soil_moisture: asFiniteNumber(p.soil_moisture, 0),
+    condition: normalizePlantCondition(p.condition),
+    soil_moisture_history: soilHistory,
+    watering_history: wh,
+  };
+}
+
+function normalizePlantsFromApi(raw: unknown): PlantData[] {
+  if (!Array.isArray(raw)) {
+    return [];
+  }
+  const out: PlantData[] = [];
+  for (const item of raw) {
+    const plant = normalizePlantFromApi(item);
+    if (plant) {
+      out.push(plant);
+    }
+  }
+  return out;
+}
+
+function parseLocationFromApi(dto: GreenhouseFrontendApiDto): GreenhouseGeoLocation {
+  const loc = dto.location;
+  if (loc && typeof loc === 'object') {
+    const o = loc as Record<string, unknown>;
+    const name = typeof o['name'] === 'string' ? o['name'].trim() : '';
+    const lat = o['lat'];
+    const lon = o['lon'];
+    if (
+      typeof lat === 'number' &&
+      Number.isFinite(lat) &&
+      typeof lon === 'number' &&
+      Number.isFinite(lon)
+    ) {
+      return { name: name || 'Unknown', lat, lon };
+    }
+  }
+
+  const label =
+    (typeof dto.localisation === 'string' && dto.localisation.trim()) ||
+    (loc &&
+    typeof loc === 'object' &&
+    typeof (loc as { name?: unknown }).name === 'string' &&
+    String((loc as { name: string }).name).trim()) ||
+    'Unknown';
+
+  return {
+    name: typeof label === 'string' ? label : 'Unknown',
+    lat: 0,
+    lon: 0,
+  };
+}
+
+function normalizeGreenhouseFromFrontendApi(dto: GreenhouseFrontendApiDto): GreenhouseData {
+  const name = asNonEmptyString(dto.name, '').trim() || 'Greenhouse';
+  const idRaw = dto.id;
+  const id = idRaw != null && String(idRaw).trim() ? String(idRaw).trim() : '0';
+
+  return {
+    name,
+    id,
+    preview_url: asNonEmptyString(dto.preview_url, '').trim(),
+    location: parseLocationFromApi(dto),
+    params: normalizeGreenhouseParamsFromApi(dto.params),
+    plants: normalizePlantsFromApi(dto.plants),
+  };
+}
 
 export type AddPlantResult =
   | { ok: true }
@@ -40,30 +210,6 @@ export type UpdateGreenhouseResult =
 export type DeleteGreenhouseResult =
   | { ok: true }
   | { ok: false; reason: 'greenhouse_not_found' | 'request_failed' };
-
-export interface CreatePlantRequestBody {
-  name: string;
-  id: string;
-  preview_url: string;
-}
-
-export interface UpdatePlantRequestBody {
-  name: string;
-  preview_url: string;
-}
-
-export interface CreateGreenhouseRequestBody {
-  name: string;
-  id: string;
-  preview_url: string;
-  location: GreenhouseGeoLocation;
-}
-
-export interface UpdateGreenhouseRequestBody {
-  name: string;
-  preview_url: string;
-  location: GreenhouseGeoLocation;
-}
 
 export const MAX_GREENHOUSES_IN_DASHBOARD = 6;
 
@@ -214,25 +360,24 @@ export class GreenhousesDataService {
   public fetchGreenhousesData(): void {
     this.isLoading.set(true);
     this.loadError.set(null);
-    const seed = (ExampleJson as unknown as { greenhouses: GreenhousesData }).greenhouses;
-    this.greenhousesData.set(this.mergeWateringHistoryFromStorage(seed));
-    this.isLoading.set(false);
-  }
 
-  public mapData(data: {
-    MeasurementId: number;
-    GreenhouseId: number;
-    GreenhouseName: string;
-    SensorId: 1;
-    SensorCode: 'air_temperature_1';
-    SensorName: 'Air temperature sensor 1';
-    SensorLocation: 'sensor_1';
-    SensorTypeId: 1;
-    SensorType: 'air_temperature';
-    Value: 25.1;
-    Unit: 'C';
-    TimestampUnix: 1778245214;
-  }): any {}
+    this.http
+      .get<GreenhouseFrontendApiDto>(environment.greenhousesDataUrl)
+      .pipe(
+        tap((dto) => {
+          const list: GreenhousesData = [normalizeGreenhouseFromFrontendApi(dto)];
+          this.greenhousesData.set(this.mergeWateringHistoryFromStorage(list));
+          this.loadError.set(null);
+        }),
+        catchError(() => {
+          this.loadError.set('Could not load greenhouse data from the server.');
+          this.greenhousesData.set([]);
+          return of(undefined);
+        }),
+        finalize(() => this.isLoading.set(false)),
+      )
+      .subscribe();
+  }
 
   private validateAddPlant(
     greenhouseId: string,

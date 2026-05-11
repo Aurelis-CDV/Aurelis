@@ -1,22 +1,48 @@
-import { Injectable, signal, Signal, WritableSignal } from '@angular/core';
-import ExampleJson from '../../example-json';
+import { effect, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { AuthService } from '@auth0/auth0-angular';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 const FAVORITE_PLANTS_STORAGE_KEY_PREFIX = 'aurelis.favorite_plants';
-const FALLBACK_USER_ID = 'mock-user';
+/** Namespace for keys when Auth0 has not yet emitted a user (or user is logged out). */
+const UNAUTHENTICATED_STORAGE_NS = 'unauthenticated';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserDataService {
-  private readonly favoritePlantIds: WritableSignal<number[]> = signal<number[]>([]);
-  private readonly userId = this.readUserIdFromExampleJson();
+  private readonly auth = inject(AuthService);
 
-  public readonly browserStorageNamespace: string = this.userId;
+  private readonly auth0Sub = toSignal(
+    this.auth.user$.pipe(
+      map((u) => (typeof u?.sub === 'string' && u.sub.trim() ? u.sub.trim() : null)),
+      distinctUntilChanged(),
+    ),
+    { initialValue: null },
+  );
+
+  private readonly favoritePlantIds: WritableSignal<number[]> = signal<number[]>([]);
+
+  public get browserStorageNamespace(): string {
+    return this.auth0Sub() ?? UNAUTHENTICATED_STORAGE_NS;
+  }
 
   public readonly favoriteIds: Signal<number[]> = this.favoritePlantIds.asReadonly();
 
   public constructor() {
-    this.loadFromStorageOrSeed();
+    effect(() => {
+      this.auth0Sub();
+      this.loadFavoritePlantsForCurrentUser();
+    });
+  }
+
+  private loadFavoritePlantsForCurrentUser(): void {
+    const stored = this.readFavoritePlantsFromStorage();
+    if (stored !== null) {
+      this.favoritePlantIds.set(stored);
+      return;
+    }
+    this.favoritePlantIds.set([]);
   }
 
   public isFavorite(plantId: number): boolean {
@@ -50,18 +76,6 @@ export class UserDataService {
     this.persistFavoritePlants(next);
   }
 
-  private loadFromStorageOrSeed(): void {
-    const stored = this.readFavoritePlantsFromStorage();
-    if (stored !== null) {
-      this.favoritePlantIds.set(stored);
-      return;
-    }
-
-    const seed = this.readFavoritePlantsSeedFromExampleJson();
-    this.favoritePlantIds.set(seed);
-    this.persistFavoritePlants(seed);
-  }
-
   private readFavoritePlantsFromStorage(): number[] | null {
     if (typeof window === 'undefined' || !window.localStorage) {
       return null;
@@ -91,22 +105,6 @@ export class UserDataService {
   }
 
   private get favoritePlantsStorageKey(): string {
-    return `${FAVORITE_PLANTS_STORAGE_KEY_PREFIX}.${this.userId}`;
-  }
-
-  private readUserIdFromExampleJson(): string {
-    const data = ExampleJson as unknown as { user_id?: unknown };
-    return typeof data?.user_id === 'string' && data.user_id.trim()
-      ? data.user_id.trim()
-      : FALLBACK_USER_ID;
-  }
-
-  private readFavoritePlantsSeedFromExampleJson(): number[] {
-    const data = ExampleJson as unknown as { favorite_plants?: unknown };
-    const seed = data?.favorite_plants;
-    if (!Array.isArray(seed)) {
-      return [];
-    }
-    return seed.filter((id): id is number => typeof id === 'number' && Number.isFinite(id));
+    return `${FAVORITE_PLANTS_STORAGE_KEY_PREFIX}.${this.browserStorageNamespace}`;
   }
 }

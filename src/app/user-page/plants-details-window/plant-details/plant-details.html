@@ -48,14 +48,14 @@
 <div class="filtered-details-wrapper">
   <div class="dropdown-wrapper">
     <aurelis-select
-      [options]="[
-        { label: 'Last 1 hour', value: 'last-1-hour' },
-        { label: 'Last 24 hours', value: 'last-24-hours' },
-        { label: 'Last 7 days', value: 'last-7-days' },
-        { label: 'Last 1 month', value: 'last-1-month' },
-      ]"
+      [options]="chartRangeOptions"
+      [ngModel]="chartRangeKey()"
+      (ngModelChange)="onChartRangeKeyChange($event)"
     ></aurelis-select>
   </div>
+  @if (chartLoadError(); as err) {
+    <p class="chart-load-error" role="alert">{{ err }}</p>
+  }
   <div class="chart-wrapper">
     <canvas id="plant-soil-moisture-{{ plant.id }}"></canvas>
   </div>
