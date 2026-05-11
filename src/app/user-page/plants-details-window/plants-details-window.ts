@@ -1,13 +1,12 @@
 import { Component, computed, inject } from '@angular/core';
-import { Close } from '../../common/icons/close/close';
 import { Carousel } from '../../common/carousel/carousel';
-import { PlantDetails } from './plant-details/plant-details';
-import { Refresh } from '../../common/icons/refresh/refresh';
+import { PopupWindow } from '../../common/popup-window/popup-window';
 import { DashboardSignalsService } from '../../services/dashboard-signals.service';
+import { PlantDetails } from './plant-details/plant-details';
 
 @Component({
   selector: 'aurelis-plants-details-window',
-  imports: [Close, Carousel, PlantDetails, Refresh],
+  imports: [Carousel, PlantDetails, PopupWindow],
   templateUrl: './plants-details-window.html',
   styleUrl: './plants-details-window.scss',
 })

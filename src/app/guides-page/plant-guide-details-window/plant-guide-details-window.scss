@@ -1,20 +1,65 @@
 :host {
-  min-height: 100%;
-  background: #f5f7f8;
-  display: block;
+  display: contents;
 }
 
 .details-page {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 32px 32px;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 8px;
 
   img {
     width: 100%;
     max-height: 360px;
     object-fit: cover;
     border-radius: 12px;
-    margin-bottom: 14px;
+    display: block;
+  }
+}
+
+.image-wrapper {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.favorite-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover {
+    background: #fff;
+    transform: scale(1.05);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #cf3131;
+    outline-offset: 2px;
+  }
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+
+  h1 {
+    margin: 0;
   }
 }
 
@@ -33,6 +78,7 @@ h1 {
 .scientific-name {
   color: #4f5f66;
   margin-bottom: 14px;
+  font-style: italic;
 }
 
 .details-grid {
@@ -40,4 +86,9 @@ h1 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px 14px;
   margin-bottom: 12px;
+}
+
+.description {
+  color: #2f3f45;
+  line-height: 1.45;
 }

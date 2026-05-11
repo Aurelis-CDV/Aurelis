@@ -114,7 +114,7 @@ export class AddGreenhouseWindow {
 
           this.dashboardSignalsService.setDashboardGreenhouseId(id);
           this.resetForm();
-          this.dashboardSignalsService.setIsAddGreenhouseWindowOpened(false);
+          this.dashboardSignalsService.setIsGreenhouseFormWindowOpened(false);
         },
       });
   }
@@ -181,7 +181,7 @@ export class AddGreenhouseWindow {
 
   private closeWithoutConfirm(): void {
     this.resetForm();
-    this.dashboardSignalsService.setIsAddGreenhouseWindowOpened(false);
+    this.dashboardSignalsService.setIsGreenhouseFormWindowOpened(false);
   }
 
   private resetForm(): void {

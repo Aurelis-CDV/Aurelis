@@ -1,0 +1,65 @@
+<aurelis-popup-window (closeWindow)="onClose()">
+  <div class="details-page">
+    @if (isLoading()) {
+      <p class="status-message">Loading details...</p>
+    } @else if (errorMessage()) {
+      <p class="status-message error">{{ errorMessage() }}</p>
+    } @else if (diseaseDetails()) {
+      <img
+        [src]="getMainImage()"
+        [alt]="
+          diseaseDetails()?.common_name || diseaseDetails()?.scientific_name || 'Disease image'
+        "
+      />
+
+      <h1>{{ diseaseDetails()?.common_name || 'Unnamed disease' }}</h1>
+      <p class="scientific-name">
+        {{ diseaseDetails()?.scientific_name || 'Unknown scientific name' }}
+      </p>
+
+      <div class="details-grid">
+        <p><strong>Family:</strong> {{ diseaseDetails()?.family || 'N/A' }}</p>
+        <p>
+          <strong>Other names:</strong>
+          {{
+            diseaseDetails()?.other_name?.length
+              ? diseaseDetails()?.other_name?.join(', ')
+              : 'N/A'
+          }}
+        </p>
+        <p>
+          <strong>Hosts:</strong>
+          {{ diseaseDetails()?.host?.length ? diseaseDetails()?.host?.join(', ') : 'N/A' }}
+        </p>
+      </div>
+
+      @if (diseaseDetails()?.description?.length) {
+        <section class="info-section">
+          <h2>Description</h2>
+          @for (block of diseaseDetails()?.description; track $index) {
+            <article class="info-block">
+              @if (block?.subtitle) {
+                <h3>{{ block?.subtitle }}</h3>
+              }
+              <p>{{ block?.description || 'No description available.' }}</p>
+            </article>
+          }
+        </section>
+      }
+
+      @if (diseaseDetails()?.solution?.length) {
+        <section class="info-section">
+          <h2>Solution</h2>
+          @for (block of diseaseDetails()?.solution; track $index) {
+            <article class="info-block">
+              @if (block?.subtitle) {
+                <h3>{{ block?.subtitle }}</h3>
+              }
+              <p>{{ block?.description || 'No solution available.' }}</p>
+            </article>
+          }
+        </section>
+      }
+    }
+  </div>
+</aurelis-popup-window>

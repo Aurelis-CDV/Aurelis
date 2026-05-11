@@ -301,7 +301,9 @@ export class GreenhousesDataService {
     this.loadError.set(null);
     const api =
       'https://greenhouse-api-python-zuzanna-bycnfkakf2emg8dt.canadacentral-01.azurewebsites.net/api/greenhouses/2/measurements/latest';
-    this.greenhousesData.set(ExampleJson as unknown as GreenhousesData);
+    this.greenhousesData.set(
+      (ExampleJson as unknown as { greenhouses: GreenhousesData }).greenhouses,
+    );
 
     //TODO: If API ready to fetch data
     // this.http

@@ -1,0 +1,19 @@
+@use '../mixins' as *;
+
+:host {
+  @include icon-style;
+
+  svg path {
+    stroke: #cf3131;
+    stroke-width: 2;
+    stroke-linejoin: round;
+    fill: transparent;
+    transition:
+      fill 0.15s ease,
+      stroke 0.15s ease;
+  }
+}
+
+:host(.filled) svg path {
+  fill: #cf3131;
+}

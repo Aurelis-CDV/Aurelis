@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
-import { Close } from '../../common/icons/close/close';
+import { PopupWindow } from '../../common/popup-window/popup-window';
 import { DashboardSignalsService } from '../../services/dashboard-signals.service';
 import { GreenhousesDataService } from '../../services/data.service';
 import { WeatherApiService, WeatherSearchItem } from '../../services/weather-api.service';
@@ -11,7 +11,7 @@ import { GreenhouseData } from '../../../interfaces/greenhouses-data.interface';
 
 @Component({
   selector: 'aurelis-greenhouse-form-window',
-  imports: [CommonModule, FormsModule, Close],
+  imports: [CommonModule, FormsModule, PopupWindow],
   templateUrl: './greenhouse-form-window.html',
   styleUrl: './greenhouse-form-window.scss',
 })

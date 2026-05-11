@@ -76,7 +76,7 @@ export class AddPlantWindow {
             return;
           }
           this.resetForm();
-          this.dashboardSignalsService.setIsAddPlantWindowOpened(false);
+          this.dashboardSignalsService.setIsPlantFormWindowOpened(false);
         },
       });
   }
@@ -114,7 +114,7 @@ export class AddPlantWindow {
 
   private closeWithoutConfirm(): void {
     this.resetForm();
-    this.dashboardSignalsService.setIsAddPlantWindowOpened(false);
+    this.dashboardSignalsService.setIsPlantFormWindowOpened(false);
   }
 
   private resetForm(): void {

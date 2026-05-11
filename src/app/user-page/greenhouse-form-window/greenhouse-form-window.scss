@@ -1,270 +1,208 @@
 @use '../../../styles/margins' as margin;
 @use '../../../styles/colors' as color;
 @use '../../../styles/fonts' as font;
-@use '../../../styles/mixins' as mixin;
-
-$icon-size: 24px;
 
 :host {
-  width: 100vw;
-  height: 100vh;
+  display: contents;
+}
 
-  position: absolute;
-  top: 0;
-  left: 0;
+.greenhouse-form-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
 
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap: margin.$big;
 
-  backdrop-filter: blur(10px);
-  z-index: 999999;
+  .form-title {
+    margin: 0;
+    font-size: font.$size-mid;
+    font-weight: font.$weight-semibold;
+    color: color.$text;
+  }
 
-  .window-border {
-    @include mixin.outer-shadow;
+  .config-hint {
+    margin: 0;
+    font-size: font.$size-smallest;
+    color: color.$ashy;
 
-    width: 1000px;
-    height: 800px;
-    padding: margin.$big;
+    code {
+      font-size: 0.95em;
+    }
+  }
 
+  .form-error-banner {
+    margin: 0;
+    padding: margin.$small margin.$big;
+    border-radius: 8px;
+    background: rgba(207, 49, 49, 0.12);
+    color: color.$action-negative;
+    font-size: font.$size-small;
+  }
+
+  .greenhouse-form {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    gap: margin.$big;
+    max-width: 520px;
+  }
 
-    background: color.$logo-green;
-    border-radius: 10px;
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: margin.$smallest;
+  }
 
-    .window-wrapper {
-      width: 100%;
-      height: 100%;
-      padding: margin.$big;
+  .field-label {
+    font-size: font.$size-small;
+    font-weight: font.$weight-semibold;
+    color: color.$text;
+  }
 
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: margin.$big;
+  .field-input {
+    padding: margin.$small margin.$big;
+    border: 1px solid color.$gray;
+    border-radius: 8px;
+    font: inherit;
+    font-size: font.$size-small;
+    background: color.$white;
+    color: color.$text;
+    width: 100%;
+    box-sizing: border-box;
 
-      background: color.$dashboard-background;
-      border-radius: 10px;
+    &:focus {
+      outline: 2px solid color.$logo-blue;
+      outline-offset: 2px;
+      border-color: color.$logo-blue;
+    }
 
-      .top-bar {
-        width: 100%;
-        flex-shrink: 0;
+    &:disabled {
+      cursor: not-allowed;
+      background: color.$light-gray;
+      color: color.$ashy;
+      border-color: color.$dark-gray;
+      opacity: 0.85;
 
+      &:focus {
+        outline: none;
+        border-color: color.$dark-gray;
+      }
+    }
+  }
+
+  .field-error {
+    font-size: font.$size-smallest;
+    color: color.$action-negative;
+  }
+
+  .location-field {
+    position: relative;
+
+    .location-input-wrap {
+      position: relative;
+    }
+
+    .suggestions {
+      position: absolute;
+      z-index: 10;
+      left: 0;
+      right: 0;
+      top: calc(100% + margin.$smallest);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      max-height: 220px;
+      overflow-y: auto;
+
+      background: color.$white;
+      border: 1px solid color.$gray;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(42, 42, 42, 0.12);
+
+      li {
+        padding: margin.$small margin.$big;
+        cursor: pointer;
         display: flex;
-        justify-content: end;
+        flex-direction: column;
+        gap: margin.$smallest;
 
-        .icon-wrapper.close {
-          width: $icon-size;
-          height: $icon-size;
-          cursor: pointer;
-
-          ::ng-deep path {
-            stroke: color.$action-negative;
-          }
+        &:hover,
+        &:focus-visible {
+          background: color.$page-background;
         }
       }
 
-      .greenhouse-form-content {
-        flex: 1;
-        min-height: 0;
-        overflow: auto;
+      .suggestion-main {
+        font-size: font.$size-small;
+        font-weight: font.$weight-semibold;
+        color: color.$text;
+      }
 
-        display: flex;
-        flex-direction: column;
-        gap: margin.$big;
+      .suggestion-meta {
+        font-size: font.$size-smallest;
+        color: color.$ashy;
+      }
+    }
+  }
 
-        .form-title {
-          margin: 0;
-          font-size: font.$size-mid;
-          font-weight: font.$weight-semibold;
-          color: color.$text;
-        }
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: margin.$small;
+    margin-top: margin.$small;
+    flex-wrap: wrap;
 
-        .config-hint {
-          margin: 0;
-          font-size: font.$size-smallest;
-          color: color.$ashy;
+    &.form-actions-edit {
+      justify-content: space-between;
+    }
 
-          code {
-            font-size: 0.95em;
-          }
-        }
+    .form-actions-primary {
+      display: flex;
+      gap: margin.$small;
+      margin-left: auto;
+    }
+  }
 
-        .form-error-banner {
-          margin: 0;
-          padding: margin.$small margin.$big;
-          border-radius: 8px;
-          background: rgba(207, 49, 49, 0.12);
-          color: color.$action-negative;
-          font-size: font.$size-small;
-        }
+  .btn {
+    padding: margin.$small margin.$big;
+    border-radius: 8px;
+    font: inherit;
+    font-size: font.$size-small;
+    font-weight: font.$weight-semibold;
+    cursor: pointer;
+    border: none;
 
-        .greenhouse-form {
-          display: flex;
-          flex-direction: column;
-          gap: margin.$big;
-          max-width: 520px;
-        }
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
-        .field {
-          display: flex;
-          flex-direction: column;
-          gap: margin.$smallest;
-        }
+    &.btn-primary {
+      background: color.$logo-green;
+      color: color.$dashboard-background;
 
-        .field-label {
-          font-size: font.$size-small;
-          font-weight: font.$weight-semibold;
-          color: color.$text;
-        }
+      &:hover:not(:disabled) {
+        filter: brightness(0.95);
+      }
+    }
 
-        .field-input {
-          padding: margin.$small margin.$big;
-          border: 1px solid color.$gray;
-          border-radius: 8px;
-          font: inherit;
-          font-size: font.$size-small;
-          background: color.$white;
-          color: color.$text;
-          width: 100%;
-          box-sizing: border-box;
+    &.btn-secondary {
+      background: color.$light-gray;
+      color: color.$text;
 
-          &:focus {
-            outline: 2px solid color.$logo-blue;
-            outline-offset: 2px;
-            border-color: color.$logo-blue;
-          }
+      &:hover:not(:disabled) {
+        filter: brightness(0.97);
+      }
+    }
 
-          &:disabled {
-            cursor: not-allowed;
-            background: color.$light-gray;
-            color: color.$ashy;
-            border-color: color.$dark-gray;
-            opacity: 0.85;
+    &.btn-danger {
+      background: color.$action-negative;
+      color: color.$white;
 
-            &:focus {
-              outline: none;
-              border-color: color.$dark-gray;
-            }
-          }
-        }
-
-        .field-error {
-          font-size: font.$size-smallest;
-          color: color.$action-negative;
-        }
-
-        .location-field {
-          position: relative;
-
-          .location-input-wrap {
-            position: relative;
-          }
-
-          .suggestions {
-            position: absolute;
-            z-index: 10;
-            left: 0;
-            right: 0;
-            top: calc(100% + margin.$smallest);
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            max-height: 220px;
-            overflow-y: auto;
-
-            background: color.$white;
-            border: 1px solid color.$gray;
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(42, 42, 42, 0.12);
-
-            li {
-              padding: margin.$small margin.$big;
-              cursor: pointer;
-              display: flex;
-              flex-direction: column;
-              gap: margin.$smallest;
-
-              &:hover,
-              &:focus-visible {
-                background: color.$page-background;
-              }
-            }
-
-            .suggestion-main {
-              font-size: font.$size-small;
-              font-weight: font.$weight-semibold;
-              color: color.$text;
-            }
-
-            .suggestion-meta {
-              font-size: font.$size-smallest;
-              color: color.$ashy;
-            }
-          }
-        }
-
-        .form-actions {
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
-          gap: margin.$small;
-          margin-top: margin.$small;
-          flex-wrap: wrap;
-
-          &.form-actions-edit {
-            justify-content: space-between;
-          }
-
-          .form-actions-primary {
-            display: flex;
-            gap: margin.$small;
-            margin-left: auto;
-          }
-        }
-
-        .btn {
-          padding: margin.$small margin.$big;
-          border-radius: 8px;
-          font: inherit;
-          font-size: font.$size-small;
-          font-weight: font.$weight-semibold;
-          cursor: pointer;
-          border: none;
-
-          &:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-          }
-
-          &.btn-primary {
-            background: color.$logo-green;
-            color: color.$dashboard-background;
-
-            &:hover:not(:disabled) {
-              filter: brightness(0.95);
-            }
-          }
-
-          &.btn-secondary {
-            background: color.$light-gray;
-            color: color.$text;
-
-            &:hover:not(:disabled) {
-              filter: brightness(0.97);
-            }
-          }
-
-          &.btn-danger {
-            background: color.$action-negative;
-            color: color.$white;
-
-            &:hover:not(:disabled) {
-              filter: brightness(0.92);
-            }
-          }
-        }
+      &:hover:not(:disabled) {
+        filter: brightness(0.92);
       }
     }
   }
