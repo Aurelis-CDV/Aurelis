@@ -1,1 +1,49 @@
-<p>guides-page works!</p>
+<aurelis-top-bar></aurelis-top-bar>
+
+<main class="guides-page-content">
+  <h1>Plant Guides</h1>
+  <p class="subtitle">Search Perenual plant species and open full care details.</p>
+
+  <form class="search-form" (submit)="$event.preventDefault(); searchPlants()">
+    <input
+      type="text"
+      name="search"
+      placeholder="Search plants (e.g. Monstera, Rose, Aloe)"
+      [(ngModel)]="searchQuery"
+    />
+    <button type="submit">Search</button>
+  </form>
+
+  @if (isLoading()) {
+    <p class="status-message">Loading plants...</p>
+  } @else if (errorMessage()) {
+    <p class="status-message error">{{ errorMessage() }}</p>
+  } @else if (!plants().length) {
+    <p class="status-message">No plants found. Try another search term.</p>
+  } @else {
+    <section class="plants-grid">
+      @for (plant of plants(); track plant.id) {
+        <button class="plant-card" type="button" (click)="openPlantDetailsWindow(plant.id)">
+          <img
+            [src]="
+              plant?.default_image?.thumbnail || 'https://via.placeholder.com/250x160?text=No+Image'
+            "
+            [alt]="plant?.common_name || plant?.scientific_name?.[0] || 'Plant preview image'"
+          />
+          <div class="plant-card-body">
+            <h2>{{ plant?.common_name || 'Unnamed plant' }}</h2>
+            <p>{{ plant?.scientific_name?.[0] || 'Unknown scientific name' }}</p>
+            <span>{{ plant?.watering || 'Watering info unavailable' }}</span>
+          </div>
+        </button>
+      }
+    </section>
+    @if (lastPage() > 1) {
+      <aurelis-guides-pagination
+        [currentPage]="currentPage()"
+        [lastPage]="lastPage()"
+        (pageChange)="onPageChange($event)"
+      />
+    }
+  }
+</main>

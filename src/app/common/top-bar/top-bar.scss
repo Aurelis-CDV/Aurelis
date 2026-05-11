@@ -34,6 +34,12 @@ $image-size: 60px;
 
     .guides-btn-wrapper {
       padding: margin.$small;
+
+      a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     }
 
     [class$='-wrapper'] {
