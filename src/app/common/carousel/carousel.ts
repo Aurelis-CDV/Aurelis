@@ -16,131 +16,76 @@ export class Carousel implements AfterViewInit {
 
   public ngAfterViewInit() {
     this.getDots();
-    const items: any = this.getItems();
+    const itemsNodes: any = this.items()?.nativeElement.childNodes;
 
-    items.forEach((item: any, index: number) => {
+    itemsNodes.forEach((item: any, index: number) => {
       switch (index) {
         case 0: {
-          this.setActiveItemStyles(item);
-          break;
-        }
-        case 1: {
-          this.setPreviouslyActiveItemStyles(item);
+          item.classList?.add('active');
           break;
         }
         default: {
-          this.setInactiveItemStyles(item);
+          item.classList?.add('inActive');
         }
       }
     });
   }
 
   public prevItem() {
-    const items = this.getItems();
-
-    if (!items.length) {
-      return;
-    }
-
-    const prevIndex = this.currentIndex;
-    this.currentIndex = this.currentIndex - 1;
-
-    if (this.currentIndex < 0) {
-      this.currentIndex = this.getItemsLength() - 1;
-    }
-
-    items.forEach((item: any, index: number) => {
-      switch (index) {
-        case this.currentIndex: {
-          this.setActiveItemStyles(item);
-          break;
-        }
-        case prevIndex: {
-          this.setPreviouslyActiveItemStyles(item, '100%');
-          break;
-        }
-        default: {
-          this.setInactiveItemStyles(item, '-100%');
-        }
-      }
-    });
+    this.currentIndex--;
   }
 
   public nextItem() {
-    const items = this.getItems();
-
-    if (!items.length) {
-      return;
-    }
-
     const prevIndex = this.currentIndex;
-    this.currentIndex = this.currentIndex + 1;
+
+    this.currentIndex++;
 
     if (this.currentIndex > this.getItemsLength() - 1) {
       this.currentIndex = 0;
     }
 
-    items.forEach((item: any, index: number) => {
+    const itemsNodes: NodeListOf<ChildNode> = this.items()?.nativeElement.childNodes;
+
+    if (!itemsNodes.length) {
+      return;
+    }
+
+    itemsNodes.forEach((item: any, index: number) => {
       switch (index) {
         case this.currentIndex: {
-          this.setActiveItemStyles(item);
+          item.classList?.add('active');
+          item.classList.remove('inActive');
           break;
         }
         case prevIndex: {
-          this.setPreviouslyActiveItemStyles(item, '-100%');
-
+          item.classList?.add('prevActive');
+          item.classList?.remove('active');
           break;
         }
         default: {
-          this.setInactiveItemStyles(item, '100%');
+          item.classList?.add('inActive');
+          item.classList?.remove('prevActive');
         }
       }
     });
   }
 
+  public getItemsLength() {
+    return this.items()?.nativeElement.childElementCount;
+  }
+
   public getDots() {
     const len = this.getItemsLength();
-    const arr = [];
+    const arr = new Array(len);
 
     for (let i = 0; i < len; i++) {
-      arr.unshift(i);
+      arr[i] = i;
     }
 
     return arr;
   }
 
   public isDotActive(dot: number) {
-    return this.currentIndex === Math.abs(this.getItemsLength() - 1 - dot);
-  }
-
-  private getItemsLength() {
-    return this.items()?.nativeElement.childElementCount;
-  }
-
-  private getItems() {
-    return Array.from(this.items()?.nativeElement.childNodes).filter(
-      (item: any) => item.nodeType !== 8,
-    );
-  }
-
-  private setActiveItemStyles(item: any) {
-    item.style.left = '0';
-    item.classList?.add('active');
-    item.classList?.remove('inActive');
-    item.classList?.remove('prevActive');
-  }
-
-  private setPreviouslyActiveItemStyles(item: any, positionLeft: string = '100%') {
-    item.style.left = positionLeft;
-    item.classList?.add('prevActive');
-    item.classList?.remove('active');
-    item.classList?.remove('inActive');
-  }
-
-  private setInactiveItemStyles(item: any, positionLeft: string = '-100%') {
-    item.style.left = positionLeft;
-    item.classList?.add('inActive');
-    item.classList?.remove('prevActive');
-    item.classList?.remove('active');
+    return this.currentIndex === dot;
   }
 }

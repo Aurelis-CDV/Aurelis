@@ -5,7 +5,6 @@ export default {
       id: '1234567890',
       preview_url:
         'https://about.oceanstatejoblot.com/wp-content/uploads/2024/02/SF_HowDoGreenhousesWork_Hero.webp',
-      localisation: 'Poznan',
       params: [
         {
           name: 'humidity',
@@ -145,7 +144,6 @@ export default {
       id: '1234567891',
       preview_url:
         'https://about.oceanstatejoblot.com/wp-content/uploads/2024/02/SF_HowDoGreenhousesWork_Introduction.webp',
-      localisation: 'Wronki',
       params: [
         {
           name: 'humidity',
@@ -283,7 +281,6 @@ export default {
       name: 'Greenhouse 3',
       id: '1234567892',
       preview_url: 'https://www.mysheds.com/wp-content/uploads/2023/08/Seed-Starting.jpg',
-      localisation: 'London',
       params: [
         {
           name: 'humidity',
@@ -381,7 +378,6 @@ export default {
       id: '1234567893',
       preview_url:
         'https://fieldreport.caes.uga.edu/wp-content/uploads/2025/11/greenhouse-ventilation-heating-cooling-1500x1000px.jpg',
-      localisation: 'Amsterdam',
       params: [
         {
           name: 'humidity',
