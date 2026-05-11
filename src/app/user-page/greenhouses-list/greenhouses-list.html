@@ -17,4 +17,10 @@
       }
     </div>
   }
+
+  @if (showAddGreenhouseSlot()) {
+    <aurelis-greenhouse-preview-add-slot
+      [showLabel]="showGreenhousesPreviewNames"
+    ></aurelis-greenhouse-preview-add-slot>
+  }
 </div>

@@ -1,13 +1,14 @@
-import { AfterViewChecked, Component, ElementRef, inject } from '@angular/core';
+import { AfterViewChecked, Component, computed, ElementRef, inject } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { PlantPreview } from './plant-preview/plant-preview';
+import { PlantPreviewAddSlot } from './plant-preview-add-slot/plant-preview-add-slot';
 import { DashboardSignalsService } from '../../../services/dashboard-signals.service';
 
 const chartColor = '#6cabd7';
 
 @Component({
   selector: 'aurelis-plants-preview-list',
-  imports: [PlantPreview],
+  imports: [PlantPreview, PlantPreviewAddSlot],
   templateUrl: './plants-preview-list.html',
   styleUrl: './plants-preview-list.scss',
 })
@@ -16,12 +17,32 @@ export class PlantsPreviewList implements AfterViewChecked {
 
   private chartsPrinted: boolean = false;
 
+  private previousPlantFingerprint = '';
+
   private readonly dashboardSignalsService = inject(DashboardSignalsService);
   public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
+
+  protected readonly showAddPlantSlot = computed(
+    () => (this.greenhouseData()?.plants?.length ?? 0) < 6,
+  );
 
   constructor(private elementRef: ElementRef) {}
 
   public ngAfterViewChecked(): void {
+    const plants = this.greenhouseData()?.plants ?? [];
+    const fingerprint = plants.map((plant: { id: string }) => plant.id).join('|');
+
+    if (fingerprint !== this.previousPlantFingerprint) {
+      if (this.previousPlantFingerprint !== '') {
+        for (const chart of Object.values(this.plantPreviewChartsByPlantId)) {
+          chart.destroy();
+        }
+        this.plantPreviewChartsByPlantId = {};
+        this.chartsPrinted = false;
+      }
+      this.previousPlantFingerprint = fingerprint;
+    }
+
     if (this.chartsPrinted) {
       return;
     }

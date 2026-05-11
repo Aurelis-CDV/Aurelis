@@ -1,0 +1,57 @@
+@use '../../../../styles/colors' as color;
+@use '../../../../styles/margins' as margin;
+@use '../../../../styles/fonts' as font;
+
+:host {
+  display: block;
+
+  .greenhouse-add-slot {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: row;
+    gap: margin.$huge;
+
+    padding: 0;
+    cursor: pointer;
+    opacity: 0.6;
+
+    border: none;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: start;
+
+    &:hover,
+    &:focus-visible {
+      opacity: 1;
+      outline: none;
+    }
+
+    .greenhouse-add-slot-circle {
+      width: 70px;
+      height: 70px;
+      flex-shrink: 0;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      border: 2px dashed color.$dashboard-background;
+      border-radius: 100%;
+
+      font-size: 2rem;
+      font-weight: 300;
+      line-height: 1;
+      color: color.$dashboard-background;
+    }
+
+    .greenhouse-name-wrapper {
+      p {
+        font-size: font.$size-mid;
+        font-weight: font.$weight-semibold;
+        color: color.$dashboard-background;
+      }
+    }
+  }
+}

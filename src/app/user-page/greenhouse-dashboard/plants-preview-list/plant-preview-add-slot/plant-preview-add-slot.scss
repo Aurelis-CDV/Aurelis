@@ -1,0 +1,56 @@
+@use '../../../../../styles/margins' as margin;
+@use '../../../../../styles/colors' as color;
+@use '../../../../../styles/fonts' as font;
+@use '../../../../../styles/mixins' as mixin;
+
+:host {
+  display: block;
+  width: 100%;
+
+  .plant-preview-add-slot {
+    @include mixin.inner-shadow;
+
+    width: 100%;
+    min-height: 120px;
+    padding: margin.$big;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: margin.$small;
+
+    background: transparent;
+    border: 2px dashed color.$gray;
+    border-radius: 10px;
+
+    cursor: pointer;
+    color: color.$ashy;
+    font-family: inherit;
+    transition:
+      border-color 0.15s ease,
+      color 0.15s ease,
+      background-color 0.15s ease;
+
+    &:hover,
+    &:focus-visible {
+      border-color: color.$logo-blue;
+      color: color.$logo-blue;
+      background-color: rgba(108, 171, 215, 0.08);
+      outline: none;
+    }
+  }
+
+  .add-slot-icon {
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1;
+  }
+
+  .add-slot-label {
+    font-size: font.$size-small;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+}

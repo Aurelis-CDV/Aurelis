@@ -1,11 +1,15 @@
-import { Component, EventEmitter, inject, Output, WritableSignal } from '@angular/core';
-import { GreenhousesDataService } from '../../services/data.service';
+import { Component, computed, EventEmitter, inject, Output, WritableSignal } from '@angular/core';
+import {
+  GreenhousesDataService,
+  MAX_GREENHOUSES_IN_DASHBOARD,
+} from '../../services/data.service';
 import { GreenhousesData } from '../../../interfaces/greenhouses-data.interface';
 import { DashboardSignalsService } from '../../services/dashboard-signals.service';
+import { GreenhousePreviewAddSlot } from './greenhouse-preview-add-slot/greenhouse-preview-add-slot';
 
 @Component({
   selector: 'aurelis-greenhouses-list',
-  imports: [],
+  imports: [GreenhousePreviewAddSlot],
   templateUrl: './greenhouses-list.html',
   styleUrl: './greenhouses-list.scss',
 })
@@ -20,6 +24,10 @@ export class GreenhousesList {
   protected readonly activeGreenhouseId = this.dashboardSignalsService.getDashboardGreenhouseId();
   protected readonly greenhouses: WritableSignal<GreenhousesData> =
     this.greenhousesDataService.greenhousesData;
+
+  protected readonly showAddGreenhouseSlot = computed(
+    () => this.greenhouses().length < MAX_GREENHOUSES_IN_DASHBOARD,
+  );
 
   constructor() {}
 
