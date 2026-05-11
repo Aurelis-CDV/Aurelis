@@ -1,0 +1,72 @@
+<div class="window-border">
+  <div class="window-wrapper">
+    <div class="top-bar">
+      <div class="icon-wrapper close" (click)="close()">
+        <aurelis-close></aurelis-close>
+      </div>
+    </div>
+    <div class="add-plant-content">
+      <h2 class="form-title">Add plant</h2>
+      @if (formError) {
+        <p class="form-error-banner" role="alert">{{ formError }}</p>
+      }
+      <form class="add-plant-form" (submit)="$event.preventDefault(); addPlant()">
+        <label class="field">
+          <span class="field-label">Plant name</span>
+          <input
+            class="field-input"
+            type="text"
+            name="plantName"
+            autocomplete="off"
+            [(ngModel)]="plantName"
+            (ngModelChange)="nameError = ''"
+          />
+          @if (nameError) {
+            <span class="field-error" role="alert">{{ nameError }}</span>
+          }
+        </label>
+        <label class="field">
+          <span class="field-label">Plant ID</span>
+          <input
+            class="field-input"
+            type="text"
+            name="plantId"
+            autocomplete="off"
+            [(ngModel)]="plantId"
+            (ngModelChange)="idError = ''"
+          />
+          @if (idError) {
+            <span class="field-error" role="alert">{{ idError }}</span>
+          }
+        </label>
+        <label class="field">
+          <span class="field-label">Plant preview URL</span>
+          <input
+            class="field-input"
+            type="url"
+            name="previewUrl"
+            placeholder="https://"
+            [(ngModel)]="previewUrl"
+            (ngModelChange)="onPreviewUrlInput()"
+            (blur)="onPreviewUrlBlur()"
+          />
+          @if (previewUrlError) {
+            <span class="field-error" role="alert">{{ previewUrlError }}</span>
+          }
+        </label>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="isSubmitting()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="isSubmitting()">
+            @if (isSubmitting()) {
+              Saving…
+            } @else {
+              Add
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
