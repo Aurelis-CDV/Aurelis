@@ -10,7 +10,7 @@
       (click)="greenhousePreviewClicked(greenhouse.id)"
     >
       <img src="{{ greenhouse.preview_url }}" alt="Greenhouse preview" />
-      @if (showGreenhousesPreviewNames) {
+      @if (showGreenhousesPreviewNames || compactGreenhouseRail()) {
         <div class="greenhouse-name-wrapper">
           <p>{{ greenhouse.name }}</p>
         </div>
@@ -20,7 +20,7 @@
 
   @if (showAddGreenhouseSlot()) {
     <aurelis-greenhouse-preview-add-slot
-      [showLabel]="showGreenhousesPreviewNames"
+      [showLabel]="showGreenhousesPreviewNames || compactGreenhouseRail()"
     ></aurelis-greenhouse-preview-add-slot>
   }
 </div>

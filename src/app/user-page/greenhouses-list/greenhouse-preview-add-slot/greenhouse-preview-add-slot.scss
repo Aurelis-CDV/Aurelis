@@ -1,9 +1,11 @@
 @use '../../../../styles/colors' as color;
 @use '../../../../styles/margins' as margin;
 @use '../../../../styles/fonts' as font;
+@use '../../../../styles/breakpoints' as bp;
 
 :host {
   display: block;
+  flex-shrink: 0;
 
   .greenhouse-add-slot {
     display: flex;
@@ -11,6 +13,13 @@
     align-items: center;
     flex-direction: row;
     gap: margin.$huge;
+
+    @media (max-width: bp.$tablet) {
+      flex-direction: column;
+      gap: margin.$small;
+      align-items: center;
+      text-align: center;
+    }
 
     padding: 0;
     cursor: pointer;
@@ -33,6 +42,12 @@
       height: 70px;
       flex-shrink: 0;
 
+      @media (max-width: bp.$tablet) {
+        width: 56px;
+        height: 56px;
+        font-size: 1.5rem;
+      }
+
       display: flex;
       justify-content: center;
       align-items: center;
@@ -51,6 +66,13 @@
         font-size: font.$size-mid;
         font-weight: font.$weight-semibold;
         color: color.$dashboard-background;
+
+        @media (max-width: bp.$tablet) {
+          font-size: font.$size-small;
+          max-width: 11ch;
+          line-height: 1.25;
+          overflow-wrap: anywhere;
+        }
       }
     }
   }

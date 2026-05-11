@@ -2,8 +2,8 @@
 @use '../../../../styles/colors' as color;
 @use '../../../../styles/mixins' as mixin;
 @use '../../../../styles/fonts' as font;
+@use '../../../../styles/breakpoints' as bp;
 
-$dropdown-height: 44px;
 $plant-icon-size: 80px;
 $plant-settings-icon-size: 36px;
 
@@ -12,111 +12,195 @@ $plant-settings-icon-size: 36px;
 
   width: 100%;
   height: 100%;
+  min-width: 0;
   padding: margin.$big;
+  box-sizing: border-box;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
 
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: flex-start;
   gap: margin.$big;
 
   background: color.$white;
   border-radius: 10px;
 
-  .top-bar {
+  @media (max-width: bp.$tablet) {
+    padding: margin.$small;
+    gap: margin.$big;
+    border-radius: 8px;
+  }
+
+  .plant-summary {
+    flex-shrink: 0;
     width: 100%;
+    box-sizing: border-box;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) min-content;
+    align-items: start;
+    row-gap: margin.$big;
+    column-gap: margin.$huge;
+
+    @media (max-width: bp.$tablet) {
+      grid-template-columns: 1fr;
+      row-gap: margin.$big;
+    }
+  }
+
+  .plant-summary-details {
+    min-width: 0;
+    padding: margin.$big;
+    padding-bottom: margin.$small;
+    box-sizing: border-box;
 
     display: flex;
-    justify-content: space-between;
-    align-items: start;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: margin.$big;
 
-    .left {
-      height: 100%;
-      padding: margin.$big;
+    @media (max-width: bp.$tablet) {
+      padding: margin.$small;
+    }
 
+    .plant-edit-wrapper {
       display: flex;
-      align-items: start;
-      justify-content: start;
-      flex-direction: column;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: margin.$big;
+      width: 100%;
 
-      .plant-edit-wrapper {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        gap: margin.$big;
+      .plant-preview-image-wrapper {
+        @include mixin.button-shadow;
 
-        .plant-preview-image-wrapper {
-          @include mixin.button-shadow;
+        width: $plant-icon-size;
+        height: $plant-icon-size;
+        padding: margin.$small;
+        flex-shrink: 0;
 
-          width: $plant-icon-size;
-          height: $plant-icon-size;
-          padding: margin.$small;
+        border-radius: 100%;
+        background: color.$page-background;
 
+        @media (max-width: bp.$phone) {
+          width: min($plant-icon-size, 72px);
+          height: min($plant-icon-size, 72px);
+        }
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
           border-radius: 100%;
-          background: color.$page-background;
-
-          img {
-            width: 100%;
-            height: 100%;
-          }
         }
+      }
 
-        .plant-name-wrapper {
-          p {
-            font-size: font.$size-big;
-            font-weight: font.$weight-semibold;
-          }
-        }
+      .plant-name-wrapper {
+        flex: 1 1 140px;
+        min-width: 0;
 
-        .button-wrapper.plant-settings {
-          width: $plant-settings-icon-size;
-          height: $plant-settings-icon-size;
-          flex-shrink: 0;
-          cursor: pointer;
+        p {
+          margin: 0;
+          font-size: font.$size-big;
+          font-weight: font.$weight-semibold;
+          word-break: break-word;
+          line-height: 1.2;
 
-          ::ng-deep {
-            aurelis-settings-icon path {
-              fill: color.$logo-green;
-            }
+          @media (max-width: bp.$tablet) {
+            font-size: clamp(1.05rem, 4vw, #{font.$size-mid});
           }
         }
       }
 
-      .plant-params-wrapper {
-        padding: margin.$huge;
+      .button-wrapper.plant-settings {
+        width: $plant-settings-icon-size;
+        height: $plant-settings-icon-size;
+        flex-shrink: 0;
+        cursor: pointer;
+
+        ::ng-deep {
+          aurelis-settings-icon path {
+            fill: color.$logo-green;
+          }
+        }
       }
     }
 
-    .right {
-      .watering-calendar-wrapper {
-        max-width: fit-content;
-        max-height: fit-content;
+    .plant-params-wrapper {
+      width: 100%;
+      padding: 0 margin.$small;
+      padding-top: margin.$small;
+      box-sizing: border-box;
 
-        display: flex;
-        flex-direction: row;
+      @media (max-width: bp.$tablet) {
+        padding: margin.$big margin.$small 0 margin.$small;
+      }
+    }
 
-        .button-wrapper {
-          padding: margin.$big;
-          display: flex;
-          align-items: end;
-          flex-direction: column;
+    .plant-actions {
+      width: 100%;
 
-          button {
-            @include mixin.button-shadow;
+      .note-watering-button {
+        @include mixin.button-shadow;
 
-            padding: margin.$small;
+        padding: margin.$small margin.$big;
 
-            border: none;
-            border-radius: 10px;
-            background: color.$logo-blue;
+        border: none;
+        border-radius: 10px;
+        background: color.$logo-blue;
 
-            font-weight: font.$weight-semibold;
-            color: color.$white;
+        font-family: inherit;
+        font-weight: font.$weight-semibold;
+        color: color.$white;
 
-            cursor: pointer;
-            text-wrap: nowrap;
-          }
+        cursor: pointer;
+        text-wrap: nowrap;
+        width: fit-content;
+        max-width: 100%;
+        box-sizing: border-box;
+
+        @media (max-width: bp.$tablet) {
+          width: 100%;
+          text-align: center;
+          padding-block: 12px;
+        }
+
+        &:hover {
+          filter: brightness(1.03);
+        }
+      }
+    }
+  }
+
+  .plant-summary-calendar {
+    min-width: 0;
+
+    justify-self: end;
+    align-self: start;
+
+    ::ng-deep aurelis-calendar {
+      display: block;
+      width: max-content;
+      max-width: 100%;
+
+      .calendar {
+        min-width: 0;
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: bp.$tablet) {
+      justify-self: stretch;
+
+      ::ng-deep aurelis-calendar {
+        width: 100%;
+
+        .calendar {
+          width: 100%;
+          max-width: none;
         }
       }
     }
@@ -126,38 +210,49 @@ $plant-settings-icon-size: 36px;
     @include mixin.inner-shadow;
 
     width: 100%;
+    min-height: 0;
 
     padding: margin.$big;
     border-radius: 10px;
+    box-sizing: border-box;
 
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: end;
+    flex: 1 1 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
+    align-content: stretch;
+    row-gap: margin.$small;
+
+    min-height: 0;
     overflow: hidden;
 
-    .dropdown-wrapper {
-      select.filter-dropdown {
-        padding: margin.$small;
-        border: none;
-        color: color.$text;
-        cursor: pointer;
-        border-radius: 10px;
-        border-right: margin.$small solid transparent;
-        outline: none;
+    @media (max-width: bp.$tablet) {
+      padding: margin.$small;
+    }
 
-        &:hover {
-          @include mixin.button-shadow;
-          background: color.$page-background;
-        }
-      }
+    .dropdown-wrapper {
+      position: relative;
+      z-index: 1;
+      align-self: start;
+      justify-self: end;
+      width: min(100%, 22rem);
     }
 
     .chart-wrapper {
-      height: calc(100% - #{$dropdown-height});
-      width: 100%;
       position: relative;
-      flex-grow: 1;
+      width: 100%;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      max-height: 100%;
+      align-self: stretch;
+      box-sizing: border-box;
+      overflow: hidden;
+
+      canvas {
+        display: block;
+        max-width: 100%;
+      }
     }
   }
 }
