@@ -10,8 +10,8 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideRouter(routes),
     provideAuth0({
-      domain: 'dev-p6h7ctfzz5fdugp5.eu.auth0.com',
-      clientId: 'zz4OxoEbBVka5rCaaLv5RZ1EaFKEt8g0',
+      domain: process.env['AUTH0_DOMAIN'] || '',
+      clientId: process.env['AUTH0_CLIENT_ID'] || '',
       authorizationParams: {
         redirect_uri: window.location.origin,
       },

@@ -33,7 +33,7 @@
             ],
             "styles": ["src/styles.scss"],
             "ngxEnv": {
-              "prefix": "^(NG_APP_|GUIDES_|WEATHER_)"
+              "prefix": "^(NG_APP_|GUIDES_|WEATHER_|AUTH0_)"
             }
           },
           "configurations": {
