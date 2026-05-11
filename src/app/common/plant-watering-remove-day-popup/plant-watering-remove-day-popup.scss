@@ -1,0 +1,89 @@
+@use '../../../styles/margins' as margin;
+@use '../../../styles/colors' as color;
+@use '../../../styles/fonts' as font;
+@use '../../../styles/mixins' as mixin;
+
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 10000001;
+}
+
+.backdrop {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: margin.$big;
+  background: rgba(42, 42, 42, 0.35);
+  backdrop-filter: blur(4px);
+}
+
+.popup {
+  @include mixin.outer-shadow;
+
+  min-width: 280px;
+  max-width: 360px;
+  padding: margin.$big;
+  border-radius: 10px;
+  background: color.$white;
+  display: flex;
+  flex-direction: column;
+  gap: margin.$small;
+}
+
+.title {
+  margin: 0;
+  font-size: font.$size-mid;
+  font-weight: font.$weight-semibold;
+  color: color.$text;
+}
+
+.plant-name {
+  margin: 0;
+  font-size: font.$size-small;
+  color: color.$ashy;
+}
+
+.date-line {
+  margin: 0;
+  font-size: font.$size-small;
+  font-weight: font.$weight-semibold;
+  color: color.$text;
+}
+
+.hint {
+  margin: margin.$small 0 0;
+  font-size: font.$size-smallest;
+  color: color.$ashy;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: margin.$small;
+  flex-wrap: wrap;
+  margin-top: margin.$big;
+}
+
+.btn {
+  @include mixin.button-shadow;
+
+  padding: margin.$small margin.$big;
+  border: none;
+  border-radius: 10px;
+  font-weight: font.$weight-semibold;
+  font-size: font.$size-small;
+  cursor: pointer;
+
+  &.secondary {
+    background: color.$light-gray;
+    color: color.$text;
+  }
+
+  &.danger {
+    background: color.$action-negative;
+    color: color.$white;
+  }
+}

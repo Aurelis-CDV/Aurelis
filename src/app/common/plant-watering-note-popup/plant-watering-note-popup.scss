@@ -1,0 +1,157 @@
+@use '../../../styles/margins' as margin;
+@use '../../../styles/colors' as color;
+@use '../../../styles/fonts' as font;
+@use '../../../styles/mixins' as mixin;
+
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 10000000;
+}
+
+.backdrop {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: margin.$big;
+  background: rgba(42, 42, 42, 0.35);
+  backdrop-filter: blur(4px);
+}
+
+.popup {
+  @include mixin.outer-shadow;
+
+  min-width: 280px;
+  max-width: 360px;
+  padding: margin.$big;
+  border-radius: 10px;
+  background: color.$white;
+  display: flex;
+  flex-direction: column;
+  gap: margin.$big;
+}
+
+.title {
+  margin: 0;
+  font-size: font.$size-mid;
+  font-weight: font.$weight-semibold;
+  color: color.$text;
+}
+
+.plant-name {
+  margin: calc(-1 * #{margin.$small}) 0 0;
+  font-size: font.$size-small;
+  color: color.$ashy;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: margin.$small;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: margin.$small;
+  cursor: pointer;
+  font-size: font.$size-small;
+  color: color.$text;
+
+  input {
+    cursor: pointer;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.date-fieldset {
+  margin: margin.$small 0 0;
+  padding: 0;
+  border: none;
+
+  &.date-fieldset-locked {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+}
+
+.date-select-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: margin.$small;
+  margin-top: margin.$small;
+}
+
+.date-field {
+  display: flex;
+  flex-direction: column;
+  gap: margin.$smallest;
+  flex: 1;
+  min-width: 88px;
+  font-size: font.$size-smallest;
+  color: color.$ashy;
+}
+
+.date-field-label {
+  font-weight: font.$weight-semibold;
+}
+
+.date-select {
+  @include mixin.inner-shadow;
+
+  width: 100%;
+  padding: margin.$small margin.$big;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: font.$size-small;
+  color: color.$text;
+  background: color.$page-background;
+  cursor: pointer;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: margin.$small;
+  flex-wrap: wrap;
+}
+
+.btn {
+  @include mixin.button-shadow;
+
+  padding: margin.$small margin.$big;
+  border: none;
+  border-radius: 10px;
+  font-weight: font.$weight-semibold;
+  font-size: font.$size-small;
+  cursor: pointer;
+
+  &.secondary {
+    background: color.$light-gray;
+    color: color.$text;
+  }
+
+  &.primary {
+    background: color.$logo-blue;
+    color: color.$white;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}

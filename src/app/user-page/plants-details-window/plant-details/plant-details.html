@@ -1,3 +1,20 @@
+@if (wateringNotePopupOpen()) {
+  <aurelis-plant-watering-note-popup
+    [plant]="plant"
+    [greenhouseId]="dashboardGreenhouseId()"
+    (closed)="closeWateringNotePopup()"
+  ></aurelis-plant-watering-note-popup>
+}
+
+@if (removeWateringDayPopupDay(); as dayToRemove) {
+  <aurelis-plant-watering-remove-day-popup
+    [plant]="plant"
+    [greenhouseId]="dashboardGreenhouseId()"
+    [calendarDay]="dayToRemove"
+    (closed)="closeRemoveWateringDayPopup()"
+  ></aurelis-plant-watering-remove-day-popup>
+}
+
 <div class="top-bar">
   <div class="left">
     <div class="plant-edit-wrapper">
@@ -15,9 +32,14 @@
   <div class="right">
     <div class="watering-calendar-wrapper">
       <div class="button-wrapper">
-        <button class="note-watering-button">Note watering</button>
+        <button type="button" class="note-watering-button" (click)="openWateringNotePopup()">
+          Note watering
+        </button>
       </div>
-      <aurelis-calendar [highlightedDays]="plant.watering_history"></aurelis-calendar>
+      <aurelis-calendar
+        [highlightedDays]="plant.watering_history"
+        (wateringHighlightedDaySelected)="openRemoveWateringDayPopup($event)"
+      ></aurelis-calendar>
     </div>
   </div>
 </div>

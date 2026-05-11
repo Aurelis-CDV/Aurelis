@@ -64,6 +64,7 @@
         border-radius: 10px;
         min-height: 34px;
         color: color.$text;
+        cursor: default;
 
         &.outside-month {
           opacity: 0.45;
@@ -73,6 +74,7 @@
           background: color.$logo-blue;
           color: color.$white;
           font-weight: font.$weight-semibold;
+          cursor: pointer;
         }
 
         &.today {

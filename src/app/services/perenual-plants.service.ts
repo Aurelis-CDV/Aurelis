@@ -5,18 +5,18 @@ import {
   PerenualPlantDetails,
   PerenualPlantListResponse,
 } from '../../interfaces/perenual.interface';
+import { environment } from '../../environments/environment';
 
-const PERENUAL_API_BASE_URL = `https://perenual.com/api/`;
-const PERENUAL_API_KEY = 'sk-Ez2n69fdbc69cd10417097';
 @Injectable({
   providedIn: 'root',
 })
 export class PerenualPlantsService {
   private readonly http = inject(HttpClient);
-  private readonly apiKey = PERENUAL_API_KEY;
+  private readonly baseUrl = environment.guidesApiBaseUrl;
+  private readonly apiKey = environment.guidesApiKey;
 
   public getPlantsList(page: number = 1): Observable<PerenualPlantListResponse> {
-    return this.http.get<PerenualPlantListResponse>(`${PERENUAL_API_BASE_URL}v2/species-list`, {
+    return this.http.get<PerenualPlantListResponse>(`${this.baseUrl}v2/species-list`, {
       params: {
         key: this.apiKey,
         page: String(page),
@@ -25,7 +25,7 @@ export class PerenualPlantsService {
   }
 
   public searchPlants(query: string, page: number = 1): Observable<PerenualPlantListResponse> {
-    return this.http.get<PerenualPlantListResponse>(`${PERENUAL_API_BASE_URL}v2/species-list`, {
+    return this.http.get<PerenualPlantListResponse>(`${this.baseUrl}v2/species-list`, {
       params: {
         key: this.apiKey,
         q: query,
@@ -35,9 +35,9 @@ export class PerenualPlantsService {
   }
 
   public getPlantDetails(plantId: number): Observable<PerenualPlantDetails> {
-    console.log(`${PERENUAL_API_BASE_URL}v2/species/details/${plantId}?key=${this.apiKey}`);
+    console.log(`${this.baseUrl}v2/species/details/${plantId}?key=${this.apiKey}`);
     return this.http.get<PerenualPlantDetails>(
-      `${PERENUAL_API_BASE_URL}v2/species/details/${plantId}?key=${this.apiKey}`,
+      `${this.baseUrl}v2/species/details/${plantId}?key=${this.apiKey}`,
       {
         params: {
           key: this.apiKey,

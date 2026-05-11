@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, output, SimpleChanges } from '@angular/core';
 
 type CalendarDay = {
   dayNumber: number;
@@ -17,6 +17,8 @@ type CalendarDay = {
 })
 export class Calendar implements OnChanges {
   @Input() public highlightedDays: number[] = [];
+
+  public readonly wateringHighlightedDaySelected = output<Date>();
 
   protected readonly weekdays: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   protected visibleMonth: Date = this.getFirstDayOfMonth(new Date());
@@ -48,6 +50,16 @@ export class Calendar implements OnChanges {
 
   protected get monthLabel(): string {
     return this.visibleMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }
+
+  protected onDayCellClick(day: CalendarDay): void {
+    if (!day.isHighlighted) {
+      return;
+    }
+
+    this.wateringHighlightedDaySelected.emit(
+      new Date(day.date.getFullYear(), day.date.getMonth(), day.date.getDate()),
+    );
   }
 
   private buildCalendar(): void {

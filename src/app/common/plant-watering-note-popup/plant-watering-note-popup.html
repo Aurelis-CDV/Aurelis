@@ -1,0 +1,92 @@
+<div class="backdrop" role="presentation" (mousedown)="onBackdropMouseDown($event)">
+  <div
+    class="popup"
+    lang="en-US"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="'watering-note-title-' + plant().id"
+    (mousedown)="$event.stopPropagation()"
+  >
+    <h2 class="title" [id]="'watering-note-title-' + plant().id">Note watering</h2>
+    <p class="plant-name">{{ plant().name }}</p>
+
+    <div class="options">
+      <label class="row">
+        <input
+          type="checkbox"
+          [checked]="nowSelected()"
+          (change)="toggleNow($event)"
+        />
+        <span>Now</span>
+      </label>
+
+      <label class="row">
+        <input
+          type="checkbox"
+          [checked]="daySelectedMode()"
+          (change)="togglePickDay($event)"
+        />
+        <span>Choose day</span>
+      </label>
+
+      <fieldset
+        class="date-fieldset"
+        [class.date-fieldset-locked]="!daySelectedMode()"
+        [attr.aria-disabled]="!daySelectedMode() ? 'true' : null"
+      >
+        <legend class="fieldset-legend visually-hidden">Day of watering</legend>
+        <div class="date-select-row">
+          <label class="date-field">
+            <span class="date-field-label">Month</span>
+            <select
+              class="date-select"
+              [ngModel]="pickMonth()"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onNgModelPickMonth($event)"
+              [attr.tabindex]="daySelectedMode() ? null : -1"
+            >
+              @for (m of selectableMonths(); track m.value) {
+                <option [ngValue]="m.value">{{ m.label }}</option>
+              }
+            </select>
+          </label>
+          <label class="date-field">
+            <span class="date-field-label">Day</span>
+            <select
+              class="date-select"
+              [ngModel]="pickDay()"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onNgModelPickDay($event)"
+              [attr.tabindex]="daySelectedMode() ? null : -1"
+            >
+              @for (d of pickDayRange(); track d) {
+                <option [ngValue]="d">{{ d }}</option>
+              }
+            </select>
+          </label>
+          <label class="date-field">
+            <span class="date-field-label">Year</span>
+            <select
+              class="date-select"
+              [ngModel]="pickYear()"
+              [ngModelOptions]="{ standalone: true }"
+              (ngModelChange)="onNgModelPickYear($event)"
+              [attr.tabindex]="daySelectedMode() ? null : -1"
+            >
+              @for (y of yearRange(); track y) {
+                <option [ngValue]="y">{{ y }}</option>
+              }
+            </select>
+          </label>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn secondary" (click)="cancel()">Cancel</button>
+      <button type="button" class="btn primary" [disabled]="!canAccept()" (click)="accept()">
+        Save watering
+      </button>
+    </div>
+  </div>
+</div>
