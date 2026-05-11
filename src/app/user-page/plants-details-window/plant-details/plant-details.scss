@@ -5,6 +5,7 @@
 
 $dropdown-height: 44px;
 $plant-icon-size: 80px;
+$plant-settings-icon-size: 36px;
 
 :host {
   @include mixin.inner-shadow;
@@ -65,6 +66,19 @@ $plant-icon-size: 80px;
           p {
             font-size: font.$size-big;
             font-weight: font.$weight-semibold;
+          }
+        }
+
+        .button-wrapper.plant-settings {
+          width: $plant-settings-icon-size;
+          height: $plant-settings-icon-size;
+          flex-shrink: 0;
+          cursor: pointer;
+
+          ::ng-deep {
+            aurelis-settings-icon path {
+              fill: color.$logo-green;
+            }
           }
         }
       }

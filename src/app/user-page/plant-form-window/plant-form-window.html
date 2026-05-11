@@ -1,0 +1,113 @@
+<div class="window-border">
+  <div class="window-wrapper">
+    <div class="top-bar">
+      <div class="icon-wrapper close" (click)="close()">
+        <aurelis-close></aurelis-close>
+      </div>
+    </div>
+    <div class="plant-form-content">
+      <h2 class="form-title">
+        @if (isEditMode()) {
+          Plant settings
+        } @else {
+          Add plant
+        }
+      </h2>
+      @if (formError) {
+        <p class="form-error-banner" role="alert">{{ formError }}</p>
+      }
+      <form class="plant-form" (submit)="$event.preventDefault(); submitForm()">
+        <label class="field">
+          <span class="field-label">Plant name</span>
+          <input
+            class="field-input"
+            type="text"
+            name="plantName"
+            autocomplete="off"
+            [(ngModel)]="plantName"
+            (ngModelChange)="nameError = ''"
+          />
+          @if (nameError) {
+            <span class="field-error" role="alert">{{ nameError }}</span>
+          }
+        </label>
+        @if (isEditMode()) {
+          <label class="field">
+            <span class="field-label">Plant ID</span>
+            <input
+              class="field-input"
+              type="text"
+              name="plantIdReadonly"
+              autocomplete="off"
+              [value]="plantId"
+              disabled
+              title="Plant ID cannot be changed"
+            />
+          </label>
+        } @else {
+          <label class="field">
+            <span class="field-label">Plant ID</span>
+            <input
+              class="field-input"
+              type="text"
+              name="plantId"
+              autocomplete="off"
+              [(ngModel)]="plantId"
+              (ngModelChange)="idError = ''"
+            />
+            @if (idError) {
+              <span class="field-error" role="alert">{{ idError }}</span>
+            }
+          </label>
+        }
+        <label class="field">
+          <span class="field-label">Plant preview URL</span>
+          <input
+            class="field-input"
+            type="url"
+            name="previewUrl"
+            placeholder="https://"
+            [(ngModel)]="previewUrl"
+            (ngModelChange)="onPreviewUrlInput()"
+            (blur)="onPreviewUrlBlur()"
+          />
+          @if (previewUrlError) {
+            <span class="field-error" role="alert">{{ previewUrlError }}</span>
+          }
+        </label>
+        <div class="form-actions" [class.form-actions-edit]="isEditMode()">
+          @if (isEditMode()) {
+            <button
+              type="button"
+              class="btn btn-danger"
+              (click)="confirmDeletePlant()"
+              [disabled]="isSubmitting()"
+            >
+              Delete plant
+            </button>
+          }
+          <div class="form-actions-primary">
+            <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="isSubmitting()">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="isSubmitting()">
+              @if (isSubmitting()) {
+                @if (isEditMode()) {
+                  Saving…
+                } @else {
+                  Adding…
+                }
+              } @else {
+                @if (isEditMode()) {
+                  Save
+                } @else {
+                  Add
+                }
+              }
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

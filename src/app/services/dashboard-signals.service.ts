@@ -7,8 +7,15 @@ import { GreenhouseData } from '../../interfaces/greenhouses-data.interface';
 })
 export class DashboardSignalsService {
   private isPlantDetailsWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
-  private isAddPlantWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
-  private isAddGreenhouseWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
+  private isPlantFormWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
+  private plantFormWindowMode: WritableSignal<'add' | 'edit'> = signal<'add' | 'edit'>('add');
+  private plantFormEditPlantId: WritableSignal<string | null> = signal<string | null>(null);
+
+  private plantDetailsCarouselLayoutRevision: WritableSignal<number> = signal(0);
+  private plantDetailsFocusPlantId: WritableSignal<string | null> = signal<string | null>(null);
+
+  private isGreenhouseFormWindowOpened: WritableSignal<boolean> = signal<boolean>(false);
+  private greenhouseFormWindowMode: WritableSignal<'add' | 'edit'> = signal<'add' | 'edit'>('add');
 
   private readonly greenhousesDataService: GreenhousesDataService = inject(GreenhousesDataService);
 
@@ -44,21 +51,74 @@ export class DashboardSignalsService {
 
   public setIsPlantDetailsWindowOpened(value: boolean): void {
     this.isPlantDetailsWindowOpened.set(value);
+    if (!value) {
+      this.plantDetailsFocusPlantId.set(null);
+    }
   }
 
-  public getIsAddPlantWindowOpened(): Signal<boolean> {
-    return this.isAddPlantWindowOpened.asReadonly();
+  public getPlantDetailsFocusPlantId(): Signal<string | null> {
+    return this.plantDetailsFocusPlantId.asReadonly();
   }
 
-  public setIsAddPlantWindowOpened(value: boolean): void {
-    this.isAddPlantWindowOpened.set(value);
+  public openPlantDetailsWindow(plantId: string): void {
+    this.plantDetailsFocusPlantId.set(plantId);
+    this.isPlantDetailsWindowOpened.set(true);
   }
 
-  public getIsAddGreenhouseWindowOpened(): Signal<boolean> {
-    return this.isAddGreenhouseWindowOpened.asReadonly();
+  public getIsPlantFormWindowOpened(): Signal<boolean> {
+    return this.isPlantFormWindowOpened.asReadonly();
   }
 
-  public setIsAddGreenhouseWindowOpened(value: boolean): void {
-    this.isAddGreenhouseWindowOpened.set(value);
+  public getPlantFormWindowMode(): Signal<'add' | 'edit'> {
+    return this.plantFormWindowMode.asReadonly();
+  }
+
+  public getPlantFormEditPlantId(): Signal<string | null> {
+    return this.plantFormEditPlantId.asReadonly();
+  }
+
+  public openPlantFormWindow(
+    mode: 'add' | 'edit' = 'add',
+    editPlantId: string | null = null,
+  ): void {
+    this.plantFormWindowMode.set(mode);
+    this.plantFormEditPlantId.set(mode === 'edit' && editPlantId ? editPlantId : null);
+    this.isPlantFormWindowOpened.set(true);
+  }
+
+  public setIsPlantFormWindowOpened(value: boolean): void {
+    this.isPlantFormWindowOpened.set(value);
+    if (!value) {
+      this.plantFormWindowMode.set('add');
+      this.plantFormEditPlantId.set(null);
+    }
+  }
+
+  public getIsGreenhouseFormWindowOpened(): Signal<boolean> {
+    return this.isGreenhouseFormWindowOpened.asReadonly();
+  }
+
+  public getGreenhouseFormWindowMode(): Signal<'add' | 'edit'> {
+    return this.greenhouseFormWindowMode.asReadonly();
+  }
+
+  public openGreenhouseFormWindow(mode: 'add' | 'edit' = 'add'): void {
+    this.greenhouseFormWindowMode.set(mode);
+    this.isGreenhouseFormWindowOpened.set(true);
+  }
+
+  public setIsGreenhouseFormWindowOpened(value: boolean): void {
+    this.isGreenhouseFormWindowOpened.set(value);
+    if (!value) {
+      this.greenhouseFormWindowMode.set('add');
+    }
+  }
+
+  public getPlantDetailsCarouselLayoutRevision(): Signal<number> {
+    return this.plantDetailsCarouselLayoutRevision.asReadonly();
+  }
+
+  public notifyPlantRemovedFromGreenhouse(): void {
+    this.plantDetailsCarouselLayoutRevision.update((n) => n + 1);
   }
 }

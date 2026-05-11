@@ -1,4 +1,12 @@
-<div class="delete-button-wrapper">
+<div
+  class="delete-button-wrapper"
+  (click)="confirmDeletePlant($event)"
+  [class.disabled]="isDeleting()"
+  [attr.aria-disabled]="isDeleting()"
+  role="button"
+  tabindex="0"
+  aria-label="Delete plant"
+>
   <aurelis-trash></aurelis-trash>
 </div>
 <div class="watering-button-wrapper" (click)="openWateringNote($event)">

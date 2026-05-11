@@ -24,6 +24,9 @@
       <div class="plant-name-wrapper">
         <p>{{ plant.name }}</p>
       </div>
+      <div class="button-wrapper plant-settings" (click)="openPlantSettings()" aria-label="Plant settings">
+        <aurelis-settings-icon></aurelis-settings-icon>
+      </div>
     </div>
     <div class="plant-params-wrapper">
       <aurelis-plant-current-params [plant]="plant"></aurelis-plant-current-params>

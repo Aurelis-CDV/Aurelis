@@ -1,6 +1,7 @@
 import { AfterViewChecked, Component, ElementRef, inject, Input, signal } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { Calendar } from '../../../common/calendar/calendar';
+import { Settings } from '../../../common/icons/settings/settings';
 import { PlantData } from '../../../../interfaces/plant-data.interface';
 import { PlantCurrentParams } from '../../../common/plant-current-params/plant-current-params';
 import { Select } from '../../../common/select/select';
@@ -19,6 +20,7 @@ const textColor = '#2a2a2a';
     Select,
     PlantWateringNotePopup,
     PlantWateringRemoveDayPopup,
+    Settings,
   ],
   templateUrl: './plant-details.html',
   styleUrl: './plant-details.scss',
@@ -53,6 +55,10 @@ export class PlantDetails implements AfterViewChecked {
 
   protected closeRemoveWateringDayPopup(): void {
     this.removeWateringDayPopupDay.set(null);
+  }
+
+  protected openPlantSettings(): void {
+    this.dashboardSignalsService.openPlantFormWindow('edit', this.plant.id);
   }
 
   public ngAfterViewChecked(): void {

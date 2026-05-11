@@ -17,6 +17,14 @@ export type AddPlantResult =
       reason: 'greenhouse_not_found' | 'greenhouse_full' | 'duplicate_plant_id' | 'request_failed';
     };
 
+export type UpdatePlantResult =
+  | { ok: true }
+  | { ok: false; reason: 'greenhouse_not_found' | 'plant_not_found' | 'request_failed' };
+
+export type DeletePlantResult =
+  | { ok: true }
+  | { ok: false; reason: 'greenhouse_not_found' | 'plant_not_found' | 'request_failed' };
+
 export type AddGreenhouseResult =
   | { ok: true }
   | {
@@ -24,15 +32,34 @@ export type AddGreenhouseResult =
       reason: 'duplicate_greenhouse_id' | 'dashboard_full' | 'request_failed';
     };
 
+export type UpdateGreenhouseResult =
+  | { ok: true }
+  | { ok: false; reason: 'greenhouse_not_found' | 'request_failed' };
+
+export type DeleteGreenhouseResult =
+  | { ok: true }
+  | { ok: false; reason: 'greenhouse_not_found' | 'request_failed' };
+
 export interface CreatePlantRequestBody {
   name: string;
   id: string;
   preview_url: string;
 }
 
+export interface UpdatePlantRequestBody {
+  name: string;
+  preview_url: string;
+}
+
 export interface CreateGreenhouseRequestBody {
   name: string;
   id: string;
+  preview_url: string;
+  location: GreenhouseGeoLocation;
+}
+
+export interface UpdateGreenhouseRequestBody {
+  name: string;
   preview_url: string;
   location: GreenhouseGeoLocation;
 }
@@ -91,6 +118,67 @@ export class GreenhousesDataService {
     // );
   }
 
+  public updatePlantInGreenhouse(
+    greenhouseId: string,
+    plantId: string,
+    input: { name: string; preview_url: string },
+  ): Observable<UpdatePlantResult> {
+    const name = input.name.trim();
+    const preview_url = input.preview_url.trim();
+
+    const validation = this.validateUpdatePlant(greenhouseId, plantId, { name, preview_url });
+    if (validation) {
+      return of(validation);
+    }
+
+    //____________________________________________________________________
+    this.applyPlantUpdateLocally(greenhouseId, plantId, { name, preview_url });
+    return new BehaviorSubject<UpdatePlantResult>({ ok: true }).asObservable();
+    //____________________________________________________________________
+
+    //TODO: When API accepts plant updates
+    // const body: UpdatePlantRequestBody = { name, preview_url };
+    // const url = this.greenhouseUrl(
+    //   `greenhouses/${encodeURIComponent(greenhouseId)}/plants/${encodeURIComponent(plantId)}`,
+    // );
+    //
+    // return this.http.put(url, body).pipe(
+    //   map(() => {
+    //     this.applyPlantUpdateLocally(greenhouseId, plantId, { name, preview_url });
+    //     return { ok: true } as UpdatePlantResult;
+    //   }),
+    //   catchError(() => of({ ok: false, reason: 'request_failed' } as const)),
+    // );
+  }
+
+  public deletePlantFromGreenhouse(
+    greenhouseId: string,
+    plantId: string,
+  ): Observable<DeletePlantResult> {
+    const validation = this.validateDeletePlant(greenhouseId, plantId);
+    if (validation) {
+      return of(validation);
+    }
+
+    //____________________________________________________________________
+    this.applyPlantDeleteLocally(greenhouseId, plantId);
+    return new BehaviorSubject<DeletePlantResult>({ ok: true }).asObservable();
+    //____________________________________________________________________
+
+    //TODO: When API accepts plant deletion
+    // const url = this.greenhouseUrl(
+    //   `greenhouses/${encodeURIComponent(greenhouseId)}/plants/${encodeURIComponent(plantId)}`,
+    // );
+    //
+    // return this.http.delete(url).pipe(
+    //   map(() => {
+    //     this.applyPlantDeleteLocally(greenhouseId, plantId);
+    //     return { ok: true } as DeletePlantResult;
+    //   }),
+    //   catchError(() => of({ ok: false, reason: 'request_failed' } as const)),
+    // );
+  }
+
   public addGreenhouse(input: {
     name: string;
     id: string;
@@ -141,6 +229,68 @@ export class GreenhousesDataService {
     //       location,
     //     });
     //     return { ok: true } as AddGreenhouseResult;
+    //   }),
+    //   catchError(() => of({ ok: false, reason: 'request_failed' } as const)),
+    // );
+  }
+
+  public updateGreenhouse(
+    greenhouseId: string,
+    input: {
+      name: string;
+      preview_url: string;
+      location: GreenhouseGeoLocation;
+    },
+  ): Observable<UpdateGreenhouseResult> {
+    const name = input.name.trim();
+    const preview_url = input.preview_url.trim();
+    const location: GreenhouseGeoLocation = {
+      name: input.location.name.trim(),
+      lat: input.location.lat,
+      lon: input.location.lon,
+    };
+
+    const validation = this.validateUpdateGreenhouse(greenhouseId, { name, preview_url, location });
+    if (validation) {
+      return of(validation);
+    }
+
+    //____________________________________________________________________
+    this.applyGreenhouseUpdateLocally(greenhouseId, { name, preview_url, location });
+    return new BehaviorSubject<UpdateGreenhouseResult>({ ok: true }).asObservable();
+    //____________________________________________________________________
+
+    //TODO: When API accepts greenhouse updates
+    // const body: UpdateGreenhouseRequestBody = { name, preview_url, location };
+    // const url = this.greenhouseUrl(`greenhouses/${encodeURIComponent(greenhouseId)}`);
+    //
+    // return this.http.put(url, body).pipe(
+    //   map(() => {
+    //     this.applyGreenhouseUpdateLocally(greenhouseId, { name, preview_url, location });
+    //     return { ok: true } as UpdateGreenhouseResult;
+    //   }),
+    //   catchError(() => of({ ok: false, reason: 'request_failed' } as const)),
+    // );
+  }
+
+  public deleteGreenhouse(greenhouseId: string): Observable<DeleteGreenhouseResult> {
+    const validation = this.validateDeleteGreenhouse(greenhouseId);
+    if (validation) {
+      return of(validation);
+    }
+
+    //____________________________________________________________________
+    this.applyGreenhouseDeleteLocally(greenhouseId);
+    return new BehaviorSubject<DeleteGreenhouseResult>({ ok: true }).asObservable();
+    //____________________________________________________________________
+
+    //TODO: When API accepts greenhouse deletion
+    // const url = this.greenhouseUrl(`greenhouses/${encodeURIComponent(greenhouseId)}`);
+    //
+    // return this.http.delete(url).pipe(
+    //   map(() => {
+    //     this.applyGreenhouseDeleteLocally(greenhouseId);
+    //     return { ok: true } as DeleteGreenhouseResult;
     //   }),
     //   catchError(() => of({ ok: false, reason: 'request_failed' } as const)),
     // );
@@ -244,6 +394,68 @@ export class GreenhousesDataService {
     }
 
     return null;
+  }
+
+  private validateUpdatePlant(
+    greenhouseId: string,
+    plantId: string,
+    _fields: { name: string; preview_url: string },
+  ): UpdatePlantResult | null {
+    const greenhouses = this.greenhousesData();
+    const ghIndex = greenhouses.findIndex((gh) => gh.id === greenhouseId);
+    if (ghIndex < 0) {
+      return { ok: false, reason: 'greenhouse_not_found' };
+    }
+    const plantExists = greenhouses[ghIndex].plants.some((p) => p.id === plantId);
+    if (!plantExists) {
+      return { ok: false, reason: 'plant_not_found' };
+    }
+    return null;
+  }
+
+  private applyPlantUpdateLocally(
+    greenhouseId: string,
+    plantId: string,
+    fields: { name: string; preview_url: string },
+  ): void {
+    this.greenhousesData.update((greenhouses) =>
+      greenhouses.map((gh): GreenhouseData => {
+        if (gh.id !== greenhouseId) {
+          return gh;
+        }
+        const plants = gh.plants.map((plant): PlantData => {
+          if (plant.id !== plantId) {
+            return plant;
+          }
+          return { ...plant, name: fields.name, preview_url: fields.preview_url };
+        });
+        return { ...gh, plants };
+      }),
+    );
+  }
+
+  private validateDeletePlant(greenhouseId: string, plantId: string): DeletePlantResult | null {
+    const greenhouses = this.greenhousesData();
+    const ghIndex = greenhouses.findIndex((gh) => gh.id === greenhouseId);
+    if (ghIndex < 0) {
+      return { ok: false, reason: 'greenhouse_not_found' };
+    }
+    const plantExists = greenhouses[ghIndex].plants.some((p) => p.id === plantId);
+    if (!plantExists) {
+      return { ok: false, reason: 'plant_not_found' };
+    }
+    return null;
+  }
+
+  private applyPlantDeleteLocally(greenhouseId: string, plantId: string): void {
+    this.greenhousesData.update((greenhouses) =>
+      greenhouses.map((gh): GreenhouseData => {
+        if (gh.id !== greenhouseId) {
+          return gh;
+        }
+        return { ...gh, plants: gh.plants.filter((p) => p.id !== plantId) };
+      }),
+    );
   }
 
   private applyPlantLocally(
@@ -422,5 +634,41 @@ export class GreenhousesDataService {
     };
 
     this.greenhousesData.update((greenhouses) => [...greenhouses, newGh]);
+  }
+
+  private validateUpdateGreenhouse(
+    greenhouseId: string,
+    _fields: { name: string; preview_url: string; location: GreenhouseGeoLocation },
+  ): UpdateGreenhouseResult | null {
+    const exists = this.greenhousesData().some((gh) => gh.id === greenhouseId);
+    if (!exists) {
+      return { ok: false, reason: 'greenhouse_not_found' };
+    }
+    return null;
+  }
+
+  private applyGreenhouseUpdateLocally(
+    greenhouseId: string,
+    fields: { name: string; preview_url: string; location: GreenhouseGeoLocation },
+  ): void {
+    this.greenhousesData.update((greenhouses) =>
+      greenhouses.map((gh) =>
+        gh.id === greenhouseId
+          ? { ...gh, name: fields.name, preview_url: fields.preview_url, location: fields.location }
+          : gh,
+      ),
+    );
+  }
+
+  private validateDeleteGreenhouse(greenhouseId: string): DeleteGreenhouseResult | null {
+    const exists = this.greenhousesData().some((gh) => gh.id === greenhouseId);
+    if (!exists) {
+      return { ok: false, reason: 'greenhouse_not_found' };
+    }
+    return null;
+  }
+
+  private applyGreenhouseDeleteLocally(greenhouseId: string): void {
+    this.greenhousesData.update((greenhouses) => greenhouses.filter((gh) => gh.id !== greenhouseId));
   }
 }

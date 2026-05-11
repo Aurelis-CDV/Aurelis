@@ -3,6 +3,7 @@ import { PlantPreviewHoverMenu } from '../plant-preview-hover-menu/plant-preview
 import { PlantCurrentParams } from '../../../../common/plant-current-params/plant-current-params';
 import { PlantWateringNotePopup } from '../../../../common/plant-watering-note-popup/plant-watering-note-popup';
 import { DashboardSignalsService } from '../../../../services/dashboard-signals.service';
+import { PlantData } from '../../../../../interfaces/plant-data.interface';
 
 @Component({
   selector: 'aurelis-plant-preview',
@@ -11,7 +12,7 @@ import { DashboardSignalsService } from '../../../../services/dashboard-signals.
   styleUrl: './plant-preview.scss',
 })
 export class PlantPreview {
-  @Input() plant!: any;
+  @Input() plant!: PlantData;
 
   public showHoverMenu = signal(false);
   protected readonly wateringNotePopupOpen = signal(false);
