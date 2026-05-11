@@ -1,30 +1,62 @@
 import {
   AfterViewChecked,
   Component,
+  DestroyRef,
   ElementRef,
   inject,
   Input,
   OnChanges,
+  OnInit,
   SimpleChanges,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
 import { Chart } from 'chart.js/auto';
+import { skip } from 'rxjs/operators';
 import { Calendar } from '../../../common/calendar/calendar';
 import { Settings } from '../../../common/icons/settings/settings';
 import { PlantData } from '../../../../interfaces/plant-data.interface';
 import { PlantCurrentParams } from '../../../common/plant-current-params/plant-current-params';
-import { Select } from '../../../common/select/select';
+import { CustomSelectOption, Select } from '../../../common/select/select';
 import { PlantWateringNotePopup } from '../../../common/plant-watering-note-popup/plant-watering-note-popup';
 import { PlantWateringRemoveDayPopup } from '../../../common/plant-watering-remove-day-popup/plant-watering-remove-day-popup';
 import { DashboardSignalsService } from '../../../services/dashboard-signals.service';
+import { GreenhouseMeasurementsService } from '../../../services/greenhouse-measurements.service';
 
 const soilMoistureColor = '108, 171, 215';
 const textColor = '#2a2a2a';
+
+export type ChartRangePreset = 'last-1-hour' | 'last-24-hours' | 'last-7-days' | 'last-1-month';
+
+const RANGE_SPAN_SEC: Record<ChartRangePreset, number> = {
+  'last-1-hour': 3600,
+  'last-24-hours': 86400,
+  'last-7-days': 7 * 86400,
+  'last-1-month': 30 * 86400,
+};
+
+function isChartRangePreset(v: string): v is ChartRangePreset {
+  return (
+    v === 'last-1-hour' ||
+    v === 'last-24-hours' ||
+    v === 'last-7-days' ||
+    v === 'last-1-month'
+  );
+}
+
+/** `from` / `to` as Unix **seconds** for the measurements API. */
+function unixRangeForPreset(preset: ChartRangePreset): { from: number; to: number } {
+  const to = Math.floor(Date.now() / 1000);
+  const span = RANGE_SPAN_SEC[preset] ?? RANGE_SPAN_SEC['last-7-days'];
+  return { from: to - span, to };
+}
 
 @Component({
   selector: 'aurelis-plant-details',
   imports: [
     Calendar,
+    FormsModule,
     PlantCurrentParams,
     Select,
     PlantWateringNotePopup,
@@ -34,7 +66,7 @@ const textColor = '#2a2a2a';
   templateUrl: './plant-details.html',
   styleUrl: './plant-details.scss',
 })
-export class PlantDetails implements AfterViewChecked, OnChanges {
+export class PlantDetails implements AfterViewChecked, OnChanges, OnInit {
   @Input()
   public plant!: PlantData;
 
@@ -42,14 +74,36 @@ export class PlantDetails implements AfterViewChecked, OnChanges {
 
   private chartBoundPlantId: string | null = null;
   private lastChartFingerprint = '';
+  private chartRequestSeq = 0;
+
+  protected readonly chartRangeOptions: CustomSelectOption[] = [
+    { label: 'Last 1 hour', value: 'last-1-hour' },
+    { label: 'Last 24 hours', value: 'last-24-hours' },
+    { label: 'Last 7 days', value: 'last-7-days' },
+    { label: 'Last 1 month', value: 'last-1-month' },
+  ];
+
+  protected readonly chartRangeKey = signal<ChartRangePreset>('last-7-days');
+  protected readonly chartSoilPoints = signal<{ date: string; value: number }[]>([]);
+  protected readonly chartLoadError = signal<string | null>(null);
 
   protected readonly wateringNotePopupOpen = signal(false);
   protected readonly removeWateringDayPopupDay = signal<Date | null>(null);
 
   private readonly elementRef = inject(ElementRef);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly dashboardSignalsService = inject(DashboardSignalsService);
+  private readonly measurements = inject(GreenhouseMeasurementsService);
 
   protected readonly dashboardGreenhouseId = this.dashboardSignalsService.getDashboardGreenhouseId();
+
+  private readonly dashboardGreenhouseId$ = toObservable(this.dashboardGreenhouseId);
+
+  public ngOnInit(): void {
+    this.dashboardGreenhouseId$
+      .pipe(skip(1), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.loadChartFromApi());
+  }
 
   protected openWateringNotePopup(): void {
     this.wateringNotePopupOpen.set(true);
@@ -71,15 +125,63 @@ export class PlantDetails implements AfterViewChecked, OnChanges {
     this.dashboardSignalsService.openPlantFormWindow('edit', this.plant.id);
   }
 
+  protected onChartRangeKeyChange(value: string | number | null): void {
+    if (value === null || value === undefined) {
+      return;
+    }
+    const key = String(value);
+    if (!isChartRangePreset(key)) {
+      return;
+    }
+    this.chartRangeKey.set(key);
+    this.loadChartFromApi();
+  }
+
   public ngOnChanges(changes: SimpleChanges): void {
-    if (!changes['plant'] || changes['plant'].firstChange) {
+    if (!changes['plant']) {
       return;
     }
     this.destroyChart();
+    this.loadChartFromApi();
   }
 
   public ngAfterViewChecked(): void {
     this.syncChart();
+  }
+
+  private loadChartFromApi(): void {
+    const gh = this.dashboardGreenhouseId();
+    const plant = this.plant;
+    if (!gh || !plant?.id) {
+      this.chartSoilPoints.set([]);
+      this.chartLoadError.set(null);
+      return;
+    }
+
+    const seq = ++this.chartRequestSeq;
+    const preset = this.chartRangeKey();
+    const { from, to } = unixRangeForPreset(preset);
+    this.chartLoadError.set(null);
+
+    this.measurements
+      .fetchPlantSoilMoistureSeries(gh, plant.id, from, to)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (pts) => {
+          if (seq !== this.chartRequestSeq) {
+            return;
+          }
+          this.chartLoadError.set(null);
+          this.chartSoilPoints.set(pts);
+        },
+        error: () => {
+          if (seq !== this.chartRequestSeq) {
+            return;
+          }
+          this.chartSoilPoints.set([]);
+          this.chartLoadError.set('Could not load chart data.');
+        },
+      });
   }
 
   private destroyChart(): void {
@@ -102,9 +204,9 @@ export class PlantDetails implements AfterViewChecked, OnChanges {
       return;
     }
 
-    const history = this.plant.soil_moisture_history ?? [];
+    const history = this.chartSoilPoints();
     const last = history[history.length - 1];
-    const fingerprint = `${this.plant.id}:${history.length}:${last?.value ?? ''}`;
+    const fingerprint = `${this.plant.id}:${this.chartRangeKey()}:${history.length}:${last?.value ?? ''}`;
 
     if (
       this.chart &&

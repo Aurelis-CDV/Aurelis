@@ -1,4 +1,12 @@
-import { computed, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import {
+  computed,
+  effect,
+  inject,
+  Injectable,
+  Signal,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { GreenhousesDataService } from './data.service';
 import { GreenhouseData } from '../../interfaces/greenhouses-data.interface';
 
@@ -31,7 +39,20 @@ export class DashboardSignalsService {
         ),
   );
 
-  public constructor() {}
+  public constructor() {
+    effect(() => {
+      const list = this.greenhousesDataService.greenhousesData();
+      const current = this.dashboardGreenhouseId();
+      if (list.length === 0) {
+        return;
+      }
+      const hasCurrent = list.some((gh) => gh.id === current);
+
+      if (!hasCurrent) {
+        this.dashboardGreenhouseId.set(list[0].id);
+      }
+    });
+  }
 
   public getDashboardGreenhouseId(): Signal<string> {
     return this.dashboardGreenhouseId.asReadonly();

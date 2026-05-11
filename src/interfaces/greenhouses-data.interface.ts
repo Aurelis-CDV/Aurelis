@@ -25,7 +25,7 @@ export interface GreenhouseData {
 }
 
 export interface GreenhouseParam {
-  name: 'humidity' | 'temperature' | 'light';
+  name: string;
   current: number;
   history: Array<{
     date: string; //TODO: should be unix - number
