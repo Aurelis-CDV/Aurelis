@@ -1,11 +1,11 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnDestroy, output, signal } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthConfig, AuthConfigService, AuthService } from '@auth0/auth0-angular';
+import { AuthService } from '@auth0/auth0-angular';
 import type { User } from '@auth0/auth0-angular';
 import { finalize } from 'rxjs';
-import { auth0DatabaseConnectionName } from '../../config/auth0-database-connection';
+import { Auth0PasswordResetService } from '../../services/auth0-password-reset.service';
 import { GreenhousesDataService } from '../../services/data.service';
 import { ProfilePicturePreferenceService } from '../../services/profile-picture-preference.service';
 import { UserDataService } from '../../services/user-data.service';
@@ -28,9 +28,8 @@ export class SettingsWindow implements OnDestroy {
 
   private copyToastTimer: ReturnType<typeof setTimeout> | undefined;
 
-  private readonly http = inject(HttpClient);
   protected readonly auth = inject(AuthService);
-  private readonly auth0Config = inject(AuthConfigService) as AuthConfig;
+  private readonly auth0PasswordReset = inject(Auth0PasswordResetService);
   private readonly profilePicture = inject(ProfilePicturePreferenceService);
   private readonly userData = inject(UserDataService);
   private readonly greenhousesData = inject(GreenhousesDataService);
@@ -115,36 +114,39 @@ export class SettingsWindow implements OnDestroy {
     return resolveAuth0AvatarUrl(user, this.profilePicture.getOverrideUrl(user.sub ?? ''));
   }
 
-  protected sendPasswordResetEmail(user: User | null | undefined): void {
+  protected requestPasswordChangeViaAuth0ResetEmail(user: User | null | undefined): void {
+    if (!this.isDatabaseUser(user)) {
+      return;
+    }
     this.passwordResetMessage.set(null);
     this.passwordResetError.set(null);
+    this.triggerAuth0PasswordChangeResetEmail(user);
+  }
+
+  private triggerAuth0PasswordChangeResetEmail(user: User | null | undefined): void {
     const email = user?.email?.trim();
-    const cfg = this.auth0Config;
-    const domain = cfg.domain?.trim();
-    const clientId = cfg.clientId?.trim();
-    if (!email || !domain || !clientId) {
+    if (!email) {
       this.passwordResetError.set('Could not send reset email.');
       return;
     }
     this.passwordResetBusy.set(true);
-    const url = `https://${domain}/dbconnections/change_password`;
-    const body = {
-      client_id: clientId,
-      email,
-      connection: auth0DatabaseConnectionName(),
-    };
-    this.http
-      .post(url, body, {
-        headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-        responseType: 'text',
-      })
+    this.auth0PasswordReset
+      .sendPasswordChangeResetEmailThroughAuth0(email)
       .pipe(finalize(() => this.passwordResetBusy.set(false)))
       .subscribe({
         next: (text) => {
-          this.passwordResetMessage.set(text?.trim() || 'Check your email.');
+          this.passwordResetMessage.set(
+            text?.trim() || 'Check your email to finish changing your password.',
+          );
         },
-        error: (err: HttpErrorResponse) => {
-          this.passwordResetError.set(this.describeHttpError(err));
+        error: (err: unknown) => {
+          if (err instanceof HttpErrorResponse) {
+            this.passwordResetError.set(this.describeHttpError(err));
+            return;
+          }
+          this.passwordResetError.set(
+            err instanceof Error ? err.message : 'Could not send reset email.',
+          );
         },
       });
   }
@@ -163,7 +165,9 @@ export class SettingsWindow implements OnDestroy {
       return;
     }
     if (file.size > MAX_PROFILE_IMAGE_BYTES) {
-      this.pictureError.set(`Image must be at most ${Math.round(MAX_PROFILE_IMAGE_BYTES / 1024)} KB.`);
+      this.pictureError.set(
+        `Image must be at most ${Math.round(MAX_PROFILE_IMAGE_BYTES / 1024)} KB.`,
+      );
       return;
     }
     this.pictureBusy.set(true);
