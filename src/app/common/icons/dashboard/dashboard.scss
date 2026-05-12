@@ -1,0 +1,13 @@
+@use '../mixins' as *;
+
+:host {
+  @include icon-style;
+
+  svg path {
+    stroke: #33363f;
+    stroke-width: 2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}

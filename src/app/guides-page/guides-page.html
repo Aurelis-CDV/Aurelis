@@ -2,7 +2,7 @@
 
 <main class="guides-page-content">
   <h1>Plant Guides</h1>
-  <p class="subtitle">Search plants and diseases (Perenual). Sensor data stays on the dashboard.</p>
+  <p class="subtitle">Search plants and diseases.</p>
 
   <div class="guide-tabs" role="tablist">
     @if (isSignedIn()) {
@@ -154,11 +154,7 @@
     } @else {
       <section class="plants-grid">
         @for (disease of diseases(); track disease.id) {
-          <button
-            class="plant-card"
-            type="button"
-            (click)="openDiseaseDetailsWindow(disease.id)"
-          >
+          <button class="plant-card" type="button" (click)="openDiseaseDetailsWindow(disease.id)">
             <img
               [src]="getDiseaseThumbnail(disease)"
               [alt]="disease?.common_name || disease?.scientific_name || 'Disease preview image'"

@@ -49,6 +49,12 @@
       padding: margin.$small;
       gap: margin.$big;
     }
+
+    &--data-empty {
+      flex: 1 1 auto;
+      min-height: min(280px, 42vh);
+      display: block;
+    }
   }
 
   .dashboard-split-column--plants {

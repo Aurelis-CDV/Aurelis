@@ -1,8 +1,15 @@
-<aurelis-dashboard-top-bar></aurelis-dashboard-top-bar>
-<div class="dashboard-split">
-  <div class="dashboard-split-column dashboard-split-column--plants">
-    <aurelis-plants-preview-list></aurelis-plants-preview-list>
-    <aurelis-current-parameters></aurelis-current-parameters>
-  </div>
-  <aurelis-chart-carousel></aurelis-chart-carousel>
+@if (showDataWidgets()) {
+  <aurelis-dashboard-top-bar></aurelis-dashboard-top-bar>
+}
+<div
+  class="dashboard-split"
+  [class.dashboard-split--data-empty]="!showDataWidgets()"
+>
+  @if (showDataWidgets()) {
+    <div class="dashboard-split-column dashboard-split-column--plants">
+      <aurelis-plants-preview-list></aurelis-plants-preview-list>
+      <aurelis-current-parameters></aurelis-current-parameters>
+    </div>
+    <aurelis-chart-carousel></aurelis-chart-carousel>
+  }
 </div>

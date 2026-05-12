@@ -12,6 +12,7 @@ $weight-semibold: 600;
 $home-lock-breakpoint: 881px;
 
 :host {
+  flex-shrink: 0;
   display: block;
   box-sizing: border-box;
   width: 100%;
@@ -24,9 +25,9 @@ $home-lock-breakpoint: 881px;
   );
 
   @media (min-width: #{$home-lock-breakpoint}) {
-    height: 100vh;
-    max-height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
   }
@@ -45,24 +46,24 @@ aurelis-top-bar.home-top-bar {
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-  padding: 0 margin.$huge calc(margin.$huge * 2);
+  padding: 0 margin.$huge calc(#{margin.$huge} * 2);
 
   @media (max-width: 720px) {
-    padding: 0 margin.$big calc(margin.$huge * 1.5);
+    padding: 0 margin.$big calc(#{margin.$huge} * 1.5);
   }
 
   @media (max-width: bp.$phone) {
     padding-inline: margin.$big;
-    padding-bottom: calc(margin.$huge * 1.25);
+    padding-bottom: calc(#{margin.$huge} * 1.25);
   }
 
   @media (min-width: #{$home-lock-breakpoint}) {
-    flex: 1 1 0;
-    min-height: 0;
-    overflow: hidden;
+    flex: 1 1 auto;
+    overflow-x: hidden;
+    overflow-y: visible;
     display: flex;
     flex-direction: column;
-    padding: margin.$small margin.$huge margin.$big;
+    padding: margin.$small margin.$huge calc(#{margin.$huge} * 2 + env(safe-area-inset-bottom, 0px));
     gap: clamp(14px, 2.2vh, 28px);
     margin-bottom: 0;
   }
@@ -87,14 +88,14 @@ aurelis-top-bar.home-top-bar {
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  gap: calc(margin.$huge + margin.$big);
+  gap: calc(#{margin.$huge} + #{margin.$big});
   align-items: center;
-  padding: margin.$big 0 calc(margin.$huge * 1.25);
+  padding: margin.$big 0 calc(#{margin.$huge} * 1.25);
 
   @media (min-width: #{$home-lock-breakpoint}) {
-    flex: 1;
+    flex: 0 1 auto;
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
     gap: clamp(20px, 3vw, 48px);
     padding: 0;
     align-items: center;
@@ -117,7 +118,7 @@ aurelis-top-bar.home-top-bar {
   min-height: 0;
 
   @media (min-width: #{$home-lock-breakpoint}) {
-    overflow: hidden;
+    overflow: visible;
   }
 }
 
@@ -285,10 +286,10 @@ aurelis-top-bar.home-top-bar {
 }
 
 .trail {
-  padding: calc(margin.$huge * 1.1) 0;
+  padding: calc(#{margin.$huge} * 1.1) 0;
   border-top: 1px solid rgba(173, 193, 120, 0.45);
   border-bottom: 1px solid rgba(173, 193, 120, 0.35);
-  margin-bottom: calc(margin.$huge * 1.25);
+  margin-bottom: calc(#{margin.$huge} * 1.25);
 
   .section-heading {
     margin-bottom: margin.$big;
@@ -297,7 +298,7 @@ aurelis-top-bar.home-top-bar {
   @media (min-width: #{$home-lock-breakpoint}) {
     flex-shrink: 0;
     padding: margin.$big 0;
-    margin-bottom: 0;
+    margin-bottom: margin.$big;
 
     .section-heading {
       margin-bottom: margin.$big;
@@ -385,10 +386,10 @@ aurelis-top-bar.home-top-bar {
 .care-band {
   display: grid;
   grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.15fr);
-  gap: calc(margin.$huge + margin.$big);
+  gap: calc(#{margin.$huge} + #{margin.$big});
   align-items: center;
-  padding: calc(margin.$huge * 1.2) margin.$huge;
-  margin-bottom: calc(margin.$huge * 1.5);
+  padding: calc(#{margin.$huge} * 1.2) margin.$huge;
+  margin-bottom: calc(#{margin.$huge} * 1.5);
   border-radius: 24px;
   background: linear-gradient(135deg, color.$logo-green 0%, #3d5a4c 48%, #2f4338 100%);
   color: color.$dashboard-background;
@@ -396,7 +397,7 @@ aurelis-top-bar.home-top-bar {
 
   @media (min-width: #{$home-lock-breakpoint}) {
     flex-shrink: 0;
-    margin-bottom: 0;
+    margin-bottom: calc(#{margin.$huge} + env(safe-area-inset-bottom, 0px));
     padding: clamp(20px, 2.8vh, 36px) margin.$huge;
     gap: clamp(20px, 2.5vh, 40px);
     border-radius: 22px;
