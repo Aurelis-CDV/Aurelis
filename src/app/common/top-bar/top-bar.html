@@ -9,9 +9,21 @@
 
   <div class="right-side">
   <div class="guides-btn-wrapper">
-    <a routerLink="/guides" aria-label="Open plant guides">
-      <aurelis-book-icon></aurelis-book-icon>
-    </a>
+    @if (auth.isAuthenticated$ | async) {
+      @if (isDashboardRoute()) {
+        <a routerLink="/guides" aria-label="Open plant guides">
+          <aurelis-book-icon></aurelis-book-icon>
+        </a>
+      } @else {
+        <a routerLink="/dashboard" aria-label="Open your dashboard">
+          <aurelis-dashboard-icon></aurelis-dashboard-icon>
+        </a>
+      }
+    } @else {
+      <a routerLink="/guides" aria-label="Open plant guides">
+        <aurelis-book-icon></aurelis-book-icon>
+      </a>
+    }
   </div>
 
   @if (auth.isLoading$ | async) {
@@ -22,13 +34,9 @@
     @if (auth.isAuthenticated$ | async) {
       @if (auth.user$ | async; as user) {
         <div class="user-menu">
-          <a
-            routerLink="/dashboard"
-            class="user-menu__avatar user-btn-wrapper"
-            aria-label="Open your dashboard"
-          >
+          <div class="user-menu__avatar user-btn-wrapper" aria-label="Your account">
             <img class="user-avatar" [src]="avatarUrl(user)" width="60" height="60" alt="" />
-          </a>
+          </div>
           <div class="user-menu__dropdown" role="menu" aria-label="Account menu">
             <button type="button" class="user-menu__item" role="menuitem" (click)="openSettings()">
               Settings
