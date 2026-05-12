@@ -32,13 +32,13 @@
                 aria-label="Copy support email to clipboard"
               >
                 Copy
-              </button>
-            </span>.
+              </button> </span
+            >.
           </p>
         </section>
 
         <section class="settings-section">
-          <h3 class="settings-section-title">Password</h3>
+          <h3 class="settings-section-title">Change password</h3>
           @if (isDatabaseUser(user)) {
             @if (passwordResetMessage(); as msg) {
               <p class="settings-banner settings-banner--success" role="status">{{ msg }}</p>
@@ -50,28 +50,19 @@
               type="button"
               class="settings-btn settings-btn--primary"
               [disabled]="passwordResetBusy() || !user.email"
-              (click)="sendPasswordResetEmail(user)"
+              (click)="requestPasswordChangeViaAuth0ResetEmail(user)"
             >
               @if (passwordResetBusy()) {
-                Sending…
+                Sending email…
               } @else {
-                Send password reset email
+                Reset password
               }
             </button>
           } @else {
-            <p class="settings-contact">
-              For password help, contact
-              <span class="settings-email-row">
-                <a [href]="supportMailto">{{ supportEmail }}</a>
-                <button
-                  type="button"
-                  class="settings-copy-email"
-                  (click)="copySupportEmail($event)"
-                  aria-label="Copy support email to clipboard"
-                >
-                  Copy
-                </button>
-              </span>.
+            <p class="settings-banner settings-banner--info" role="status">
+              You are signed in with a third-party account (for example Google or Microsoft).
+              Aurelis does not store a password for this sign-in. To change your password or
+              security settings, use that provider's account page.
             </p>
           }
         </section>
@@ -80,7 +71,13 @@
           <h3 class="settings-section-title">Profile picture</h3>
           <p class="settings-contact">This picture is saved on this device only.</p>
           <div class="settings-avatar-row">
-            <img class="settings-avatar-preview" [src]="previewAvatar(user)" width="72" height="72" alt="" />
+            <img
+              class="settings-avatar-preview"
+              [src]="previewAvatar(user)"
+              width="72"
+              height="72"
+              alt=""
+            />
             <div class="settings-avatar-actions">
               <label class="settings-file-label">
                 <input
@@ -93,7 +90,11 @@
                 Choose image…
               </label>
               @if (hasProfileOverride(user)) {
-                <button type="button" class="settings-btn settings-btn--ghost" (click)="clearProfilePictureOverride(user)">
+                <button
+                  type="button"
+                  class="settings-btn settings-btn--ghost"
+                  (click)="clearProfilePictureOverride(user)"
+                >
                   Remove picture
                 </button>
               }
@@ -120,22 +121,30 @@
                 aria-label="Copy support email to clipboard"
               >
                 Copy
-              </button>
-            </span>.
+              </button> </span
+            >.
           </p>
           <p class="settings-contact">
-            You can also remove Aurelis data stored on this device and sign out (server data is unchanged).
+            You can also remove Aurelis data stored on this device and sign out (server data is
+            unchanged).
           </p>
 
           @if (!deletePanelOpen()) {
-            <button type="button" class="settings-btn settings-btn--danger" (click)="openDeletePanel()">
+            <button
+              type="button"
+              class="settings-btn settings-btn--danger"
+              (click)="openDeletePanel()"
+            >
               Remove local data &amp; sign out…
             </button>
           } @else {
             <div class="settings-delete-panel" role="group" aria-label="Confirm local data removal">
               <label class="settings-check">
                 <input type="checkbox" [(ngModel)]="deleteAcknowledged" name="deleteAck" />
-                <span>I understand this clears favorites, watering notes, and my local profile picture on this device, then signs me out.</span>
+                <span
+                  >I understand this clears favorites, watering notes, and my local profile picture
+                  on this device, then signs me out.</span
+                >
               </label>
               <div class="settings-delete-actions">
                 <button
@@ -150,7 +159,12 @@
                     Confirm &amp; sign out
                   }
                 </button>
-                <button type="button" class="settings-btn settings-btn--ghost" [disabled]="deleteBusy()" (click)="cancelDeletePanel()">
+                <button
+                  type="button"
+                  class="settings-btn settings-btn--ghost"
+                  [disabled]="deleteBusy()"
+                  (click)="cancelDeletePanel()"
+                >
                   Cancel
                 </button>
               </div>

@@ -172,6 +172,11 @@
     background: rgba(207, 49, 49, 0.12);
     color: color.$action-negative;
   }
+
+  &--info {
+    background: rgba(80, 120, 180, 0.1);
+    color: color.$ashy;
+  }
 }
 
 .settings-btn {
