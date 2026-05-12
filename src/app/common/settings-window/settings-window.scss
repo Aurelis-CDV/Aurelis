@@ -1,0 +1,21 @@
+@use '../../../styles/margins' as margin;
+@use '../../../styles/colors' as color;
+@use '../../../styles/fonts' as font;
+
+:host {
+  display: contents;
+}
+
+.settings-window-body {
+  box-sizing: border-box;
+  min-width: min(360px, 85vw);
+  min-height: 160px;
+  padding: margin.$small 0;
+}
+
+.settings-window-title {
+  margin: 0;
+  font-size: font.$size-mid;
+  font-weight: font.$weight-semibold;
+  color: color.$text;
+}

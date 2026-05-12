@@ -1,18 +1,23 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { AuthService } from '@auth0/auth0-angular';
+import type { User } from '@auth0/auth0-angular';
+import { resolveAuth0AvatarUrl } from '../../utils/resolve-auth0-avatar-url';
 import { Book } from '../icons/book/book';
+import { SettingsWindow } from '../settings-window/settings-window';
 
 @Component({
   selector: 'aurelis-top-bar',
-  imports: [Book, RouterLink, AsyncPipe],
+  imports: [Book, RouterLink, AsyncPipe, SettingsWindow],
   templateUrl: './top-bar.html',
   styleUrl: './top-bar.scss',
 })
 export class TopBar {
   protected readonly auth = inject(AuthService);
   protected readonly window = window;
+
+  protected readonly settingsOpen = signal(false);
 
   protected signUp(): void {
     this.auth.loginWithRedirect({
@@ -27,5 +32,17 @@ export class TopBar {
 
   protected logout(): void {
     this.auth.logout({ logoutParams: { returnTo: this.window.location.origin } });
+  }
+
+  protected openSettings(): void {
+    this.settingsOpen.set(true);
+  }
+
+  protected closeSettings(): void {
+    this.settingsOpen.set(false);
+  }
+
+  protected avatarUrl(user: User): string {
+    return resolveAuth0AvatarUrl(user);
   }
 }
