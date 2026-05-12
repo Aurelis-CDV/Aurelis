@@ -5,16 +5,18 @@
   <p class="subtitle">Search plants and diseases (Perenual). Sensor data stays on the dashboard.</p>
 
   <div class="guide-tabs" role="tablist">
-    <button
-      type="button"
-      role="tab"
-      class="guide-tab"
-      [class.active]="activeTab() === 'favorites'"
-      [attr.aria-selected]="activeTab() === 'favorites'"
-      (click)="selectTab('favorites')"
-    >
-      Favourite plants
-    </button>
+    @if (isSignedIn()) {
+      <button
+        type="button"
+        role="tab"
+        class="guide-tab"
+        [class.active]="activeTab() === 'favorites'"
+        [attr.aria-selected]="activeTab() === 'favorites'"
+        (click)="selectTab('favorites')"
+      >
+        Favourite plants
+      </button>
+    }
     <button
       type="button"
       role="tab"
@@ -61,8 +63,8 @@
     @if (!filteredFavoritePlants().length) {
       <p class="status-message">
         @if (!favoriteIds().length) {
-          You haven't saved any favourite plants yet. Browse the Plants tab and tap the heart on
-          any plant to add it here.
+          You haven't saved any favourite plants yet. Browse the Plants tab and tap the heart on any
+          plant to add it here.
         } @else {
           No favourite plants match your search.
         }
@@ -84,9 +86,7 @@
                 type="button"
                 class="favorite-toggle"
                 [attr.aria-label]="
-                  isPlantFavorite(plant.id)
-                    ? 'Remove from favourites'
-                    : 'Add to favourites'
+                  isPlantFavorite(plant.id) ? 'Remove from favourites' : 'Add to favourites'
                 "
                 [attr.aria-pressed]="isPlantFavorite(plant.id)"
                 (click)="toggleFavorite(plant.id, $event)"
@@ -118,19 +118,19 @@
                 "
                 [alt]="plant?.common_name || plant?.scientific_name?.[0] || 'Plant preview image'"
               />
-              <button
-                type="button"
-                class="favorite-toggle"
-                [attr.aria-label]="
-                  isPlantFavorite(plant.id)
-                    ? 'Remove from favourites'
-                    : 'Add to favourites'
-                "
-                [attr.aria-pressed]="isPlantFavorite(plant.id)"
-                (click)="toggleFavorite(plant.id, $event)"
-              >
-                <aurelis-heart-icon [filled]="isPlantFavorite(plant.id)" />
-              </button>
+              @if (isSignedIn()) {
+                <button
+                  type="button"
+                  class="favorite-toggle"
+                  [attr.aria-label]="
+                    isPlantFavorite(plant.id) ? 'Remove from favourites' : 'Add to favourites'
+                  "
+                  [attr.aria-pressed]="isPlantFavorite(plant.id)"
+                  (click)="toggleFavorite(plant.id, $event)"
+                >
+                  <aurelis-heart-icon [filled]="isPlantFavorite(plant.id)" />
+                </button>
+              }
             </div>
             <div class="plant-card-body">
               <h2>{{ plant?.common_name || 'Unnamed plant' }}</h2>
