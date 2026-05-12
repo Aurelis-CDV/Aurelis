@@ -10,6 +10,8 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { AuthService } from '@auth0/auth0-angular';
 import { finalize, forkJoin, of } from 'rxjs';
 import {
   PerenualDiseasePreview,
@@ -43,6 +45,10 @@ export type GuidesTab = 'favorites' | 'plants' | 'diseases';
 export class GuidesPage {
   private readonly perenualPlantsService = inject(PerenualPlantsService);
   private readonly userDataService = inject(UserDataService);
+  private readonly auth = inject(AuthService);
+  private readonly authLoading = toSignal(this.auth.isLoading$, { initialValue: true });
+
+  public readonly isSignedIn = this.userDataService.isSignedIn;
 
   public activeTab: WritableSignal<GuidesTab> = signal<GuidesTab>('favorites');
   public searchQuery = '';
@@ -78,6 +84,11 @@ export class GuidesPage {
 
   public constructor() {
     effect(() => {
+      if (!this.authLoading() && !this.isSignedIn() && this.activeTab() === 'favorites') {
+        untracked(() => this.selectTab('plants'));
+        return;
+      }
+
       const ids = this.favoriteIds();
       const tab = this.activeTab();
 
@@ -168,6 +179,9 @@ export class GuidesPage {
   }
 
   public selectTab(tab: GuidesTab): void {
+    if (tab === 'favorites' && !this.isSignedIn()) {
+      return;
+    }
     if (this.activeTab() === tab) {
       return;
     }

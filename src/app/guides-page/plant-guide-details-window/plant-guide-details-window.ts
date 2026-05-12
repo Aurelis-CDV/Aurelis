@@ -17,6 +17,8 @@ export class PlantGuideDetailsWindow {
   private readonly perenualPlantsService = inject(PerenualPlantsService);
   private readonly userDataService = inject(UserDataService);
 
+  public readonly isSignedIn = this.userDataService.isSignedIn;
+
   public readonly plantId = input.required<number>();
   public readonly closeWindow = output<void>();
 

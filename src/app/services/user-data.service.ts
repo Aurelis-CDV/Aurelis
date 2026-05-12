@@ -1,4 +1,12 @@
-import { effect, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import {
+  computed,
+  effect,
+  inject,
+  Injectable,
+  signal,
+  Signal,
+  WritableSignal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '@auth0/auth0-angular';
 import { distinctUntilChanged, map } from 'rxjs/operators';
@@ -29,6 +37,8 @@ export class UserDataService {
 
   public readonly favoriteIds: Signal<number[]> = this.favoritePlantIds.asReadonly();
 
+  public readonly isSignedIn: Signal<boolean> = computed(() => this.auth0Sub() !== null);
+
   public constructor() {
     effect(() => {
       this.auth0Sub();
@@ -54,11 +64,17 @@ export class UserDataService {
     if (current.includes(plantId)) {
       this.removeFavorite(plantId);
     } else {
+      if (!this.auth0Sub()) {
+        return;
+      }
       this.addFavorite(plantId);
     }
   }
 
   public addFavorite(plantId: number): void {
+    if (!this.auth0Sub()) {
+      return;
+    }
     if (this.favoritePlantIds().includes(plantId)) {
       return;
     }
