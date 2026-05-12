@@ -1,12 +1,13 @@
-<div class="left-side">
-  <a routerLink="/" class="logo-link" aria-label="Aurelis home">
-    <div class="aurelis-logo-wrapper">
-      <img id="logo" src="aurelis-logo.png" alt="Aurelis Logo" />
-    </div>
-  </a>
-</div>
+<div class="top-bar-columns">
+  <div class="left-side">
+    <a routerLink="/" class="logo-link" aria-label="Aurelis home">
+      <div class="aurelis-logo-wrapper">
+        <img id="logo" src="aurelis-logo.png" alt="Aurelis Logo" />
+      </div>
+    </a>
+  </div>
 
-<div class="right-side">
+  <div class="right-side">
   <div class="guides-btn-wrapper">
     <a routerLink="/guides" aria-label="Open plant guides">
       <aurelis-book-icon></aurelis-book-icon>
@@ -19,15 +20,34 @@
     </div>
   } @else {
     @if (auth.isAuthenticated$ | async) {
-      <div class="user-btn-wrapper">
-        <a routerLink="/dashboard" aria-label="Open your dashboard">
-          <img src="user.jpg" alt="" />
-        </a>
-      </div>
-      <button type="button" class="auth-text-btn" (click)="logout()">Log out</button>
+      @if (auth.user$ | async; as user) {
+        <div class="user-menu">
+          <a
+            routerLink="/dashboard"
+            class="user-menu__avatar user-btn-wrapper"
+            aria-label="Open your dashboard"
+          >
+            <img class="user-avatar" [src]="avatarUrl(user)" width="60" height="60" alt="" />
+          </a>
+          <div class="user-menu__dropdown" role="menu" aria-label="Account menu">
+            <button type="button" class="user-menu__item" role="menuitem" (click)="openSettings()">
+              Settings
+            </button>
+            <div class="user-menu__divider" aria-hidden="true"></div>
+            <button type="button" class="user-menu__item user-menu__item--logout" role="menuitem" (click)="logout()">
+              Log out
+            </button>
+          </div>
+        </div>
+      }
     } @else {
       <button type="button" class="auth-pill auth-pill--primary" (click)="signUp()">Sign up</button>
       <button type="button" class="auth-pill auth-pill--ghost" (click)="signIn()">Sign in</button>
     }
   }
+  </div>
 </div>
+
+@if (settingsOpen()) {
+  <aurelis-settings-window (closed)="closeSettings()" />
+}

@@ -694,6 +694,16 @@ export class GreenhousesDataService {
     } catch {}
   }
 
+  /** Clears locally persisted watering history for the current Auth0 user (this device only). */
+  public clearPersistedWateringHistory(): void {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return;
+    }
+    try {
+      window.localStorage.removeItem(this.plantWateringStorageKey);
+    } catch {}
+  }
+
   private normalizeWateringHistory(value: unknown): number[] | null {
     if (!Array.isArray(value)) {
       return null;

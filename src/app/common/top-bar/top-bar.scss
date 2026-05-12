@@ -12,20 +12,33 @@ $image-size: 60px;
   padding: margin.$big margin.$huge;
   padding-inline: clamp(12px, 4vw, #{margin.$huge});
   padding-block: clamp(12px, 3vw, margin.$big);
-  row-gap: margin.$small;
-  column-gap: margin.$big;
 
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
 
-  overflow: hidden;
+  overflow: visible;
 
   @media (min-width: #{bp.$tablet + 1px}) {
-    flex-wrap: nowrap;
     height: 150px;
     padding: margin.$big margin.$huge;
+  }
+
+  .top-bar-columns {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    row-gap: margin.$small;
+    column-gap: margin.$big;
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+
+    @media (min-width: #{bp.$tablet + 1px}) {
+      flex-wrap: nowrap;
+    }
   }
 
   .logo-link {
@@ -64,7 +77,7 @@ $image-size: 60px;
     justify-content: flex-end;
     gap: clamp(6px, 2vw, margin.$small);
 
-    img {
+    img:not(.user-avatar) {
       width: 100%;
       height: auto;
     }
@@ -81,18 +94,33 @@ $image-size: 60px;
 
     .guides-btn-wrapper,
     .user-btn-wrapper {
+      box-sizing: border-box;
       width: $image-size;
-      height: auto;
+      height: $image-size;
       min-width: $image-size;
       min-height: $image-size;
+      max-width: $image-size;
+      max-height: $image-size;
+      flex-shrink: 0;
 
       display: flex;
       justify-content: center;
       align-items: center;
 
       background: color.$dashboard-background;
-      border-radius: 100%;
+      border-radius: 50%;
       overflow: hidden;
+
+      .user-avatar {
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        min-width: 0;
+        min-height: 0;
+        object-fit: cover;
+        object-position: center;
+        display: block;
+      }
     }
 
     .auth-pill {
@@ -166,6 +194,99 @@ $image-size: 60px;
       border-radius: 50%;
       background: color.$logo-green;
       animation: auth-pulse 0.9s ease-in-out infinite alternate;
+    }
+
+    .user-menu {
+      position: relative;
+      z-index: 30;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        height: 12px;
+      }
+    }
+
+    .user-menu__avatar {
+      text-decoration: none;
+      color: inherit;
+      flex-shrink: 0;
+      align-self: flex-end;
+    }
+
+    .user-menu__dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 200px;
+      padding: margin.$small 0;
+      margin: 0;
+      list-style: none;
+
+      background: color.$dashboard-background;
+      border-radius: 12px;
+      box-shadow:
+        0 10px 28px rgba(45, 55, 50, 0.18),
+        0 1px 3px rgba(45, 55, 50, 0.08);
+      border: 1px solid rgba(173, 193, 120, 0.35);
+
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-4px);
+      pointer-events: none;
+      transition:
+        opacity 0.15s ease,
+        visibility 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    .user-menu:hover .user-menu__dropdown,
+    .user-menu:focus-within .user-menu__dropdown {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .user-menu__item {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 10px margin.$big;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      font-family: font.$family;
+      font-size: font.$size-small;
+      font-weight: font.$weight-semibold;
+      color: color.$text;
+      transition: background 0.12s ease;
+
+      &:hover {
+        background: rgba(173, 193, 120, 0.22);
+      }
+    }
+
+    .user-menu__divider {
+      height: 1px;
+      margin: margin.$small margin.$big;
+      background: rgba(173, 193, 120, 0.45);
+    }
+
+    .user-menu__item--logout {
+      color: color.$action-negative;
+
+      &:hover {
+        background: rgba(207, 49, 49, 0.1);
+      }
     }
   }
 }

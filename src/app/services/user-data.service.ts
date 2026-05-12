@@ -76,6 +76,18 @@ export class UserDataService {
     this.persistFavoritePlants(next);
   }
 
+  /** Removes persisted favorite plants for the current user namespace (this device only). */
+  public clearPersistedFavorites(): void {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      this.favoritePlantIds.set([]);
+      return;
+    }
+    try {
+      window.localStorage.removeItem(this.favoritePlantsStorageKey);
+    } catch {}
+    this.favoritePlantIds.set([]);
+  }
+
   private readFavoritePlantsFromStorage(): number[] | null {
     if (typeof window === 'undefined' || !window.localStorage) {
       return null;
