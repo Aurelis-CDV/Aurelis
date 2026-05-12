@@ -4,6 +4,7 @@ import { AsyncPipe } from '@angular/common';
 import { AuthService } from '@auth0/auth0-angular';
 import type { User } from '@auth0/auth0-angular';
 import { resolveAuth0AvatarUrl } from '../../utils/resolve-auth0-avatar-url';
+import { ProfilePicturePreferenceService } from '../../services/profile-picture-preference.service';
 import { Book } from '../icons/book/book';
 import { SettingsWindow } from '../settings-window/settings-window';
 
@@ -16,6 +17,7 @@ import { SettingsWindow } from '../settings-window/settings-window';
 export class TopBar {
   protected readonly auth = inject(AuthService);
   protected readonly window = window;
+  protected readonly profilePicturePrefs = inject(ProfilePicturePreferenceService);
 
   protected readonly settingsOpen = signal(false);
 
@@ -43,6 +45,7 @@ export class TopBar {
   }
 
   protected avatarUrl(user: User): string {
-    return resolveAuth0AvatarUrl(user);
+    this.profilePicturePrefs.avatarRevision();
+    return resolveAuth0AvatarUrl(user, this.profilePicturePrefs.getOverrideUrl(user.sub ?? ''));
   }
 }

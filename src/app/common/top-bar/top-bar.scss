@@ -77,7 +77,7 @@ $image-size: 60px;
     justify-content: flex-end;
     gap: clamp(6px, 2vw, margin.$small);
 
-    img {
+    img:not(.user-avatar) {
       width: 100%;
       height: auto;
     }
@@ -94,23 +94,31 @@ $image-size: 60px;
 
     .guides-btn-wrapper,
     .user-btn-wrapper {
+      box-sizing: border-box;
       width: $image-size;
-      height: auto;
+      height: $image-size;
       min-width: $image-size;
       min-height: $image-size;
+      max-width: $image-size;
+      max-height: $image-size;
+      flex-shrink: 0;
 
       display: flex;
       justify-content: center;
       align-items: center;
 
       background: color.$dashboard-background;
-      border-radius: 100%;
+      border-radius: 50%;
       overflow: hidden;
 
       .user-avatar {
+        box-sizing: border-box;
         width: 100%;
         height: 100%;
+        min-width: 0;
+        min-height: 0;
         object-fit: cover;
+        object-position: center;
         display: block;
       }
     }
@@ -209,6 +217,7 @@ $image-size: 60px;
       text-decoration: none;
       color: inherit;
       flex-shrink: 0;
+      align-self: flex-end;
     }
 
     .user-menu__dropdown {

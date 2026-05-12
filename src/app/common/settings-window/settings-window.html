@@ -1,5 +1,163 @@
 <aurelis-popup-window (closeWindow)="onClose()">
   <div class="settings-window-body">
     <h2 class="settings-window-title">Settings</h2>
+
+    @if (auth.user$ | async; as user) {
+      <div class="settings-sections">
+        @if (copyToast(); as toast) {
+          <p
+            class="settings-copy-toast"
+            [class.settings-copy-toast--error]="toast === 'Copy failed'"
+            role="status"
+            aria-live="polite"
+          >
+            {{ toast }}
+          </p>
+        }
+
+        <section class="settings-section">
+          <h3 class="settings-section-title">Email</h3>
+          <label class="field">
+            <span class="field-label">Current email</span>
+            <input class="field-input" type="email" [value]="user.email ?? ''" disabled />
+          </label>
+          <p class="settings-contact">
+            To change your email, contact
+            <span class="settings-email-row">
+              <a [href]="supportMailto">{{ supportEmail }}</a>
+              <button
+                type="button"
+                class="settings-copy-email"
+                (click)="copySupportEmail($event)"
+                aria-label="Copy support email to clipboard"
+              >
+                Copy
+              </button>
+            </span>.
+          </p>
+        </section>
+
+        <section class="settings-section">
+          <h3 class="settings-section-title">Password</h3>
+          @if (isDatabaseUser(user)) {
+            @if (passwordResetMessage(); as msg) {
+              <p class="settings-banner settings-banner--success" role="status">{{ msg }}</p>
+            }
+            @if (passwordResetError(); as err) {
+              <p class="settings-banner settings-banner--error" role="alert">{{ err }}</p>
+            }
+            <button
+              type="button"
+              class="settings-btn settings-btn--primary"
+              [disabled]="passwordResetBusy() || !user.email"
+              (click)="sendPasswordResetEmail(user)"
+            >
+              @if (passwordResetBusy()) {
+                Sending…
+              } @else {
+                Send password reset email
+              }
+            </button>
+          } @else {
+            <p class="settings-contact">
+              For password help, contact
+              <span class="settings-email-row">
+                <a [href]="supportMailto">{{ supportEmail }}</a>
+                <button
+                  type="button"
+                  class="settings-copy-email"
+                  (click)="copySupportEmail($event)"
+                  aria-label="Copy support email to clipboard"
+                >
+                  Copy
+                </button>
+              </span>.
+            </p>
+          }
+        </section>
+
+        <section class="settings-section">
+          <h3 class="settings-section-title">Profile picture</h3>
+          <p class="settings-contact">This picture is saved on this device only.</p>
+          <div class="settings-avatar-row">
+            <img class="settings-avatar-preview" [src]="previewAvatar(user)" width="72" height="72" alt="" />
+            <div class="settings-avatar-actions">
+              <label class="settings-file-label">
+                <input
+                  class="settings-file-input"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  [disabled]="pictureBusy()"
+                  (change)="onProfilePictureSelected($event, user)"
+                />
+                Choose image…
+              </label>
+              @if (hasProfileOverride(user)) {
+                <button type="button" class="settings-btn settings-btn--ghost" (click)="clearProfilePictureOverride(user)">
+                  Remove picture
+                </button>
+              }
+            </div>
+          </div>
+          @if (pictureBusy()) {
+            <p class="settings-status" aria-live="polite">Loading…</p>
+          }
+          @if (pictureError(); as pErr) {
+            <p class="field-error" role="alert">{{ pErr }}</p>
+          }
+        </section>
+
+        <section class="settings-section settings-section--danger">
+          <h3 class="settings-section-title">Account deletion</h3>
+          <p class="settings-contact">
+            For full account deletion, contact
+            <span class="settings-email-row">
+              <a [href]="supportMailto">{{ supportEmail }}</a>
+              <button
+                type="button"
+                class="settings-copy-email"
+                (click)="copySupportEmail($event)"
+                aria-label="Copy support email to clipboard"
+              >
+                Copy
+              </button>
+            </span>.
+          </p>
+          <p class="settings-contact">
+            You can also remove Aurelis data stored on this device and sign out (server data is unchanged).
+          </p>
+
+          @if (!deletePanelOpen()) {
+            <button type="button" class="settings-btn settings-btn--danger" (click)="openDeletePanel()">
+              Remove local data &amp; sign out…
+            </button>
+          } @else {
+            <div class="settings-delete-panel" role="group" aria-label="Confirm local data removal">
+              <label class="settings-check">
+                <input type="checkbox" [(ngModel)]="deleteAcknowledged" name="deleteAck" />
+                <span>I understand this clears favorites, watering notes, and my local profile picture on this device, then signs me out.</span>
+              </label>
+              <div class="settings-delete-actions">
+                <button
+                  type="button"
+                  class="settings-btn settings-btn--danger"
+                  [disabled]="!deleteAcknowledged || deleteBusy()"
+                  (click)="confirmDeviceRemovalAndSignOut(user)"
+                >
+                  @if (deleteBusy()) {
+                    Working…
+                  } @else {
+                    Confirm &amp; sign out
+                  }
+                </button>
+                <button type="button" class="settings-btn settings-btn--ghost" [disabled]="deleteBusy()" (click)="cancelDeletePanel()">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          }
+        </section>
+      </div>
+    }
   </div>
 </aurelis-popup-window>

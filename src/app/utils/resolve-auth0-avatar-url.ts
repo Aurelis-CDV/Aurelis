@@ -70,9 +70,16 @@ function escapeXml(s: string): string {
 }
 
 /**
- * Uses Auth0 `picture` when present; otherwise a deterministic SVG avatar from name/email/sub.
+ * Uses optional local override, then Auth0 `picture`, then a deterministic SVG avatar.
  */
-export function resolveAuth0AvatarUrl(user: Auth0AvatarUser | null | undefined): string {
+export function resolveAuth0AvatarUrl(
+  user: Auth0AvatarUser | null | undefined,
+  localPictureOverride?: string | null,
+): string {
+  const local = localPictureOverride?.trim();
+  if (local && isUsablePictureUrl(local)) {
+    return local;
+  }
   const raw = user?.picture?.trim();
   if (raw && isUsablePictureUrl(raw)) {
     return raw;

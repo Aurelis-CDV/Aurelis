@@ -1,6 +1,7 @@
 @use '../../../styles/margins' as margin;
 @use '../../../styles/colors' as color;
 @use '../../../styles/fonts' as font;
+@use '../../../styles/breakpoints' as bp;
 
 :host {
   display: contents;
@@ -8,9 +9,14 @@
 
 .settings-window-body {
   box-sizing: border-box;
-  min-width: min(360px, 85vw);
-  min-height: 160px;
+  min-width: min(400px, 88vw);
+  max-width: min(520px, 92vw);
+  min-height: 120px;
   padding: margin.$small 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: margin.$big;
 }
 
 .settings-window-title {
@@ -18,4 +24,289 @@
   font-size: font.$size-mid;
   font-weight: font.$weight-semibold;
   color: color.$text;
+}
+
+.settings-sections {
+  display: flex;
+  flex-direction: column;
+  gap: margin.$huge;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: margin.$small;
+  padding-bottom: margin.$huge;
+  border-bottom: 1px solid rgba(173, 193, 120, 0.35);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &--danger .settings-section-title {
+    color: color.$action-negative;
+  }
+}
+
+.settings-section-title {
+  margin: 0;
+  font-size: font.$size-small;
+  font-weight: font.$weight-semibold;
+  color: color.$text;
+}
+
+.settings-contact {
+  margin: 0;
+  font-size: font.$size-small;
+  line-height: 1.45;
+  color: color.$text;
+
+  a {
+    color: color.$logo-green;
+    font-weight: font.$weight-semibold;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: color.$dark-brown;
+    }
+  }
+}
+
+.settings-email-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: baseline;
+  margin-inline-start: 2px;
+}
+
+.settings-copy-email {
+  flex-shrink: 0;
+  padding: 2px 10px;
+  border-radius: 6px;
+  border: 1px solid color.$dark-green;
+  background: color.$dashboard-background;
+  color: color.$logo-green;
+  font-family: font.$family;
+  font-size: font.$size-smallest;
+  font-weight: font.$weight-semibold;
+  cursor: pointer;
+  line-height: 1.3;
+  transition: background 0.12s ease;
+
+  &:hover {
+    background: color.$light-green;
+  }
+}
+
+.settings-copy-toast {
+  margin: 0 0 margin.$small;
+  padding: margin.$small margin.$big;
+  border-radius: 8px;
+  font-size: font.$size-small;
+  font-weight: font.$weight-semibold;
+  background: rgba(77, 164, 77, 0.14);
+  color: color.$action-positive;
+
+  &--error {
+    background: rgba(207, 49, 49, 0.12);
+    color: color.$action-negative;
+  }
+}
+
+.settings-status {
+  margin: 0;
+  font-size: font.$size-smallest;
+  color: color.$ashy;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: margin.$smallest;
+}
+
+.field-label {
+  font-size: font.$size-small;
+  font-weight: font.$weight-semibold;
+  color: color.$text;
+}
+
+.field-input {
+  padding: margin.$small margin.$big;
+  border: 1px solid color.$gray;
+  border-radius: 8px;
+  font: inherit;
+  font-size: font.$size-small;
+  background: color.$light-gray;
+  color: color.$ashy;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.field-error {
+  margin: 0;
+  font-size: font.$size-smallest;
+  color: color.$action-negative;
+}
+
+.settings-banner {
+  margin: 0;
+  padding: margin.$small margin.$big;
+  border-radius: 8px;
+  font-size: font.$size-small;
+  line-height: 1.45;
+
+  &--success {
+    background: rgba(77, 164, 77, 0.12);
+    color: color.$action-positive;
+  }
+
+  &--error {
+    background: rgba(207, 49, 49, 0.12);
+    color: color.$action-negative;
+  }
+}
+
+.settings-btn {
+  align-self: flex-start;
+  border: none;
+  cursor: pointer;
+  font-family: font.$family;
+  font-size: font.$size-small;
+  font-weight: font.$weight-semibold;
+  padding: 10px 18px;
+  border-radius: 999px;
+  transition:
+    filter 0.15s ease,
+    background 0.15s ease,
+    opacity 0.15s ease;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  &--primary {
+    background: color.$logo-green;
+    color: color.$white;
+
+    &:hover:not(:disabled) {
+      filter: brightness(1.05);
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: color.$logo-green;
+    border: 1px solid color.$dark-green;
+
+    &:hover:not(:disabled) {
+      background: color.$light-green;
+    }
+  }
+
+  &--danger {
+    background: color.$action-negative;
+    color: color.$white;
+
+    &:hover:not(:disabled) {
+      filter: brightness(1.05);
+    }
+  }
+}
+
+.settings-avatar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: margin.$big;
+}
+
+.settings-avatar-preview {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(173, 193, 120, 0.5);
+  flex-shrink: 0;
+}
+
+.settings-avatar-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: margin.$small;
+}
+
+.settings-file-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: font.$size-small;
+  font-weight: font.$weight-semibold;
+  font-family: font.$family;
+  color: color.$logo-green;
+  border: 1px solid color.$dark-green;
+  background: color.$white;
+  cursor: pointer;
+  transition: background 0.12s ease;
+
+  &:hover {
+    background: color.$light-green;
+  }
+}
+
+.settings-file-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.settings-delete-panel {
+  display: flex;
+  flex-direction: column;
+  gap: margin.$big;
+  padding: margin.$big;
+  border-radius: 12px;
+  background: rgba(207, 49, 49, 0.06);
+  border: 1px solid rgba(207, 49, 49, 0.22);
+}
+
+.settings-check {
+  display: flex;
+  gap: margin.$small;
+  align-items: flex-start;
+  font-size: font.$size-smallest;
+  line-height: 1.45;
+  color: color.$text;
+  cursor: pointer;
+
+  input {
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+}
+
+.settings-delete-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: margin.$small;
+}
+
+@media (max-width: bp.$phone) {
+  .settings-window-body {
+    min-width: 0;
+    width: 100%;
+  }
 }
