@@ -2,7 +2,7 @@
 
 <main class="guides-page-content">
   <h1>Plant Guides</h1>
-  <p class="subtitle">Search plants and diseases.</p>
+  <p class="subtitle">Search plants and save favourites.</p>
 
   <div class="guide-tabs" role="tablist">
     @if (isSignedIn()) {
@@ -27,16 +27,6 @@
     >
       Plants
     </button>
-    <button
-      type="button"
-      role="tab"
-      class="guide-tab"
-      [class.active]="activeTab() === 'diseases'"
-      [attr.aria-selected]="activeTab() === 'diseases'"
-      (click)="selectTab('diseases')"
-    >
-      Diseases
-    </button>
   </div>
 
   <form class="search-form" (submit)="$event.preventDefault(); search()">
@@ -46,9 +36,7 @@
       [placeholder]="
         activeTab() === 'plants'
           ? 'Search plants (e.g. Monstera, Rose, Aloe)'
-          : activeTab() === 'diseases'
-            ? 'Search diseases (e.g. Aphids, Powdery Mildew, Rust)'
-            : 'Search your favourite plants by name'
+          : 'Search your favourite plants by name'
       "
       [(ngModel)]="searchQuery"
     />
@@ -148,33 +136,6 @@
         />
       }
     }
-  } @else {
-    @if (!diseases().length) {
-      <p class="status-message">No diseases found. Try another search term.</p>
-    } @else {
-      <section class="plants-grid">
-        @for (disease of diseases(); track disease.id) {
-          <button class="plant-card" type="button" (click)="openDiseaseDetailsWindow(disease.id)">
-            <img
-              [src]="getDiseaseThumbnail(disease)"
-              [alt]="disease?.common_name || disease?.scientific_name || 'Disease preview image'"
-            />
-            <div class="plant-card-body">
-              <h2>{{ disease?.common_name || 'Unnamed disease' }}</h2>
-              <p>{{ disease?.scientific_name || 'Unknown scientific name' }}</p>
-              <span>{{ getDiseaseShortDescription(disease) }}</span>
-            </div>
-          </button>
-        }
-      </section>
-      @if (lastPage() > 1) {
-        <aurelis-guides-pagination
-          [currentPage]="currentPage()"
-          [lastPage]="lastPage()"
-          (pageChange)="onPageChange($event)"
-        />
-      }
-    }
   }
 </main>
 
@@ -185,9 +146,3 @@
   />
 }
 
-@if (selectedDiseaseId() !== null) {
-  <aurelis-disease-guide-details-window
-    [diseaseId]="selectedDiseaseId()!"
-    (closeWindow)="closeDiseaseDetailsWindow()"
-  />
-}

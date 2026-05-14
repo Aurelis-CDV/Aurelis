@@ -5,9 +5,16 @@
 </div>
 <div class="right-side">
   <div class="buttons-wrapper">
-    <div class="button-wrapper">
+    <button
+      type="button"
+      class="button-wrapper"
+      [disabled]="isReloadingGreenhouseData()"
+      [attr.aria-busy]="isReloadingGreenhouseData()"
+      aria-label="Reload greenhouse data"
+      (click)="reloadGreenhouseData()"
+    >
       <aurelis-refresh-icon></aurelis-refresh-icon>
-    </div>
+    </button>
     <div class="button-wrapper" (click)="openGreenhouseSettings()" aria-label="Greenhouse settings">
       <aurelis-settings-icon></aurelis-settings-icon>
     </div>

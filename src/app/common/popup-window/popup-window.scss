@@ -6,7 +6,6 @@
 $icon-size: 24px;
 
 $popup-overlay-padding: #{margin.$big * 2};
-// fit-content parents make % min-width collapse to zero — carousel popups use vw below.
 
 :host {
   box-sizing: border-box;
@@ -145,6 +144,17 @@ $popup-overlay-padding: #{margin.$big * 2};
     width: $icon-size;
     height: $icon-size;
     cursor: pointer;
+    border: none;
+    background: transparent;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
 
     &.close {
       ::ng-deep path {
@@ -203,7 +213,6 @@ $popup-overlay-padding: #{margin.$big * 2};
       max-height: $carousel-h-dvh;
     }
 
-    // Carousel uses height %; outer box needs definite block size.
     ::ng-deep aurelis-carousel {
       flex: 1 1 auto;
       min-height: 0;

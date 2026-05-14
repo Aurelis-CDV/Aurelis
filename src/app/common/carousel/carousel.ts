@@ -194,10 +194,6 @@ export class Carousel implements AfterViewInit, AfterViewChecked, OnChanges {
     item.classList?.remove('active');
   }
 
-  /**
-   * Chart.js and flex layouts rely on ResizeObserver/window resize; carousel slides animate
-   * without changing outer dimensions, but we notify after layout settles (slide changes).
-   */
   private scheduleResizeNotification(): void {
     requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
   }

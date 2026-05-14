@@ -1,4 +1,11 @@
-import { AfterViewChecked, Component, DestroyRef, ElementRef, inject } from '@angular/core';
+import {
+  AfterViewChecked,
+  Component,
+  computed,
+  DestroyRef,
+  ElementRef,
+  inject,
+} from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { Carousel } from '../../../common/carousel/carousel';
 import { DashboardSignalsService } from '../../../services/dashboard-signals.service';
@@ -6,8 +13,12 @@ import { GreenhouseParam } from '../../../../interfaces/greenhouses-data.interfa
 
 const humidityColor = '108, 171, 215';
 const temperatureColor = '93, 93, 93';
-const lightColor = '255, 199, 37';
 const textColor = '#2a2a2a';
+
+const GREENHOUSE_CAROUSEL_PARAM_ORDER: ReadonlyArray<'temperature' | 'humidity'> = [
+  'temperature',
+  'humidity',
+];
 
 @Component({
   selector: 'aurelis-chart-carousel',
@@ -20,6 +31,13 @@ export class ChartCarousel implements AfterViewChecked {
   private readonly destroyRef = inject(DestroyRef);
 
   public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
+
+  protected readonly chartParams = computed(() => {
+    const params = this.greenhouseData()?.params ?? [];
+    return GREENHOUSE_CAROUSEL_PARAM_ORDER.map((name) =>
+      params.find((p) => p.name === name),
+    ).filter((p): p is GreenhouseParam => p != null);
+  });
 
   public paramCharts: { [key: string]: Chart } = {};
 
@@ -40,7 +58,7 @@ export class ChartCarousel implements AfterViewChecked {
   }
 
   private syncParamChartsWithDomAndData(): void {
-    const params = this.greenhouseData()?.params ?? [];
+    const params = this.chartParams();
 
     if (params.length === 0) {
       if (Object.keys(this.paramCharts).length > 0) {
@@ -82,9 +100,7 @@ export class ChartCarousel implements AfterViewChecked {
   }
 
   private setParamLineChart(param: GreenhouseParam) {
-    const plantCanvasEl = this.elementRef.nativeElement.querySelector(
-      `#param-chart-${param.name}`,
-    );
+    const plantCanvasEl = this.elementRef.nativeElement.querySelector(`#param-chart-${param.name}`);
 
     if (!param || !(plantCanvasEl instanceof HTMLCanvasElement)) {
       return;
@@ -92,12 +108,7 @@ export class ChartCarousel implements AfterViewChecked {
 
     const history = param.history ?? [];
 
-    const paramColor =
-      param.name === 'humidity'
-        ? humidityColor
-        : param.name === 'temperature'
-          ? temperatureColor
-          : lightColor;
+    const paramColor = param.name === 'humidity' ? humidityColor : temperatureColor;
 
     const config = {
       type: 'line',

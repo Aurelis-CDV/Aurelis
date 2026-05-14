@@ -1,7 +1,9 @@
 import {
   AfterViewChecked,
   Component,
+  computed,
   DestroyRef,
+  effect,
   ElementRef,
   inject,
   Input,
@@ -22,6 +24,7 @@ import { CustomSelectOption, Select } from '../../../common/select/select';
 import { PlantWateringNotePopup } from '../../../common/plant-watering-note-popup/plant-watering-note-popup';
 import { PlantWateringRemoveDayPopup } from '../../../common/plant-watering-remove-day-popup/plant-watering-remove-day-popup';
 import { DashboardSignalsService } from '../../../services/dashboard-signals.service';
+import { GreenhousesDataService } from '../../../services/data.service';
 import { GreenhouseMeasurementsService } from '../../../services/greenhouse-measurements.service';
 
 const soilMoistureColor = '108, 171, 215';
@@ -45,7 +48,6 @@ function isChartRangePreset(v: string): v is ChartRangePreset {
   );
 }
 
-/** `from` / `to` as Unix **seconds** for the measurements API. */
 function unixRangeForPreset(preset: ChartRangePreset): { from: number; to: number } {
   const to = Math.floor(Date.now() / 1000);
   const span = RANGE_SPAN_SEC[preset] ?? RANGE_SPAN_SEC['last-7-days'];
@@ -94,10 +96,38 @@ export class PlantDetails implements AfterViewChecked, OnChanges, OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly dashboardSignalsService = inject(DashboardSignalsService);
   private readonly measurements = inject(GreenhouseMeasurementsService);
+  private readonly greenhousesDataService = inject(GreenhousesDataService);
 
   protected readonly dashboardGreenhouseId = this.dashboardSignalsService.getDashboardGreenhouseId();
 
+  private readonly dashboardGreenhouse = this.dashboardSignalsService.getDashboardGreenhouseData();
+
+  protected readonly greenhouseClimate = computed(() => {
+    const gh = this.dashboardGreenhouse();
+    const t = gh?.params.find((p) => p.name === 'temperature')?.current;
+    const h = gh?.params.find((p) => p.name === 'humidity')?.current;
+    return {
+      temperatureC: typeof t === 'number' && Number.isFinite(t) ? t : undefined,
+      airHumidityPercent: typeof h === 'number' && Number.isFinite(h) ? h : undefined,
+    };
+  });
+
   private readonly dashboardGreenhouseId$ = toObservable(this.dashboardGreenhouseId);
+
+  private dataRevisionLatch = -1;
+
+  private readonly reloadChartWhenGreenhouseDataRefreshes = effect(() => {
+    const rev = this.greenhousesDataService.greenhouseDataRevision();
+    if (this.dataRevisionLatch < 0) {
+      this.dataRevisionLatch = rev;
+      return;
+    }
+    if (rev === this.dataRevisionLatch) {
+      return;
+    }
+    this.dataRevisionLatch = rev;
+    this.loadChartFromApi();
+  });
 
   public ngOnInit(): void {
     this.dashboardGreenhouseId$

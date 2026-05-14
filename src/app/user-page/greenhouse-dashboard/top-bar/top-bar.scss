@@ -58,6 +58,17 @@ $icon-size: 36px;
         height: $icon-size;
 
         cursor: pointer;
+        padding: 0;
+        border: none;
+        background: transparent;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        &:disabled {
+          cursor: not-allowed;
+          opacity: 0.45;
+        }
 
         ::ng-deep {
           aurelis-settings-icon path {

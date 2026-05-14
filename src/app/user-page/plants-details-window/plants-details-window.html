@@ -1,4 +1,9 @@
-<aurelis-popup-window [showRefresh]="true" (closeWindow)="hidePlantDetailsWindow()">
+<aurelis-popup-window
+  [showRefresh]="true"
+  [refreshDisabled]="greenhousesDataService.isLoading()"
+  (closeWindow)="hidePlantDetailsWindow()"
+  (refreshClick)="reloadGreenhouseDataFromDetails()"
+>
   <aurelis-carousel
     [currentIndex]="plantDetailsCarouselInitialIndex()"
     [layoutRevision]="plantDetailsCarouselLayoutRevision()"

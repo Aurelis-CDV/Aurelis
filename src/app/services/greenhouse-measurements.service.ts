@@ -4,7 +4,6 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
-/** Row from `GET /api/greenhouses/{id}/measurements` (API uses PascalCase). */
 export interface GreenhouseMeasurementDto {
   SensorCode?: string;
   SensorType?: string;
@@ -14,7 +13,6 @@ export interface GreenhouseMeasurementDto {
 
 export type PlantSoilChartPoint = { date: string; value: number };
 
-/** Map app `plant.id` to API `SensorCode` (e.g. `1` → `soil_moisture_1`). Returns `null` if no sensor can be inferred. */
 export function soilMoistureSensorCodeForPlantId(plantId: string): string | null {
   const t = plantId.trim();
   if (/^\d+$/.test(t)) {
@@ -37,10 +35,6 @@ export function soilMoistureSensorCodeForPlantId(plantId: string): string | null
 export class GreenhouseMeasurementsService {
   private readonly http = inject(HttpClient);
 
-  /**
-   * Soil moisture time series for one plant slot. Uses `from` / `to` as **Unix seconds** (API contract).
-   * Filters `sensor_type=soil_moisture` then keeps rows whose `SensorCode` matches the plant’s sensor.
-   */
   public fetchPlantSoilMoistureSeries(
     greenhouseId: string,
     plantId: string,

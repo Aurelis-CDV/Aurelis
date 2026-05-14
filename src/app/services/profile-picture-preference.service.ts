@@ -8,7 +8,6 @@ const STORAGE_PREFIX = 'aurelis.profile_picture_override.';
 export class ProfilePicturePreferenceService {
   private readonly revision = signal(0);
 
-  /** Bumps when local override changes so avatars refresh without full reload. */
   public readonly avatarRevision = this.revision.asReadonly();
 
   public getOverrideUrl(sub: string): string | null {

@@ -2,9 +2,16 @@
   <div class="window-wrapper">
     <div class="top-bar">
       @if (showRefresh()) {
-        <div class="icon-wrapper refresh" (click)="onRefresh()">
+        <button
+          type="button"
+          class="icon-wrapper refresh"
+          [disabled]="refreshDisabled()"
+          [attr.aria-busy]="refreshDisabled()"
+          aria-label="Reload greenhouse data"
+          (click)="onRefresh()"
+        >
           <aurelis-refresh-icon></aurelis-refresh-icon>
-        </div>
+        </button>
       }
       <div class="icon-wrapper close" (click)="onClose()">
         <aurelis-close></aurelis-close>

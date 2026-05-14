@@ -1,4 +1,3 @@
-/** Minimal Auth0 user fields used for avatar resolution. */
 export type Auth0AvatarUser = {
   picture?: string;
   name?: string;
@@ -69,9 +68,6 @@ function escapeXml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-/**
- * Uses optional local override, then Auth0 `picture`, then a deterministic SVG avatar.
- */
 export function resolveAuth0AvatarUrl(
   user: Auth0AvatarUser | null | undefined,
   localPictureOverride?: string | null,

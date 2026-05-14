@@ -12,7 +12,6 @@ import { AuthService } from '@auth0/auth0-angular';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 
 const FAVORITE_PLANTS_STORAGE_KEY_PREFIX = 'aurelis.favorite_plants';
-/** Namespace for keys when Auth0 has not yet emitted a user (or user is logged out). */
 const UNAUTHENTICATED_STORAGE_NS = 'unauthenticated';
 
 @Injectable({
@@ -92,7 +91,6 @@ export class UserDataService {
     this.persistFavoritePlants(next);
   }
 
-  /** Removes persisted favorite plants for the current user namespace (this device only). */
   public clearPersistedFavorites(): void {
     if (typeof window === 'undefined' || !window.localStorage) {
       this.favoritePlantIds.set([]);

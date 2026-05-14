@@ -55,6 +55,31 @@ $params-icon-size: 24px;
         gap: margin.$small;
         flex-direction: row;
       }
+
+      .metric-body {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .metric-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: color.$ashy;
+        min-width: 2.25rem;
+      }
+
+      .metric-value {
+        margin: 0;
+        min-width: 2.75rem;
+      }
+
+      .param-wrapper--condition .condition-value-wrapper p {
+        max-width: 9rem;
+      }
     }
   }
 
