@@ -14,26 +14,26 @@
   display: flex;
   flex-direction: column;
 
-  padding: margin.$huge;
+  padding: margin.$big;
 
   @media (max-width: bp.$dashboard-compact) {
-    padding: margin.$big;
+    padding: margin.$small;
   }
 
   @media (max-width: bp.$narrow) {
-    padding: margin.$big;
+    padding: margin.$small;
   }
 
   @media (max-width: bp.$tablet) {
     max-width: none;
-    padding: margin.$big;
+    padding: margin.$small;
     min-height: 0;
     flex: 1 1 auto;
     height: auto;
   }
 
   @media (max-width: bp.$phone) {
-    padding: margin.$small margin.$smallest;
+    padding: margin.$smallest margin.$smallest;
   }
 
   .dashboard-split {
@@ -41,31 +41,31 @@
     grid-template-columns: 1fr;
     grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
     align-items: stretch;
-    gap: margin.$huge;
-    padding: margin.$huge;
+    gap: margin.$big;
+    padding: margin.$big;
     flex: 1 1 auto;
     min-height: 0;
     min-width: 0;
     box-sizing: border-box;
 
     @media (max-width: bp.$dashboard-compact) {
-      padding: margin.$big;
-      gap: margin.$big;
+      padding: margin.$small;
+      gap: margin.$small;
     }
 
     @media (max-width: bp.$narrow) {
-      padding: margin.$big;
-      gap: margin.$big;
+      padding: margin.$small;
+      gap: margin.$small;
     }
 
     @media (max-width: bp.$phone) {
-      padding: margin.$small;
-      gap: margin.$big;
+      padding: margin.$smallest;
+      gap: margin.$small;
     }
 
     &--data-empty {
       flex: 1 1 auto;
-      min-height: min(280px, 42vh);
+      min-height: min(240px, 36vh);
       display: block;
     }
   }
@@ -74,13 +74,13 @@
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    gap: margin.$huge;
+    gap: margin.$big;
     min-width: 0;
     min-height: 0;
     overflow: hidden;
 
     @media (max-width: bp.$dashboard-compact) {
-      gap: margin.$big;
+      gap: margin.$small;
     }
 
     > aurelis-plants-preview-list {
@@ -90,7 +90,7 @@
 
     > aurelis-current-parameters {
       flex: 0 0 auto;
-      width: clamp(220px, 24vw, 320px);
+      width: clamp(200px, 22vw, 280px);
       max-width: 100%;
       min-height: 0;
     }
@@ -99,7 +99,7 @@
       flex-direction: column;
       align-items: stretch;
       overflow: visible;
-      gap: margin.$big;
+      gap: margin.$small;
 
       > aurelis-current-parameters {
         flex: none;

@@ -3,7 +3,7 @@
 @use '../../../../styles/colors' as color;
 @use '../../../../styles/breakpoints' as bp;
 
-$icon-size: 36px;
+$icon-size: 32px;
 
 :host {
   flex-shrink: 0;
@@ -13,7 +13,7 @@ $icon-size: 36px;
   flex-direction: row;
   flex-wrap: wrap;
   gap: margin.$small;
-  row-gap: margin.$big;
+  row-gap: margin.$small;
 
   @media (max-width: bp.$tablet) {
     align-items: center;
@@ -24,18 +24,22 @@ $icon-size: 36px;
     min-width: 0;
 
     .greenhouse-name-wrapper {
-      padding: margin.$huge;
+      padding: margin.$big;
+
+      @media (max-width: bp.$dashboard-compact) {
+        padding: margin.$small;
+      }
 
       @media (max-width: bp.$dashboard-compact) {
         padding: margin.$big;
       }
 
       @media (max-width: bp.$narrow) {
-        padding: margin.$big;
+        padding: margin.$small;
       }
 
       @media (max-width: bp.$tablet) {
-        padding: margin.$big margin.$small margin.$big margin.$big;
+        padding: margin.$small margin.$smallest margin.$small margin.$small;
       }
 
       p {
