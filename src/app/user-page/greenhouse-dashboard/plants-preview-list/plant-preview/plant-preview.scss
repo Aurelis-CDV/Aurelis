@@ -111,6 +111,30 @@ $plant-icon-size: 36px;
     }
   }
 
+  @media (max-width: bp.$tablet) {
+    height: auto;
+    min-height: 0;
+
+    .plant-preview-wrapper {
+      height: auto;
+      min-height: 0;
+      flex: 0 1 auto;
+      overflow: visible;
+
+      .right-side {
+        flex: 1 1 auto;
+        min-height: 0;
+        width: 100%;
+
+        .chart-wrapper {
+          flex: 0 0 auto;
+          min-height: min(140px, 32svh);
+          max-height: none;
+        }
+      }
+    }
+  }
+
   @media (max-width: bp.$phone) {
     $plant-icon-size: 28px;
 

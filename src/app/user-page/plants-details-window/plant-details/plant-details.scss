@@ -31,6 +31,9 @@ $plant-settings-icon-size: 36px;
     padding: margin.$small;
     gap: margin.$big;
     border-radius: 8px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
   }
 
   .plant-summary {
@@ -228,6 +231,11 @@ $plant-settings-icon-size: 36px;
 
     @media (max-width: bp.$tablet) {
       padding: margin.$small;
+      flex: 0 0 auto;
+      grid-template-rows: auto auto;
+      align-content: start;
+      overflow: visible;
+      min-height: auto;
     }
 
     .dropdown-wrapper {
@@ -252,6 +260,13 @@ $plant-settings-icon-size: 36px;
       canvas {
         display: block;
         max-width: 100%;
+      }
+
+      @media (max-width: bp.$tablet) {
+        min-height: min(240px, max(200px, 42svh));
+        height: auto;
+        max-height: none;
+        overflow: visible;
       }
     }
   }

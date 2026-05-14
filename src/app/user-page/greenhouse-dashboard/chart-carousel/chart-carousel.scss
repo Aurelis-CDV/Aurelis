@@ -20,11 +20,14 @@
   }
 
   @media (max-width: bp.$tablet) {
-    min-height: min(240px, max(180px, 32svh));
+    flex: 0 0 auto;
+    flex-grow: 0;
+    height: auto;
+    min-height: min(280px, max(200px, 36svh));
   }
 
   @media (max-width: bp.$phone) {
-    min-height: min(200px, max(160px, 28svh));
+    min-height: min(260px, max(180px, 34svh));
   }
 }
 
@@ -47,8 +50,9 @@
     padding: margin.$smallest;
   }
 
-  @media (max-width: bp.$dashboard-compact) {
-    padding: margin.$small;
+  @media (max-width: bp.$tablet) {
+    height: auto;
+    min-height: min(280px, max(200px, 36svh));
   }
 
   .chart-title-wrapper {
@@ -77,11 +81,11 @@
     }
 
     @media (max-width: bp.$tablet) {
-      min-height: min(160px, max(140px, 22svh));
+      min-height: min(200px, max(160px, 28svh));
     }
 
     @media (max-width: bp.$phone) {
-      min-height: min(140px, max(120px, 20svh));
+      min-height: min(180px, max(140px, 26svh));
     }
   }
 }
