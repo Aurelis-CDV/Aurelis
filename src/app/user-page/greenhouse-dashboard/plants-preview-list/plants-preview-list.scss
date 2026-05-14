@@ -15,15 +15,15 @@
   grid-auto-rows: minmax(0, 1fr);
   align-content: stretch;
   justify-items: stretch;
-  gap: margin.$big;
+  gap: margin.$small;
 
   @media (max-width: bp.$dashboard-compact) {
-    gap: margin.$small;
+    gap: margin.$smallest;
   }
 
   @media (max-width: bp.$plant-grid-two-cols) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: margin.$small;
+    gap: margin.$smallest;
   }
 
   @media (max-width: bp.$phone) {

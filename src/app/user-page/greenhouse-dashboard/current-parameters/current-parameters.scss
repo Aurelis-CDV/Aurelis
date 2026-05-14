@@ -4,25 +4,25 @@
 @use '../../../../styles/fonts' as font;
 @use '../../../../styles/breakpoints' as bp;
 
-$icon-size: 30px;
-$params-icon-size: 24px;
+$icon-size: 26px;
+$params-icon-size: 22px;
 
 :host {
   @include mixin.inner-shadow;
 
   display: flex;
   flex-direction: column;
-  gap: margin.$huge;
+  gap: margin.$big;
 
-  padding: margin.$big;
+  padding: margin.$small;
 
   @media (max-width: bp.$dashboard-compact) {
-    gap: margin.$big;
-    padding: margin.$small;
+    gap: margin.$small;
+    padding: margin.$smallest;
   }
 
   @media (max-width: bp.$narrow) {
-    gap: margin.$small;
+    gap: margin.$smallest;
   }
 
   background: color.$white;
@@ -46,7 +46,7 @@ $params-icon-size: 24px;
   .localization-params {
     display: flex;
     flex-direction: column;
-    gap: margin.$small;
+    gap: margin.$smallest;
   }
 
   .localization-params {
@@ -117,14 +117,14 @@ $params-icon-size: 24px;
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: margin.$small;
+        gap: margin.$smallest;
         width: fit-content;
       }
 
       .metric-body {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
         flex-wrap: wrap;
       }
 

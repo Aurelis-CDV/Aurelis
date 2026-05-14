@@ -4,7 +4,7 @@
 @use '../../../../../styles/fonts' as font;
 @use '../../../../../styles/breakpoints' as bp;
 
-$plant-icon-size: 40px;
+$plant-icon-size: 36px;
 
 :host {
   position: relative;
@@ -24,11 +24,11 @@ $plant-icon-size: 40px;
     box-sizing: border-box;
     width: 100%;
     height: 100%;
-    padding: margin.$big;
+    padding: margin.$small;
 
     display: flex;
     flex-direction: column;
-    gap: margin.$small;
+    gap: margin.$smallest;
 
     background: color.$white;
     border-radius: 10px;
@@ -63,7 +63,7 @@ $plant-icon-size: 40px;
 
         width: $plant-icon-size;
         height: $plant-icon-size;
-        padding: margin.$small;
+        padding: margin.$smallest;
 
         background: color.$page-background;
         border-radius: 100%;
@@ -97,13 +97,13 @@ $plant-icon-size: 40px;
 
   @media (max-width: bp.$dashboard-compact) {
     .plant-preview-wrapper {
-      padding: margin.$small;
+      padding: margin.$smallest;
       gap: margin.$smallest;
     }
   }
 
   @media (max-width: bp.$phone) {
-    $plant-icon-size: 32px;
+    $plant-icon-size: 28px;
 
     .plant-preview-wrapper .plant-preview-top-bar .plant-preview-image-wrapper {
       width: $plant-icon-size;

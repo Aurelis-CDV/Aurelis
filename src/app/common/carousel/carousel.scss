@@ -2,7 +2,7 @@
 @use '../../../styles/colors' as color;
 @use '../../../styles/breakpoints' as bp;
 
-$button-size: margin.$huge;
+$button-size: margin.$huge - 8px;
 $item-transition: left 0.5s linear;
 
 @mixin button-style {
@@ -111,26 +111,26 @@ $item-transition: left 0.5s linear;
   }
 
   @media (max-width: bp.$narrow) {
-    grid-template-columns: 36px minmax(0, 1fr) 36px;
+    grid-template-columns: 30px minmax(0, 1fr) 30px;
 
     .prev-button,
     .next-button {
-      min-width: 36px;
-      width: 36px;
-      min-height: 36px;
-      height: 36px;
+      min-width: 30px;
+      width: 30px;
+      min-height: 30px;
+      height: 30px;
     }
   }
 
   @media (max-width: bp.$phone) {
-    grid-template-columns: 32px minmax(0, 1fr) 32px;
+    grid-template-columns: 26px minmax(0, 1fr) 26px;
 
     .prev-button,
     .next-button {
-      min-width: 32px;
-      width: 32px;
-      min-height: 32px;
-      height: 32px;
+      min-width: 26px;
+      width: 26px;
+      min-height: 26px;
+      height: 26px;
     }
   }
 }
