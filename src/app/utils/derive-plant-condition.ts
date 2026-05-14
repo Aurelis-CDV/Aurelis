@@ -4,6 +4,19 @@ import { PlantData } from '../../interfaces/plant-data.interface';
 
 export type PlantParameterHealth = 'ideal' | 'acceptable' | 'bad' | 'unknown';
 
+export function plantConditionFromParameterHealth(health: PlantParameterHealth): PlantCondition {
+  switch (health) {
+    case 'ideal':
+      return 'good';
+    case 'acceptable':
+      return 'good_but_could_be_better';
+    case 'bad':
+      return 'bad';
+    default:
+      return 'unknown';
+  }
+}
+
 function isFiniteNumber(v: number | null | undefined): v is number {
   return typeof v === 'number' && Number.isFinite(v);
 }

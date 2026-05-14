@@ -1,6 +1,7 @@
 import {
   airHumidityParameterHealth,
   derivePlantCondition,
+  plantConditionFromParameterHealth,
   soilMoistureParameterHealth,
   temperatureParameterHealth,
 } from './derive-plant-condition';
@@ -64,5 +65,14 @@ describe('parameter health', () => {
 
   it('air: acceptable in partial band', () => {
     expect(airHumidityParameterHealth(40)).toBe('acceptable');
+  });
+});
+
+describe('plantConditionFromParameterHealth', () => {
+  it('maps ideal/acceptable/bad/unknown to plant condition keys', () => {
+    expect(plantConditionFromParameterHealth('ideal')).toBe('good');
+    expect(plantConditionFromParameterHealth('acceptable')).toBe('good_but_could_be_better');
+    expect(plantConditionFromParameterHealth('bad')).toBe('bad');
+    expect(plantConditionFromParameterHealth('unknown')).toBe('unknown');
   });
 });

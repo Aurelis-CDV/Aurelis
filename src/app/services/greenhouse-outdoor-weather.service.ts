@@ -73,10 +73,14 @@ export class GreenhouseOutdoorWeatherService {
   }
 
   private buildOutdoorWeatherRequest(gh: GreenhouseData) {
-    const { lat, lon } = gh.location;
-    if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
-      return null;
+    const { lat, lon, name } = gh.location;
+    if (Number.isFinite(lat) && Number.isFinite(lon)) {
+      return this.weatherApi.getCurrentConditions(lat, lon);
     }
-    return this.weatherApi.getCurrentConditions(lat, lon);
+    const placeName = name?.trim() ?? '';
+    if (placeName.length > 0) {
+      return this.weatherApi.getCurrentConditionsByLocationQuery(placeName);
+    }
+    return null;
   }
 }

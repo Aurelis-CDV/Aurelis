@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { averageSeriesPointsByDisplayDate } from '../utils/average-series-points-by-display-date';
 
 export interface GreenhouseMeasurementDto {
   SensorCode?: string;
@@ -63,10 +64,11 @@ export class GreenhouseMeasurementsService {
         }
         const filtered = rows.filter((r) => r.SensorCode === sensor && typeof r.TimestampUnix === 'number');
         filtered.sort((a, b) => (a.TimestampUnix ?? 0) - (b.TimestampUnix ?? 0));
-        return filtered.map((r) => ({
+        const rawPoints = filtered.map((r) => ({
           date: formatUnixSecForChartAxis(r.TimestampUnix ?? 0, to - from),
           value: typeof r.Value === 'number' && Number.isFinite(r.Value) ? r.Value : 0,
         }));
+        return averageSeriesPointsByDisplayDate(rawPoints);
       }),
     );
   }
