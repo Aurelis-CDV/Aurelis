@@ -32,6 +32,11 @@ $params-icon-size: 24px;
       }
 
       .icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
         width: $params-icon-size;
         height: $params-icon-size;
         object-fit: cover;

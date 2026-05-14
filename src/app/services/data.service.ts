@@ -11,6 +11,7 @@ import {
   GreenhousesData,
 } from '../../interfaces/greenhouses-data.interface';
 import { PlantData } from '../../interfaces/plant-data.interface';
+import { averageSeriesPointsByDisplayDate } from '../utils/average-series-points-by-display-date';
 import { derivePlantCondition, enrichGreenhouseWithDerivedPlantConditions } from '../utils/derive-plant-condition';
 
 interface GreenhouseFrontendApiDto {
@@ -62,7 +63,7 @@ function normalizeParamHistory(
     const value = asFiniteNumber(r.value, 0);
     out.push({ date, value });
   }
-  return out;
+  return averageSeriesPointsByDisplayDate(out);
 }
 
 function normalizeGreenhouseParamsFromApi(raw: unknown): GreenhouseParam[] {

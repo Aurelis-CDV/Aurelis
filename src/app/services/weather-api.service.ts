@@ -52,6 +52,17 @@ export class WeatherApiService {
     return this.getCurrentByQuery(`${lat},${lon}`);
   }
 
+  public getCurrentConditionsByLocationQuery(query: string): Observable<{
+    temperatureC: number;
+    humidityPercent: number;
+  }> {
+    const q = query.trim();
+    if (!q) {
+      return throwError(() => new Error('Weather location query is empty'));
+    }
+    return this.getCurrentByQuery(q);
+  }
+
   private getCurrentByQuery(q: string): Observable<{
     temperatureC: number;
     humidityPercent: number;

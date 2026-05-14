@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { PlantCondition } from '../../../interfaces/plant-condition.type';
 import { PlantData } from '../../../interfaces/plant-data.interface';
 import {
+  plantConditionFromParameterHealth,
   PlantParameterHealth,
   soilMoistureParameterHealth,
   temperatureParameterHealth,
@@ -20,18 +20,7 @@ export class PlantCurrentParams {
   @Input() plant!: PlantData;
   @Input() public greenhouseTemperatureC: number | undefined = undefined;
 
-  protected conditionFromParameterHealth(health: PlantParameterHealth): PlantCondition {
-    switch (health) {
-      case 'ideal':
-        return 'good';
-      case 'acceptable':
-        return 'good_but_could_be_better';
-      case 'bad':
-        return 'bad';
-      default:
-        return 'unknown';
-    }
-  }
+  protected readonly conditionFromParameterHealth = plantConditionFromParameterHealth;
 
   public getPlantConditionDescription(condition: string): string {
     if (condition === 'good') {

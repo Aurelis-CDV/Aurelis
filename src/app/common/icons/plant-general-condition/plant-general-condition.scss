@@ -1,4 +1,3 @@
-@use '../mixins' as *;
 @use '../../../../styles/colors' as color;
 
 @mixin condition-icon-style($color) {
@@ -16,7 +15,22 @@
 }
 
 :host {
-  @include icon-style;
+  --plant-condition-icon-size: 1.25rem;
+
+  display: inline-flex;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--plant-condition-icon-size);
+  height: var(--plant-condition-icon-size);
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
   .good {
     @include condition-icon-style(color.$action-positive);
   }
