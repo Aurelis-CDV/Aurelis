@@ -1,4 +1,9 @@
 $tablet: 768px;
 $phone: 480px;
 $narrow: 1024px;
-$plant-grid-two-cols: 1280px;
+// Plant grid + parameters row: stack before horizontal space gets tight
+$dashboard-plants-stack: 1200px;
+// Two-column plant cards slightly earlier than full “narrow” layout
+$plant-grid-two-cols: 1100px;
+// Tighter outer padding / gaps on mid-size laptop widths
+$dashboard-compact: 1320px;

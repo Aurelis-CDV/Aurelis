@@ -2,6 +2,7 @@
 @use '../../../../../styles/colors' as color;
 @use '../../../../../styles/mixins' as mixin;
 @use '../../../../../styles/fonts' as font;
+@use '../../../../../styles/breakpoints' as bp;
 
 $plant-icon-size: 40px;
 
@@ -91,6 +92,23 @@ $plant-icon-size: 40px;
         position: relative;
         width: 100%;
       }
+    }
+  }
+
+  @media (max-width: bp.$dashboard-compact) {
+    .plant-preview-wrapper {
+      padding: margin.$small;
+      gap: margin.$smallest;
+    }
+  }
+
+  @media (max-width: bp.$phone) {
+    $plant-icon-size: 32px;
+
+    .plant-preview-wrapper .plant-preview-top-bar .plant-preview-image-wrapper {
+      width: $plant-icon-size;
+      height: $plant-icon-size;
+      padding: margin.$smallest;
     }
   }
 }
