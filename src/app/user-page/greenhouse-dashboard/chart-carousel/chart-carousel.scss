@@ -38,6 +38,10 @@
     padding: margin.$smallest;
   }
 
+  @media (max-width: bp.$dashboard-compact) {
+    padding: margin.$small;
+  }
+
   .chart-title-wrapper {
     flex-shrink: 0;
 

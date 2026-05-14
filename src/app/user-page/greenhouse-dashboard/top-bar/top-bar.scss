@@ -30,6 +30,10 @@ $icon-size: 32px;
         padding: margin.$small;
       }
 
+      @media (max-width: bp.$dashboard-compact) {
+        padding: margin.$big;
+      }
+
       @media (max-width: bp.$narrow) {
         padding: margin.$small;
       }

@@ -25,6 +25,15 @@ $params-icon-size: 22px;
     gap: margin.$smallest;
   }
 
+  @media (max-width: bp.$dashboard-compact) {
+    gap: margin.$big;
+    padding: margin.$small;
+  }
+
+  @media (max-width: bp.$narrow) {
+    gap: margin.$small;
+  }
+
   background: color.$white;
   border-radius: 10px;
 
