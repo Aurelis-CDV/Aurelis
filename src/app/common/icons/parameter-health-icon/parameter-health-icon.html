@@ -1,0 +1,34 @@
+<span class="health-root" role="img" [attr.aria-label]="ariaLabel()">
+  @switch (health()) {
+    @case ('ideal') {
+      <svg class="health-svg health-svg--ideal" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+        <path
+          d="M7.5 12.5L10.5 15.5L16.5 9.5"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    }
+    @case ('acceptable') {
+      <svg class="health-svg health-svg--acceptable" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+        <path d="M7 12H17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+    }
+    @case ('bad') {
+      <svg class="health-svg health-svg--bad" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+        <path d="M9 9L15 15M15 9L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+    }
+    @case ('unknown') {
+      <svg class="health-svg health-svg--unknown" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2" />
+        <text x="12" y="16" text-anchor="middle" font-size="11" fill="currentColor" font-family="sans-serif">?</text>
+      </svg>
+    }
+  }
+</span>

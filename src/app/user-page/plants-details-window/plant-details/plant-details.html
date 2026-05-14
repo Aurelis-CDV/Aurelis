@@ -29,7 +29,11 @@
       </div>
     </div>
     <div class="plant-params-wrapper">
-      <aurelis-plant-current-params [plant]="plant"></aurelis-plant-current-params>
+      <aurelis-plant-current-params
+        [plant]="plant"
+        [greenhouseTemperatureC]="greenhouseClimate().temperatureC"
+        [greenhouseAirHumidityPercent]="greenhouseClimate().airHumidityPercent"
+      ></aurelis-plant-current-params>
     </div>
     <div class="plant-actions">
       <button type="button" class="note-watering-button" (click)="openWateringNotePopup()">

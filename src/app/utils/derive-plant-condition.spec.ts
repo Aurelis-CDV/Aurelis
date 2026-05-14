@@ -1,4 +1,9 @@
-import { derivePlantCondition } from './derive-plant-condition';
+import {
+  airHumidityParameterHealth,
+  derivePlantCondition,
+  soilMoistureParameterHealth,
+  temperatureParameterHealth,
+} from './derive-plant-condition';
 
 describe('derivePlantCondition', () => {
   it('returns good when all ideal (6 points)', () => {
@@ -41,5 +46,23 @@ describe('derivePlantCondition', () => {
     expect(derivePlantCondition(NaN, 60, 60)).toBe('unknown');
     expect(derivePlantCondition(22, NaN, 60)).toBe('unknown');
     expect(derivePlantCondition(22, 60, NaN)).toBe('unknown');
+  });
+});
+
+describe('parameter health', () => {
+  it('temperature: ideal in 20–26', () => {
+    expect(temperatureParameterHealth(22)).toBe('ideal');
+  });
+
+  it('temperature: unknown when undefined', () => {
+    expect(temperatureParameterHealth(undefined)).toBe('unknown');
+  });
+
+  it('soil: bad when critical low', () => {
+    expect(soilMoistureParameterHealth(20)).toBe('bad');
+  });
+
+  it('air: acceptable in partial band', () => {
+    expect(airHumidityParameterHealth(40)).toBe('acceptable');
   });
 });
