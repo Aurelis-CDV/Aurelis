@@ -16,6 +16,10 @@
 
   padding: margin.$huge;
 
+  @media (max-width: bp.$narrow) {
+    padding: margin.$big;
+  }
+
   @media (max-width: bp.$tablet) {
     max-width: none;
     padding: margin.$big;
@@ -40,7 +44,7 @@
     min-width: 0;
     box-sizing: border-box;
 
-    @media (max-width: bp.$tablet) {
+    @media (max-width: bp.$narrow) {
       padding: margin.$big;
       gap: margin.$big;
     }
@@ -78,18 +82,16 @@
       min-height: 0;
     }
 
-    @media (max-width: bp.$phone) {
+    @media (max-width: bp.$narrow) {
       flex-direction: column;
+      align-items: stretch;
+      overflow: visible;
       gap: margin.$big;
 
       > aurelis-current-parameters {
         flex: none;
         width: 100%;
       }
-    }
-
-    @media (max-width: bp.$tablet) {
-      gap: margin.$big;
     }
   }
 

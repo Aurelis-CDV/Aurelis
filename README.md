@@ -1,59 +1,64 @@
 # Aurelis
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.3.
+Web app for monitoring and managing greenhouses: dashboards with plant status, sensors, charts, and guides. Built with **Angular 21**, **Auth0** for sign-in, and **Chart.js** for trends.
 
-## Development server
+## Requirements
 
-To start a local development server, run:
+- **Node.js** (LTS recommended)
+- **npm** (see `packageManager` in `package.json` for the version used in this repo)
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Getting started
 
 ```bash
-ng generate component component-name
+git clone <repository-url>
+cd Aurelis
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Environment variables
+
+The app is wired for **@ngx-env/builder**: create a **`.env`** file in the project root (it is not committed). At minimum, for the authenticated dashboard you need:
+
+| Variable | Purpose |
+|----------|---------|
+| `AUTH0_DOMAIN` | Auth0 tenant domain |
+| `AUTH0_CLIENT_ID` | Auth0 application client ID |
+
+Optional:
+
+| Variable | Purpose |
+|----------|---------|
+| `AUTH0_DATABASE_CONNECTION` | Auth0 database connection name (if used) |
+| `WEATHER_API_KEY` | Weather data for location parameters |
+| `GUIDES_BASE_API_URL` | Base URL for the plant guides API |
+| `GUIDES_API_KEY` | API key for the guides service |
+
+The dev server injects these at build time. `redirect_uri` for Auth0 is `window.location.origin` (e.g. `http://localhost:4200` locally).
+
+### Greenhouse API
+
+Base URL and server id live in `src/environments/` (`environment.ts`, `environment.development.ts`, `environment.production.ts`). Adjust them if you point the app at another backend.
+
+### Run locally
 
 ```bash
-ng generate --help
+npm start
 ```
 
-## Building
+Open [http://localhost:4200](http://localhost:4200). Public routes include the home page and guides; **`/dashboard`** requires a successful Auth0 login.
 
-To build the project run:
+## Scripts
 
-```bash
-ng build
-```
+| Command | Description |
+|---------|-------------|
+| `npm start` | Dev server (`ng serve`) |
+| `npm run build` | Production build (output under `dist/aurelis/browser`) |
+| `npm run watch` | Development build in watch mode |
+| `npm test` | Unit tests (`ng test` / Vitest) |
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Tech stack
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Angular (standalone components, SCSS)
+- Auth0 (`@auth0/auth0-angular`)
+- Chart.js
+- RxJS
