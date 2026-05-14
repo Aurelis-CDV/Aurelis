@@ -31,7 +31,6 @@ export class PerenualPlantsService {
   }
 
   public getPlantDetails(plantId: number): Observable<PerenualPlantDetails> {
-    console.log(`${this.baseUrl}v2/species/details/${plantId}?key=${this.apiKey}`);
     return this.http.get<PerenualPlantDetails>(
       `${this.baseUrl}v2/species/details/${plantId}?key=${this.apiKey}`,
       {

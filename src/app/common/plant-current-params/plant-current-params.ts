@@ -19,12 +19,12 @@ export class PlantCurrentParams {
       return 'All good!';
     }
 
-    if (condition === 'bad') {
-      return "It's bad!";
+    if (condition === 'good_but_could_be_better') {
+      return 'Ok, but not perfect...';
     }
 
-    if (condition === 'mid') {
-      return 'Ok, but not perfect...';
+    if (condition === 'bad') {
+      return "It's bad!";
     }
 
     return 'Some unknown condition...';

@@ -11,7 +11,7 @@ import {
   GreenhousesData,
 } from '../../interfaces/greenhouses-data.interface';
 import { PlantData } from '../../interfaces/plant-data.interface';
-import { PlantCondition } from '../../interfaces/plant-condition.type';
+import { derivePlantCondition, enrichGreenhouseWithDerivedPlantConditions } from '../utils/derive-plant-condition';
 
 /** Raw JSON from `GET .../greenhouses/{id}/frontend` (field names may differ from app models). */
 interface GreenhouseFrontendApiDto {
@@ -35,12 +35,9 @@ interface PlantApiDto {
   id?: unknown;
   preview_url?: unknown;
   soil_moisture?: unknown;
-  condition?: unknown;
   soil_moisture_history?: unknown;
   watering_history?: unknown;
 }
-
-const PLANT_CONDITIONS: ReadonlySet<PlantCondition> = new Set(['good', 'bad', 'mid', 'unknown']);
 
 function asFiniteNumber(v: unknown, fallback = 0): number {
   return typeof v === 'number' && Number.isFinite(v) ? v : fallback;
@@ -89,13 +86,10 @@ function normalizeGreenhouseParamsFromApi(raw: unknown): GreenhouseParam[] {
   return out;
 }
 
-function normalizePlantCondition(v: unknown): PlantCondition {
-  return typeof v === 'string' && PLANT_CONDITIONS.has(v as PlantCondition)
-    ? (v as PlantCondition)
-    : 'unknown';
-}
-
-function normalizePlantFromApi(raw: unknown): PlantData | null {
+function normalizePlantFromApi(
+  raw: unknown,
+  greenhouseAir: { temperatureC: number; airHumidityPercent: number },
+): PlantData | null {
   if (!raw || typeof raw !== 'object') {
     return null;
   }
@@ -109,24 +103,36 @@ function normalizePlantFromApi(raw: unknown): PlantData | null {
     ? p.watering_history.filter((x): x is number => typeof x === 'number' && Number.isFinite(x))
     : [];
 
+  const soil = asFiniteNumber(p.soil_moisture, 0);
+
   return {
     name: asNonEmptyString(p.name, '').trim() || 'Plant',
     id,
     preview_url: asNonEmptyString(p.preview_url, '').trim(),
-    soil_moisture: asFiniteNumber(p.soil_moisture, 0),
-    condition: normalizePlantCondition(p.condition),
+    soil_moisture: soil,
+    condition: derivePlantCondition(
+      greenhouseAir.temperatureC,
+      soil,
+      greenhouseAir.airHumidityPercent,
+    ),
     soil_moisture_history: soilHistory,
     watering_history: wh,
   };
 }
 
-function normalizePlantsFromApi(raw: unknown): PlantData[] {
+function normalizePlantsFromApi(raw: unknown, params: GreenhouseParam[]): PlantData[] {
   if (!Array.isArray(raw)) {
     return [];
   }
+  const temp = params.find((q) => q.name === 'temperature')?.current;
+  const air = params.find((q) => q.name === 'humidity')?.current;
+  const temperatureC = typeof temp === 'number' && Number.isFinite(temp) ? temp : NaN;
+  const airHumidityPercent = typeof air === 'number' && Number.isFinite(air) ? air : NaN;
+  const greenhouseAir = { temperatureC, airHumidityPercent };
+
   const out: PlantData[] = [];
   for (const item of raw) {
-    const plant = normalizePlantFromApi(item);
+    const plant = normalizePlantFromApi(item, greenhouseAir);
     if (plant) {
       out.push(plant);
     }
@@ -170,14 +176,15 @@ function normalizeGreenhouseFromFrontendApi(dto: GreenhouseFrontendApiDto): Gree
   const name = asNonEmptyString(dto.name, '').trim() || 'Greenhouse';
   const idRaw = dto.id;
   const id = idRaw != null && String(idRaw).trim() ? String(idRaw).trim() : '0';
+  const params = normalizeGreenhouseParamsFromApi(dto.params);
 
   return {
     name,
     id,
     preview_url: asNonEmptyString(dto.preview_url, '').trim(),
     location: parseLocationFromApi(dto),
-    params: normalizeGreenhouseParamsFromApi(dto.params),
-    plants: normalizePlantsFromApi(dto.plants),
+    params,
+    plants: normalizePlantsFromApi(dto.plants, params),
   };
 }
 
@@ -430,18 +437,20 @@ export class GreenhousesDataService {
     fields: { name: string; preview_url: string },
   ): void {
     this.greenhousesData.update((greenhouses) =>
-      greenhouses.map((gh): GreenhouseData => {
-        if (gh.id !== greenhouseId) {
-          return gh;
-        }
-        const plants = gh.plants.map((plant): PlantData => {
-          if (plant.id !== plantId) {
-            return plant;
+      this.withDerivedPlantConditions(
+        greenhouses.map((gh): GreenhouseData => {
+          if (gh.id !== greenhouseId) {
+            return gh;
           }
-          return { ...plant, name: fields.name, preview_url: fields.preview_url };
-        });
-        return { ...gh, plants };
-      }),
+          const plants = gh.plants.map((plant): PlantData => {
+            if (plant.id !== plantId) {
+              return plant;
+            }
+            return { ...plant, name: fields.name, preview_url: fields.preview_url };
+          });
+          return { ...gh, plants };
+        }),
+      ),
     );
   }
 
@@ -462,12 +471,14 @@ export class GreenhousesDataService {
     this.removePersistedWateringForPlantKeys(greenhouseId, plantId);
 
     this.greenhousesData.update((greenhouses) =>
-      greenhouses.map((gh): GreenhouseData => {
-        if (gh.id !== greenhouseId) {
-          return gh;
-        }
-        return { ...gh, plants: gh.plants.filter((p) => p.id !== plantId) };
-      }),
+      this.withDerivedPlantConditions(
+        greenhouses.map((gh): GreenhouseData => {
+          if (gh.id !== greenhouseId) {
+            return gh;
+          }
+          return { ...gh, plants: gh.plants.filter((p) => p.id !== plantId) };
+        }),
+      ),
     );
   }
 
@@ -476,15 +487,6 @@ export class GreenhousesDataService {
     fields: { name: string; id: string; preview_url: string },
   ): void {
     const { name, id, preview_url } = fields;
-    const newPlant = {
-      name,
-      id,
-      preview_url,
-      soil_moisture: 0,
-      condition: 'unknown',
-      soil_moisture_history: [],
-      watering_history: [],
-    } as PlantData;
 
     this.greenhousesData.update((greenhouses) => {
       const index = greenhouses.findIndex((gh) => gh.id === greenhouseId);
@@ -493,10 +495,25 @@ export class GreenhousesDataService {
         return greenhouses;
       }
       const greenhouse = greenhouses[index];
+      const temp = greenhouse.params.find((p) => p.name === 'temperature')?.current;
+      const hum = greenhouse.params.find((p) => p.name === 'humidity')?.current;
+      const temperatureC = typeof temp === 'number' && Number.isFinite(temp) ? temp : NaN;
+      const airHumidityPercent = typeof hum === 'number' && Number.isFinite(hum) ? hum : NaN;
+
+      const newPlant: PlantData = {
+        name,
+        id,
+        preview_url,
+        soil_moisture: 0,
+        condition: derivePlantCondition(temperatureC, 0, airHumidityPercent),
+        soil_moisture_history: [],
+        watering_history: [],
+      };
+
       const next = [...greenhouses];
       next[index] = { ...greenhouse, plants: [...greenhouse.plants, newPlant] };
 
-      return next;
+      return this.withDerivedPlantConditions(next);
     });
   }
 
@@ -625,7 +642,9 @@ export class GreenhousesDataService {
       plants: [],
     };
 
-    this.greenhousesData.update((greenhouses) => [...greenhouses, newGh]);
+    this.greenhousesData.update((greenhouses) =>
+      this.withDerivedPlantConditions([...greenhouses, newGh]),
+    );
   }
 
   private validateUpdateGreenhouse(
@@ -665,6 +684,10 @@ export class GreenhousesDataService {
     this.greenhousesData.update((greenhouses) =>
       greenhouses.filter((gh) => gh.id !== greenhouseId),
     );
+  }
+
+  private withDerivedPlantConditions(greenhouses: GreenhousesData): GreenhousesData {
+    return greenhouses.map((gh) => enrichGreenhouseWithDerivedPlantConditions(gh));
   }
 
   private get plantWateringStorageKey(): string {
