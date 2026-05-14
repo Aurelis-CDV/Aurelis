@@ -5,7 +5,8 @@
 
 :host {
   box-sizing: border-box;
-  max-width: calc(100% - 150px);
+  // Flex sibling to greenhouses list: shrink correctly without a fixed sidebar offset.
+  max-width: 100%;
   width: 100%;
   flex: 1 1 auto;
   min-height: 0;
@@ -19,6 +20,11 @@
   padding: margin.$big;
 
   @media (max-width: bp.$dashboard-compact) {
+    padding: margin.$small;
+  }
+
+  // Short laptop / zoomed windows: keep vertical rhythm without eating the chart.
+  @media (max-height: 720px) and (min-width: #{bp.$tablet + 1px}) {
     padding: margin.$small;
   }
 
@@ -42,7 +48,8 @@
   .dashboard-split {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    // Row 1: full plant strip + params (no equal-fr squeeze). Row 2: chart with a floor, fills rest.
+    grid-template-rows: auto minmax(min(280px, 42vh), 1fr);
     align-items: stretch;
     gap: margin.$big;
     padding: margin.$big;
@@ -61,8 +68,8 @@
       min-height: 0;
       padding: margin.$small;
       gap: margin.$small;
-      // Both tracks size to content; host scrolls so plants + chart stay usable (no zero-height chart).
-      grid-template-rows: auto auto;
+      // Plants + params size naturally; chart row has a floor and can grow with the carousel.
+      grid-template-rows: auto minmax(min(280px, 44svh), auto);
       align-content: start;
       overflow-x: clip;
     }
@@ -70,6 +77,16 @@
     @media (max-width: bp.$phone) {
       padding: margin.$smallest;
       gap: margin.$small;
+    }
+
+    @media (max-height: 720px) and (min-width: #{bp.$tablet + 1px}) {
+      padding: margin.$small;
+      gap: margin.$small;
+    }
+
+    @media (max-height: 600px) and (min-width: #{bp.$tablet + 1px}) {
+      padding: margin.$smallest;
+      gap: margin.$smallest;
     }
 
     &--data-empty {
@@ -86,10 +103,19 @@
     gap: margin.$big;
     min-width: 0;
     min-height: 0;
-    overflow: hidden;
+    overflow-x: clip;
+    overflow-y: visible;
 
     @media (max-width: bp.$dashboard-compact) {
       gap: margin.$small;
+    }
+
+    @media (max-height: 720px) and (min-width: #{bp.$tablet + 1px}) {
+      gap: margin.$small;
+    }
+
+    @media (max-height: 600px) and (min-width: #{bp.$tablet + 1px}) {
+      gap: margin.$smallest;
     }
 
     > aurelis-plants-preview-list {
@@ -104,10 +130,14 @@
 
     > aurelis-current-parameters {
       flex: 0 0 auto;
-      width: clamp(200px, 22vw, 280px);
+      width: clamp(180px, 24vw, 280px);
       max-width: 100%;
       min-width: 0;
       min-height: 0;
+
+      @media (max-width: bp.$dashboard-compact) {
+        width: clamp(176px, 26vw, 260px);
+      }
     }
 
     @media (max-width: bp.$dashboard-plants-stack) {
