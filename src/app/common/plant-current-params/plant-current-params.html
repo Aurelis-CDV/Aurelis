@@ -2,31 +2,18 @@
   <div class="plant-params">
     <div class="param-wrapper param-wrapper--metric">
       <div class="icon-wrapper">
-        <aurelis-temperature></aurelis-temperature>
-      </div>
-      <div class="metric-body">
-        <span class="metric-label">Temp</span>
-        <p class="metric-value">{{ temperatureDisplay() }}</p>
-        <aurelis-plant-general-condition
-          [condition]="conditionFromParameterHealth(temperatureHealth())"
-        />
-      </div>
-    </div>
-    <div class="param-wrapper param-wrapper--metric">
-      <div class="icon-wrapper">
         <aurelis-water-drop></aurelis-water-drop>
       </div>
       <div class="metric-body">
         <span class="metric-label">Soil</span>
         <p class="metric-value">{{ soilDisplay() }}</p>
-        <aurelis-plant-general-condition
-          [condition]="conditionFromParameterHealth(soilMoistureHealth())"
-        />
       </div>
     </div>
     <div class="param-wrapper param-wrapper--condition">
       <div class="icon-wrapper">
-        <aurelis-plant-general-condition [condition]="plant.condition"></aurelis-plant-general-condition>
+        <aurelis-plant-general-condition
+          [condition]="plant.condition"
+        ></aurelis-plant-general-condition>
       </div>
       <div class="condition-value-wrapper">
         <p>{{ getPlantConditionDescription(plant.condition) }}</p>

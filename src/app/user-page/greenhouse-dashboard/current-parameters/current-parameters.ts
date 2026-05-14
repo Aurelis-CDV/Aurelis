@@ -55,6 +55,16 @@ export class CurrentParameters {
     return raw >= 1 ? 'On' : 'Off';
   });
 
+  protected readonly greenhouseTemperatureDisplay = computed(() => {
+    const v = this.paramCurrent('temperature');
+    return v === undefined ? '—' : `${Math.round(v)}°C`;
+  });
+
+  protected readonly greenhouseHumidityDisplay = computed(() => {
+    const v = this.paramCurrent('humidity');
+    return v === undefined ? '—' : `${Math.round(v)}%`;
+  });
+
   protected readonly indoorTemperatureHealth = computed(() =>
     temperatureParameterHealth(this.paramCurrent('temperature')),
   );
@@ -62,10 +72,6 @@ export class CurrentParameters {
   protected readonly indoorHumidityHealth = computed(() =>
     airHumidityParameterHealth(this.paramCurrent('humidity')),
   );
-
-  public getValue(type: string): number {
-    return this.greenhouseData()?.params.find((param) => param.name === type)?.current || 0;
-  }
 
   private paramCurrent(name: string): number | undefined {
     const v = this.greenhouseData()?.params.find((p) => p.name === name)?.current;

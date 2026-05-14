@@ -24,35 +24,38 @@
 
 <div class="current-params">
   <h1>Today's greenhouse parameters</h1>
-  <div class="params-wrapper">
-    <div class="icons-wrapper">
+  <div class="greenhouse-params">
+    <div class="param-wrapper param-wrapper--metric">
       <div class="icon-wrapper">
         <aurelis-temperature></aurelis-temperature>
       </div>
-      <div class="icon-wrapper">
-        <aurelis-water-drop> </aurelis-water-drop>
+      <div class="metric-body">
+        <span class="metric-label">Temp</span>
+        <p class="metric-value">{{ greenhouseTemperatureDisplay() }}</p>
       </div>
-      <div class="icon-wrapper">
-        <aurelis-sun></aurelis-sun>
-      </div>
-    </div>
-    <div class="values-wrapper">
-      <div class="value-wrapper">
-        <p>{{ getValue('temperature') }}°C</p>
-      </div>
-      <div class="value-wrapper">
-        <p>{{ getValue('humidity') }}%</p>
-      </div>
-      <div class="value-wrapper">
-        <p>{{ indoorLightDisplay() }}</p>
-      </div>
-    </div>
-    <div class="health-wrapper">
       <div class="health-slot">
         <aurelis-parameter-health-icon [health]="indoorTemperatureHealth()" />
       </div>
+    </div>
+    <div class="param-wrapper param-wrapper--metric">
+      <div class="icon-wrapper">
+        <aurelis-water-drop></aurelis-water-drop>
+      </div>
+      <div class="metric-body">
+        <span class="metric-label">Humid</span>
+        <p class="metric-value">{{ greenhouseHumidityDisplay() }}</p>
+      </div>
       <div class="health-slot">
         <aurelis-parameter-health-icon [health]="indoorHumidityHealth()" />
+      </div>
+    </div>
+    <div class="param-wrapper param-wrapper--metric">
+      <div class="icon-wrapper">
+        <aurelis-sun></aurelis-sun>
+      </div>
+      <div class="metric-body">
+        <span class="metric-label">Light</span>
+        <p class="metric-value">{{ indoorLightDisplay() }}</p>
       </div>
       <div class="health-slot health-slot--no-icon" aria-hidden="true"></div>
     </div>
