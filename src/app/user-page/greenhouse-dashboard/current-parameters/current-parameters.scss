@@ -45,12 +45,26 @@ $icon-size: 30px;
     padding: margin.$smallest;
 
     .icons-wrapper,
-    .values-wrapper {
+    .values-wrapper,
+    .health-wrapper {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       gap: margin.$smallest;
+    }
+
+    .health-wrapper {
+      .health-slot {
+        height: $icon-size;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .health-slot--no-icon {
+        pointer-events: none;
+      }
     }
 
     .icons-wrapper {

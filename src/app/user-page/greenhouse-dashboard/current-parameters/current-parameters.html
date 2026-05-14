@@ -47,5 +47,14 @@
         <p>{{ indoorLightDisplay() }}</p>
       </div>
     </div>
+    <div class="health-wrapper">
+      <div class="health-slot">
+        <aurelis-parameter-health-icon [health]="indoorTemperatureHealth()" />
+      </div>
+      <div class="health-slot">
+        <aurelis-parameter-health-icon [health]="indoorHumidityHealth()" />
+      </div>
+      <div class="health-slot health-slot--no-icon" aria-hidden="true"></div>
+    </div>
   </div>
 </div>
