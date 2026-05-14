@@ -361,11 +361,16 @@ export class GreenhousesDataService {
     this.isLoading.set(true);
     this.loadError.set(null);
 
+    const base = environment.greenhouseApiBaseUrl.replace(/\/$/, '');
+    const id = environment.greenhouseServerId;
+    const frontendUrl = `${base}/api/greenhouses/${id}/frontend?from=0&to=9999999999`;
+
     this.http
-      .get<GreenhouseFrontendApiDto>(environment.greenhousesDataUrl)
+      .get<GreenhouseFrontendApiDto>(frontendUrl)
       .pipe(
         tap((dto) => {
-          const list: GreenhousesData = [normalizeGreenhouseFromFrontendApi(dto)];
+          const gh = normalizeGreenhouseFromFrontendApi(dto);
+          const list: GreenhousesData = [{ ...gh, id: String(id) }];
           this.greenhousesData.set(this.mergeWateringHistoryFromStorage(list));
           this.loadError.set(null);
         }),

@@ -15,6 +15,11 @@ const humidityColor = '108, 171, 215';
 const temperatureColor = '93, 93, 93';
 const textColor = '#2a2a2a';
 
+const GREENHOUSE_CAROUSEL_PARAM_ORDER: ReadonlyArray<'temperature' | 'humidity'> = [
+  'temperature',
+  'humidity',
+];
+
 @Component({
   selector: 'aurelis-chart-carousel',
   imports: [Carousel],
@@ -27,9 +32,12 @@ export class ChartCarousel implements AfterViewChecked {
 
   public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
 
-  protected readonly chartParams = computed(() =>
-    (this.greenhouseData()?.params ?? []).filter((p) => p.name !== 'light'),
-  );
+  protected readonly chartParams = computed(() => {
+    const params = this.greenhouseData()?.params ?? [];
+    return GREENHOUSE_CAROUSEL_PARAM_ORDER.map((name) =>
+      params.find((p) => p.name === name),
+    ).filter((p): p is GreenhouseParam => p != null);
+  });
 
   public paramCharts: { [key: string]: Chart } = {};
 

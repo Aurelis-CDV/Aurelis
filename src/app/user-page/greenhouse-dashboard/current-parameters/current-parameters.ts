@@ -45,6 +45,11 @@ export class CurrentParameters {
     return !!this.outdoorWeather.outdoorWeatherLoadingByGreenhouseId()[id];
   });
 
+  protected readonly indoorLightDisplay = computed(() => {
+    const raw = this.greenhouseData()?.params.find((p) => p.name === 'light')?.current ?? 0;
+    return raw >= 1 ? 'On' : 'Off';
+  });
+
   public getValue(type: string): number {
     return this.greenhouseData()?.params.find((param) => param.name === type)?.current || 0;
   }
