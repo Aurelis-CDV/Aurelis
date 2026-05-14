@@ -10,12 +10,21 @@
   flex-grow: 1;
   min-height: min(300px, 40vh);
   min-width: 0;
+  overflow-x: clip;
 
   width: 100%;
 
   @media (max-width: bp.$narrow) {
     flex: 1 1 auto;
     min-height: min(260px, 36vh);
+  }
+
+  @media (max-width: bp.$tablet) {
+    min-height: min(240px, max(180px, 32svh));
+  }
+
+  @media (max-width: bp.$phone) {
+    min-height: min(200px, max(160px, 28svh));
   }
 }
 
@@ -48,6 +57,10 @@
     .chart-title {
       font-size: font.$size-mid;
       font-weight: font.$weight-semibold;
+
+      @media (max-width: bp.$phone) {
+        font-size: font.$size-small;
+      }
     }
   }
 
@@ -56,9 +69,19 @@
     min-height: min(170px, 24vh);
     position: relative;
     width: 100%;
+    min-width: 0;
+    overflow-x: clip;
 
     @media (max-width: bp.$narrow) {
       min-height: min(180px, 28vh);
+    }
+
+    @media (max-width: bp.$tablet) {
+      min-height: min(160px, max(140px, 22svh));
+    }
+
+    @media (max-width: bp.$phone) {
+      min-height: min(140px, max(120px, 20svh));
     }
   }
 }

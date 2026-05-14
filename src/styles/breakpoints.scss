@@ -1,6 +1,8 @@
 $tablet: 768px;
 $phone: 480px;
 $narrow: 1024px;
+// Plant cards: switch to one column before phone for readable charts + tap targets
+$plants-single-col: 640px;
 // Plant grid + parameters row: stack before horizontal space gets tight
 $dashboard-plants-stack: 1200px;
 // Two-column plant cards slightly earlier than full “narrow” layout
