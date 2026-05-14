@@ -2,6 +2,7 @@
 @use '../../../../styles/colors' as color;
 @use '../../../../styles/mixins' as mixin;
 @use '../../../../styles/fonts' as font;
+@use '../../../../styles/breakpoints' as bp;
 
 $icon-size: 30px;
 $params-icon-size: 24px;
@@ -14,6 +15,15 @@ $params-icon-size: 24px;
   gap: margin.$huge;
 
   padding: margin.$big;
+
+  @media (max-width: bp.$dashboard-compact) {
+    gap: margin.$big;
+    padding: margin.$small;
+  }
+
+  @media (max-width: bp.$narrow) {
+    gap: margin.$small;
+  }
 
   background: color.$white;
   border-radius: 10px;

@@ -16,6 +16,10 @@
 
   padding: margin.$huge;
 
+  @media (max-width: bp.$dashboard-compact) {
+    padding: margin.$big;
+  }
+
   @media (max-width: bp.$narrow) {
     padding: margin.$big;
   }
@@ -29,7 +33,7 @@
   }
 
   @media (max-width: bp.$phone) {
-    padding: margin.$big margin.$small;
+    padding: margin.$small margin.$smallest;
   }
 
   .dashboard-split {
@@ -43,6 +47,11 @@
     min-height: 0;
     min-width: 0;
     box-sizing: border-box;
+
+    @media (max-width: bp.$dashboard-compact) {
+      padding: margin.$big;
+      gap: margin.$big;
+    }
 
     @media (max-width: bp.$narrow) {
       padding: margin.$big;
@@ -70,6 +79,10 @@
     min-height: 0;
     overflow: hidden;
 
+    @media (max-width: bp.$dashboard-compact) {
+      gap: margin.$big;
+    }
+
     > aurelis-plants-preview-list {
       flex: 1 1 auto;
       min-width: 0;
@@ -77,12 +90,12 @@
 
     > aurelis-current-parameters {
       flex: 0 0 auto;
-      width: clamp(240px, 26vw, 360px);
+      width: clamp(220px, 24vw, 320px);
       max-width: 100%;
       min-height: 0;
     }
 
-    @media (max-width: bp.$narrow) {
+    @media (max-width: bp.$dashboard-plants-stack) {
       flex-direction: column;
       align-items: stretch;
       overflow: visible;
