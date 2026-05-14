@@ -13,20 +13,15 @@ import { FormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '@auth0/auth0-angular';
 import { finalize, forkJoin, of } from 'rxjs';
-import {
-  PerenualDiseasePreview,
-  PerenualPlantDetails,
-  PerenualPlantPreview,
-} from '../../interfaces/perenual.interface';
+import { PerenualPlantDetails, PerenualPlantPreview } from '../../interfaces/perenual.interface';
 import { Heart } from '../common/icons/heart/heart';
 import { TopBar } from '../common/top-bar/top-bar';
 import { PerenualPlantsService } from '../services/perenual-plants.service';
 import { UserDataService } from '../services/user-data.service';
-import { DiseaseGuideDetailsWindow } from './disease-guide-details-window/disease-guide-details-window';
 import { GuidesPagination } from './guides-pagination/guides-pagination';
 import { PlantGuideDetailsWindow } from './plant-guide-details-window/plant-guide-details-window';
 
-export type GuidesTab = 'favorites' | 'plants' | 'diseases';
+export type GuidesTab = 'favorites' | 'plants';
 
 @Component({
   selector: 'aurelis-guides-page',
@@ -37,7 +32,6 @@ export type GuidesTab = 'favorites' | 'plants' | 'diseases';
     Heart,
     GuidesPagination,
     PlantGuideDetailsWindow,
-    DiseaseGuideDetailsWindow,
   ],
   templateUrl: './guides-page.html',
   styleUrl: './guides-page.scss',
@@ -54,7 +48,6 @@ export class GuidesPage {
   public searchQuery = '';
 
   public plants: WritableSignal<PerenualPlantPreview[]> = signal<PerenualPlantPreview[]>([]);
-  public diseases: WritableSignal<PerenualDiseasePreview[]> = signal<PerenualDiseasePreview[]>([]);
   public favoritePlants: WritableSignal<PerenualPlantDetails[]> = signal<PerenualPlantDetails[]>(
     [],
   );
@@ -65,7 +58,6 @@ export class GuidesPage {
   public lastPage: WritableSignal<number> = signal(1);
 
   public selectedPlantId: WritableSignal<number | null> = signal<number | null>(null);
-  public selectedDiseaseId: WritableSignal<number | null> = signal<number | null>(null);
 
   public readonly favoriteIds: Signal<number[]> = this.userDataService.favoriteIds;
 
@@ -109,46 +101,28 @@ export class GuidesPage {
   }
 
   private loadPage(page: number): void {
+    if (this.activeTab() !== 'plants') {
+      return;
+    }
+
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
     const query = this.searchQuery.trim();
+    const request$ = query
+      ? this.perenualPlantsService.searchPlants(query, page)
+      : this.perenualPlantsService.getPlantsList(page);
 
-    if (this.activeTab() === 'plants') {
-      const request$ = query
-        ? this.perenualPlantsService.searchPlants(query, page)
-        : this.perenualPlantsService.getPlantsList(page);
-
-      request$.pipe(finalize(() => this.isLoading.set(false))).subscribe({
-        next: (response) => {
-          this.plants.set(response.data);
-          this.currentPage.set(response.current_page);
-          this.lastPage.set(Math.max(1, response.last_page));
-        },
-        error: () => {
-          this.errorMessage.set('Could not load plant guides. Please check your Perenual API key.');
-        },
-      });
-    } else if (this.activeTab() === 'diseases') {
-      const request$ = query
-        ? this.perenualPlantsService.searchDiseases(query, page)
-        : this.perenualPlantsService.getDiseasesList(page);
-
-      request$.pipe(finalize(() => this.isLoading.set(false))).subscribe({
-        next: (response) => {
-          this.diseases.set(response.data);
-          this.currentPage.set(response.current_page);
-          this.lastPage.set(Math.max(1, response.last_page));
-        },
-        error: () => {
-          this.errorMessage.set(
-            'Could not load disease guides. Please check your Perenual API key.',
-          );
-        },
-      });
-    } else {
-      this.syncFavoritesList(this.favoriteIds());
-    }
+    request$.pipe(finalize(() => this.isLoading.set(false))).subscribe({
+      next: (response) => {
+        this.plants.set(response.data);
+        this.currentPage.set(response.current_page);
+        this.lastPage.set(Math.max(1, response.last_page));
+      },
+      error: () => {
+        this.errorMessage.set('Could not load plant guides. Please check your Perenual API key.');
+      },
+    });
   }
 
   private syncFavoritesList(ids: number[]): void {
@@ -188,7 +162,6 @@ export class GuidesPage {
     this.activeTab.set(tab);
     this.searchQuery = '';
     this.plants.set([]);
-    this.diseases.set([]);
     this.currentPage.set(1);
     this.lastPage.set(1);
     this.errorMessage.set(null);
@@ -215,30 +188,5 @@ export class GuidesPage {
 
   public closePlantDetailsWindow(): void {
     this.selectedPlantId.set(null);
-  }
-
-  public openDiseaseDetailsWindow(diseaseId: number): void {
-    this.selectedDiseaseId.set(diseaseId);
-  }
-
-  public closeDiseaseDetailsWindow(): void {
-    this.selectedDiseaseId.set(null);
-  }
-
-  public getDiseaseThumbnail(disease: PerenualDiseasePreview): string {
-    return (
-      disease.images?.[0]?.thumbnail ||
-      disease.images?.[0]?.small_url ||
-      disease.images?.[0]?.regular_url ||
-      'https://via.placeholder.com/250x160?text=No+Image'
-    );
-  }
-
-  public getDiseaseShortDescription(disease: PerenualDiseasePreview): string {
-    const text = disease.description?.[0]?.description ?? '';
-    if (!text) {
-      return 'No description available.';
-    }
-    return text.length > 110 ? `${text.slice(0, 110).trim()}...` : text;
   }
 }
