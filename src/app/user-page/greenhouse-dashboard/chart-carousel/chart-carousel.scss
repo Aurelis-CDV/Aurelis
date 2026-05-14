@@ -9,9 +9,10 @@
   flex-direction: column;
   flex: 1 1 auto;
   flex-grow: 1;
-  min-height: min(300px, 40vh);
+  min-height: min(280px, 38vh);
   min-width: 0;
   overflow-x: clip;
+  overflow-y: visible;
 
   width: 100%;
 
@@ -24,25 +25,30 @@
     height: 100%;
   }
 
+  // Narrow widths: generous block size for title + chart + dots (no max-height — avoids clipping charts).
   @media (max-width: bp.$narrow) {
     flex: 0 0 auto;
     flex-grow: 0;
-    // Definite block size so nested `aurelis-carousel { height: 100% }` and Chart.js layout work (incl. iPad widths).
-    height: min(360px, 58svh);
-    min-height: min(300px, 50svh);
-    max-height: min(420px, 70svh);
+    min-height: min(320px, 52svh);
+    height: min(400px, 72svh);
   }
 
   @media (max-width: bp.$tablet) {
-    height: min(340px, 54svh);
-    min-height: min(280px, 48svh);
-    max-height: min(400px, 66svh);
+    min-height: min(300px, 48svh);
+    height: min(380px, 68svh);
   }
 
   @media (max-width: bp.$phone) {
-    height: min(320px, 52svh);
     min-height: min(280px, 46svh);
-    max-height: min(380px, 65svh);
+    height: min(360px, 64svh);
+  }
+
+  // 769px–1024px: a bit more chart room than phones (must follow generic `narrow` + `tablet` + `phone`).
+  @media (max-width: bp.$narrow) and (min-width: #{bp.$tablet + 1px}) {
+    flex: 0 0 auto;
+    flex-grow: 0;
+    min-height: min(320px, 50svh);
+    height: min(420px, 70svh);
   }
 }
 
@@ -75,6 +81,9 @@
     .chart-title {
       font-size: font.$size-mid;
       font-weight: font.$weight-semibold;
+      margin: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
 
       @media (max-width: bp.$phone) {
         font-size: font.$size-small;
@@ -84,22 +93,22 @@
 
   .chart-wrapper {
     flex: 1 1 auto;
-    min-height: min(170px, 24vh);
+    min-height: min(200px, max(170px, 28svh));
     position: relative;
     width: 100%;
     min-width: 0;
-    overflow-x: clip;
+    overflow: visible;
 
     @media (max-width: bp.$narrow) {
-      min-height: min(200px, max(160px, 26svh));
+      min-height: min(220px, max(180px, 32svh));
     }
 
     @media (max-width: bp.$tablet) {
-      min-height: min(200px, max(160px, 28svh));
+      min-height: min(210px, max(170px, 30svh));
     }
 
     @media (max-width: bp.$phone) {
-      min-height: min(180px, max(140px, 26svh));
+      min-height: min(200px, max(160px, 28svh));
     }
   }
 }

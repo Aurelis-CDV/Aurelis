@@ -50,7 +50,9 @@
 
       background: color.$dashboard-background;
       border-radius: 100px 20px 0 0;
-      overflow: hidden;
+      overflow-x: clip;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
 
       @media (max-width: bp.$tablet) {
         flex-direction: column;

@@ -14,12 +14,16 @@
 
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-auto-rows: minmax(0, 1fr);
-  align-content: stretch;
+  grid-auto-rows: auto;
+  align-content: start;
   justify-items: stretch;
   gap: margin.$small;
 
   @media (max-width: bp.$dashboard-compact) {
+    gap: margin.$smallest;
+  }
+
+  @media (max-height: 720px) and (min-width: #{bp.$tablet + 1px}) {
     gap: margin.$smallest;
   }
 
@@ -36,12 +40,11 @@
     gap: margin.$smallest;
   }
 
-  // Equal `1fr` rows steal height when the grid has a definite height (tablet / narrow laptop widths).
+  // Equal `1fr` rows are removed — `auto` rows keep each card fully visible; dashboard grid assigns vertical space.
   @media (max-width: bp.$narrow) {
     height: auto;
     min-height: 0;
     align-self: stretch;
     align-content: start;
-    grid-auto-rows: auto;
   }
 }

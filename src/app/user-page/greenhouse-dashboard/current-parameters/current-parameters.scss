@@ -30,24 +30,13 @@ $params-icon-size: 22px;
   @media (max-width: bp.$narrow) {
     gap: margin.$small;
     padding: margin.$smallest;
-    // Short viewports beside / under the plant grid: scroll inside the card instead of clipping.
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    max-height: min(520px, 78vh);
-
-    @supports (height: 100dvh) {
-      max-height: min(520px, 78dvh);
-    }
+    // Full content visible; page / dashboard host scrolls when needed (no inner scroll + max-height clip).
+    overflow: visible;
   }
 
   @media (max-width: bp.$phone) {
     gap: margin.$smallest;
-    max-height: min(460px, 72vh);
-
-    @supports (height: 100dvh) {
-      max-height: min(460px, 72dvh);
-    }
+    overflow: visible;
   }
 
   h1 {

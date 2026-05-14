@@ -2,6 +2,7 @@
 @use '../../../../../styles/colors' as color;
 @use '../../../../../styles/fonts' as font;
 @use '../../../../../styles/mixins' as mixin;
+@use '../../../../../styles/breakpoints' as bp;
 
 :host {
   display: flex;
@@ -46,12 +47,25 @@
       background-color: rgba(108, 171, 215, 0.08);
       outline: none;
     }
+
+    @media (max-width: bp.$narrow) {
+      min-height: 72px;
+      padding: margin.$smallest;
+    }
+
+    @media (max-width: bp.$phone) {
+      min-height: 64px;
+    }
   }
 
   .add-slot-icon {
     font-size: 1.75rem;
     font-weight: 300;
     line-height: 1;
+
+    @media (max-width: bp.$phone) {
+      font-size: 1.5rem;
+    }
   }
 
   .add-slot-label {
@@ -59,5 +73,10 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
+
+    @media (max-width: bp.$phone) {
+      font-size: font.$size-smallest;
+      letter-spacing: 0.03em;
+    }
   }
 }
