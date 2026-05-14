@@ -10,11 +10,17 @@ $params-icon-size: 22px;
 :host {
   @include mixin.inner-shadow;
 
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+
   display: flex;
   flex-direction: column;
   gap: margin.$big;
-
   padding: margin.$small;
+
+  background: color.$white;
+  border-radius: 10px;
 
   @media (max-width: bp.$dashboard-compact) {
     gap: margin.$small;
@@ -22,33 +28,55 @@ $params-icon-size: 22px;
   }
 
   @media (max-width: bp.$narrow) {
-    gap: margin.$smallest;
-  }
-
-  @media (max-width: bp.$dashboard-compact) {
-    gap: margin.$big;
-    padding: margin.$small;
-  }
-
-  @media (max-width: bp.$narrow) {
     gap: margin.$small;
+    padding: margin.$smallest;
+    // Short viewports beside / under the plant grid: scroll inside the card instead of clipping.
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    max-height: min(520px, 78vh);
+
+    @supports (height: 100dvh) {
+      max-height: min(520px, 78dvh);
+    }
   }
 
-  background: color.$white;
-  border-radius: 10px;
+  @media (max-width: bp.$phone) {
+    gap: margin.$smallest;
+    max-height: min(460px, 72vh);
+
+    @supports (height: 100dvh) {
+      max-height: min(460px, 72dvh);
+    }
+  }
 
   h1 {
     font-size: font.$size-mid;
     font-weight: font.$weight-semibold;
+
+    @media (max-width: bp.$narrow) {
+      font-size: clamp(0.95rem, 3.5vw, #{font.$size-mid});
+      line-height: 1.25;
+    }
   }
 
   h3 {
     font-size: font.$size-small;
     font-weight: font.$weight-regular;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+
+    @media (max-width: bp.$narrow) {
+      font-size: font.$size-smallest;
+    }
   }
 
   p {
     font-size: font.$size-small;
+
+    @media (max-width: bp.$narrow) {
+      font-size: font.$size-smallest;
+    }
   }
 
   .current-params,
@@ -78,6 +106,11 @@ $params-icon-size: 22px;
         .icon-wrapper {
           width: $icon-size;
           height: $icon-size;
+
+          @media (max-width: bp.$narrow) {
+            width: 22px;
+            height: 22px;
+          }
 
           ::ng-deep {
             aurelis-temperature {
@@ -109,6 +142,10 @@ $params-icon-size: 22px;
           display: flex;
           justify-content: flex-start;
           align-items: center;
+
+          @media (max-width: bp.$narrow) {
+            height: 22px;
+          }
         }
       }
     }
@@ -121,6 +158,13 @@ $params-icon-size: 22px;
       align-items: flex-start;
       gap: margin.$smallest;
       padding: margin.$smallest;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+
+      @media (max-width: bp.$narrow) {
+        align-items: stretch;
+      }
 
       .param-wrapper {
         display: flex;
@@ -128,6 +172,15 @@ $params-icon-size: 22px;
         align-items: center;
         gap: margin.$smallest;
         width: fit-content;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+
+        @media (max-width: bp.$narrow) {
+          width: 100%;
+          flex-wrap: wrap;
+          row-gap: margin.$smallest;
+        }
       }
 
       .metric-body {
@@ -135,6 +188,7 @@ $params-icon-size: 22px;
         align-items: center;
         gap: 4px;
         flex-wrap: wrap;
+        min-width: 0;
       }
 
       .metric-label {
@@ -145,6 +199,11 @@ $params-icon-size: 22px;
         color: color.$ashy;
         min-width: 2.25rem;
 
+        @media (max-width: bp.$narrow) {
+          min-width: 0;
+          letter-spacing: 0.02em;
+        }
+
         @media (max-width: bp.$tablet) {
           font-size: 11px;
         }
@@ -152,7 +211,7 @@ $params-icon-size: 22px;
 
       .metric-value {
         margin: 0;
-        min-width: 2.75rem;
+        min-width: 0;
         font-size: font.$size-smallest;
 
         @media (max-width: bp.$tablet) {
@@ -167,6 +226,11 @@ $params-icon-size: 22px;
         justify-content: center;
         width: $params-icon-size;
         height: $params-icon-size;
+
+        @media (max-width: bp.$narrow) {
+          width: 20px;
+          height: 20px;
+        }
 
         ::ng-deep {
           aurelis-temperature {
@@ -206,6 +270,10 @@ $params-icon-size: 22px;
         height: $params-icon-size;
         align-items: center;
         justify-content: center;
+
+        @media (max-width: bp.$narrow) {
+          height: 20px;
+        }
       }
 
       .health-slot--no-icon {

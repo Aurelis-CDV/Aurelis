@@ -36,9 +36,8 @@
     gap: margin.$smallest;
   }
 
-  // Equal `1fr` rows steal height from each other when the grid has a definite height
-  // (mobile flex chain), clipping soil/condition text. Use content-sized rows on narrow viewports.
-  @media (max-width: bp.$tablet) {
+  // Equal `1fr` rows steal height when the grid has a definite height (tablet / narrow laptop widths).
+  @media (max-width: bp.$narrow) {
     height: auto;
     min-height: 0;
     align-self: stretch;

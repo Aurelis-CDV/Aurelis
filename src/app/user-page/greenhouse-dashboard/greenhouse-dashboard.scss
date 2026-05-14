@@ -23,10 +23,6 @@
   }
 
   @media (max-width: bp.$narrow) {
-    padding: margin.$small;
-  }
-
-  @media (max-width: bp.$tablet) {
     max-width: none;
     padding: margin.$small;
     padding-bottom: calc(#{margin.$small} + env(safe-area-inset-bottom, 0px));
@@ -61,11 +57,6 @@
     }
 
     @media (max-width: bp.$narrow) {
-      padding: margin.$small;
-      gap: margin.$small;
-    }
-
-    @media (max-width: bp.$tablet) {
       flex: 0 0 auto;
       min-height: 0;
       padding: margin.$small;
@@ -105,7 +96,7 @@
       flex: 1 1 auto;
       min-width: 0;
 
-      @media (max-width: bp.$tablet) {
+      @media (max-width: bp.$narrow) {
         flex: 0 0 auto;
         min-height: 0;
       }
@@ -115,6 +106,7 @@
       flex: 0 0 auto;
       width: clamp(200px, 22vw, 280px);
       max-width: 100%;
+      min-width: 0;
       min-height: 0;
     }
 
@@ -130,6 +122,11 @@
         width: 100%;
       }
     }
+
+    @media (max-width: bp.$narrow) {
+      overflow-x: clip;
+      overflow-y: visible;
+    }
   }
 
   .dashboard-split > aurelis-chart-carousel {
@@ -142,9 +139,9 @@
     align-self: stretch;
     overflow-x: clip;
 
-    @media (max-width: bp.$tablet) {
+    @media (max-width: bp.$narrow) {
       flex: 0 0 auto;
-      height: auto;
+      align-self: stretch;
     }
   }
 }

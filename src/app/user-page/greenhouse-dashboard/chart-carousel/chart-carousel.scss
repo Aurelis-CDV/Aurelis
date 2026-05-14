@@ -6,6 +6,7 @@
 
 :host {
   display: flex;
+  flex-direction: column;
   flex: 1 1 auto;
   flex-grow: 1;
   min-height: min(300px, 40vh);
@@ -14,20 +15,34 @@
 
   width: 100%;
 
-  @media (max-width: bp.$narrow) {
+  // Carousel uses `height: 100%`; this host must have a resolvable height (not only min-height + height:auto).
+  aurelis-carousel {
     flex: 1 1 auto;
-    min-height: min(260px, 36vh);
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (max-width: bp.$narrow) {
+    flex: 0 0 auto;
+    flex-grow: 0;
+    // Definite block size so nested `aurelis-carousel { height: 100% }` and Chart.js layout work (incl. iPad widths).
+    height: min(360px, 58svh);
+    min-height: min(300px, 50svh);
+    max-height: min(420px, 70svh);
   }
 
   @media (max-width: bp.$tablet) {
-    flex: 0 0 auto;
-    flex-grow: 0;
-    height: auto;
-    min-height: min(280px, max(200px, 36svh));
+    height: min(340px, 54svh);
+    min-height: min(280px, 48svh);
+    max-height: min(400px, 66svh);
   }
 
   @media (max-width: bp.$phone) {
-    min-height: min(260px, max(180px, 34svh));
+    height: min(320px, 52svh);
+    min-height: min(280px, 46svh);
+    max-height: min(380px, 65svh);
   }
 }
 
@@ -51,8 +66,7 @@
   }
 
   @media (max-width: bp.$tablet) {
-    height: auto;
-    min-height: min(280px, max(200px, 36svh));
+    min-height: 0;
   }
 
   .chart-title-wrapper {
@@ -77,7 +91,7 @@
     overflow-x: clip;
 
     @media (max-width: bp.$narrow) {
-      min-height: min(180px, 28vh);
+      min-height: min(200px, max(160px, 26svh));
     }
 
     @media (max-width: bp.$tablet) {

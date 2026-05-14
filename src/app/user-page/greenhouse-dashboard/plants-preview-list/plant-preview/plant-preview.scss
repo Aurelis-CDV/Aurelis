@@ -50,7 +50,7 @@ $plant-icon-size: 36px;
           text-overflow: ellipsis;
           white-space: nowrap;
 
-          @media (max-width: bp.$tablet) {
+          @media (max-width: bp.$narrow) {
             white-space: normal;
             display: -webkit-box;
             -webkit-box-orient: vertical;
@@ -111,7 +111,7 @@ $plant-icon-size: 36px;
     }
   }
 
-  @media (max-width: bp.$tablet) {
+  @media (max-width: bp.$narrow) {
     height: auto;
     min-height: 0;
 
