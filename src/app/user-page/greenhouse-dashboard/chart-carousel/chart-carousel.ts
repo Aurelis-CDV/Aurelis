@@ -1,4 +1,11 @@
-import { AfterViewChecked, Component, DestroyRef, ElementRef, inject } from '@angular/core';
+import {
+  AfterViewChecked,
+  Component,
+  computed,
+  DestroyRef,
+  ElementRef,
+  inject,
+} from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { Carousel } from '../../../common/carousel/carousel';
 import { DashboardSignalsService } from '../../../services/dashboard-signals.service';
@@ -6,7 +13,6 @@ import { GreenhouseParam } from '../../../../interfaces/greenhouses-data.interfa
 
 const humidityColor = '108, 171, 215';
 const temperatureColor = '93, 93, 93';
-const lightColor = '255, 199, 37';
 const textColor = '#2a2a2a';
 
 @Component({
@@ -20,6 +26,10 @@ export class ChartCarousel implements AfterViewChecked {
   private readonly destroyRef = inject(DestroyRef);
 
   public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
+
+  protected readonly chartParams = computed(() =>
+    (this.greenhouseData()?.params ?? []).filter((p) => p.name !== 'light'),
+  );
 
   public paramCharts: { [key: string]: Chart } = {};
 
@@ -40,7 +50,7 @@ export class ChartCarousel implements AfterViewChecked {
   }
 
   private syncParamChartsWithDomAndData(): void {
-    const params = this.greenhouseData()?.params ?? [];
+    const params = this.chartParams();
 
     if (params.length === 0) {
       if (Object.keys(this.paramCharts).length > 0) {
@@ -82,9 +92,7 @@ export class ChartCarousel implements AfterViewChecked {
   }
 
   private setParamLineChart(param: GreenhouseParam) {
-    const plantCanvasEl = this.elementRef.nativeElement.querySelector(
-      `#param-chart-${param.name}`,
-    );
+    const plantCanvasEl = this.elementRef.nativeElement.querySelector(`#param-chart-${param.name}`);
 
     if (!param || !(plantCanvasEl instanceof HTMLCanvasElement)) {
       return;
@@ -92,12 +100,7 @@ export class ChartCarousel implements AfterViewChecked {
 
     const history = param.history ?? [];
 
-    const paramColor =
-      param.name === 'humidity'
-        ? humidityColor
-        : param.name === 'temperature'
-          ? temperatureColor
-          : lightColor;
+    const paramColor = param.name === 'humidity' ? humidityColor : temperatureColor;
 
     const config = {
       type: 'line',

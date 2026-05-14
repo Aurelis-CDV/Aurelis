@@ -1,5 +1,5 @@
 <aurelis-carousel>
-  @for (param of greenhouseData()?.params; track param.name) {
+  @for (param of chartParams(); track param.name) {
     <div class="param-wrapper">
       <div class="chart-title-wrapper">
         <p class="chart-title">{{ getParamName(param.name) }}</p>
