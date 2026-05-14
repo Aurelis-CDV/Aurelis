@@ -119,15 +119,59 @@ function normalizePlantFromApi(
   };
 }
 
-function normalizePlantsFromApi(raw: unknown, params: GreenhouseParam[]): PlantData[] {
-  if (!Array.isArray(raw)) {
-    return [];
-  }
+/** Matches params like `soil_moisture_1` or `Soil_Moisture_sensor-a` (group 1 = plant id). */
+const SOIL_MOISTURE_PARAM_PLANT_ID = /^soil_moisture_(.+)$/i;
+
+function greenhouseAirFromParams(params: GreenhouseParam[]): {
+  temperatureC: number;
+  airHumidityPercent: number;
+} {
   const temp = params.find((q) => q.name === 'temperature')?.current;
   const air = params.find((q) => q.name === 'humidity')?.current;
   const temperatureC = typeof temp === 'number' && Number.isFinite(temp) ? temp : NaN;
   const airHumidityPercent = typeof air === 'number' && Number.isFinite(air) ? air : NaN;
-  const greenhouseAir = { temperatureC, airHumidityPercent };
+  return { temperatureC, airHumidityPercent };
+}
+
+/** Plant soil series are exposed as params `soil_moisture_<plantId>` instead of (or in addition to) `plants[]`. */
+function derivePlantsFromSoilMoistureParams(
+  params: GreenhouseParam[],
+  greenhouseAir: { temperatureC: number; airHumidityPercent: number },
+): PlantData[] {
+  const out: PlantData[] = [];
+  for (const param of params) {
+    const match = param.name.match(SOIL_MOISTURE_PARAM_PLANT_ID);
+    if (!match) {
+      continue;
+    }
+    const plantId = match[1].trim();
+    if (!plantId) {
+      continue;
+    }
+    const soil = asFiniteNumber(param.current, 0);
+    const soilHistory = param.history ?? [];
+    out.push({
+      name: `Plant ${plantId}`,
+      id: plantId,
+      preview_url: '',
+      soil_moisture: soil,
+      condition: derivePlantCondition(
+        greenhouseAir.temperatureC,
+        soil,
+        greenhouseAir.airHumidityPercent,
+      ),
+      soil_moisture_history: soilHistory,
+      watering_history: [],
+    });
+  }
+  return out.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
+}
+
+function normalizePlantsFromApi(raw: unknown, params: GreenhouseParam[]): PlantData[] {
+  if (!Array.isArray(raw)) {
+    return [];
+  }
+  const greenhouseAir = greenhouseAirFromParams(params);
 
   const out: PlantData[] = [];
   for (const item of raw) {
@@ -137,6 +181,39 @@ function normalizePlantsFromApi(raw: unknown, params: GreenhouseParam[]): PlantD
     }
   }
   return out;
+}
+
+function mergePlantsFromApi(dtoPlants: unknown, params: GreenhouseParam[]): PlantData[] {
+  const greenhouseAir = greenhouseAirFromParams(params);
+  const fromSoilParams = derivePlantsFromSoilMoistureParams(params, greenhouseAir);
+  const fromDto = normalizePlantsFromApi(dtoPlants, params);
+
+  if (!fromSoilParams.length) {
+    return fromDto;
+  }
+  if (!fromDto.length) {
+    return fromSoilParams;
+  }
+
+  const byId = new Map<string, PlantData>();
+  for (const p of fromSoilParams) {
+    byId.set(p.id, p);
+  }
+  for (const p of fromDto) {
+    const existing = byId.get(p.id);
+    if (existing) {
+      byId.set(p.id, {
+        ...existing,
+        name: p.name.trim() ? p.name : existing.name,
+        preview_url: p.preview_url.trim() ? p.preview_url : existing.preview_url,
+        watering_history:
+          p.watering_history.length > 0 ? p.watering_history : existing.watering_history,
+      });
+    } else {
+      byId.set(p.id, p);
+    }
+  }
+  return [...byId.values()].sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
 }
 
 function parseLocationFromApi(dto: GreenhouseFrontendApiDto): GreenhouseGeoLocation {
@@ -183,7 +260,7 @@ function normalizeGreenhouseFromFrontendApi(dto: GreenhouseFrontendApiDto): Gree
     preview_url: asNonEmptyString(dto.preview_url, '').trim(),
     location: parseLocationFromApi(dto),
     params,
-    plants: normalizePlantsFromApi(dto.plants, params),
+    plants: mergePlantsFromApi(dto.plants, params),
   };
 }
 
@@ -378,12 +455,25 @@ export class GreenhousesDataService {
       .get<GreenhouseFrontendApiDto>(frontendUrl)
       .pipe(
         tap((dto) => {
+          // eslint-disable-next-line no-console -- debug: inspect API payloads in DevTools
+          console.log('[Aurelis] Greenhouse /frontend raw response', dto);
           const gh = normalizeGreenhouseFromFrontendApi(dto);
+          // eslint-disable-next-line no-console -- debug
+          console.log('[Aurelis] Greenhouse normalized', {
+            ...gh,
+            params: gh.params.map((p) => ({
+              name: p.name,
+              current: p.current,
+              historyLength: p.history.length,
+            })),
+          });
           const list: GreenhousesData = [{ ...gh, id: String(id) }];
           this.greenhousesData.set(this.mergeWateringHistoryFromStorage(list));
           this.loadError.set(null);
         }),
-        catchError(() => {
+        catchError((err) => {
+          // eslint-disable-next-line no-console -- debug
+          console.error('[Aurelis] Greenhouse /frontend fetch failed', err);
           this.loadError.set('Could not load greenhouse data from the server.');
           this.greenhousesData.set([]);
           return of(undefined);
