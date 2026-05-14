@@ -1,7 +1,6 @@
 import {
   AfterViewInit,
   Component,
-  computed,
   DestroyRef,
   effect,
   ElementRef,
@@ -99,16 +98,6 @@ export class PlantDetails implements AfterViewInit, OnChanges, OnDestroy, OnInit
 
   protected readonly dashboardGreenhouseId =
     this.dashboardSignalsService.getDashboardGreenhouseId();
-
-  private readonly dashboardGreenhouse = this.dashboardSignalsService.getDashboardGreenhouseData();
-
-  protected readonly greenhouseClimate = computed(() => {
-    const gh = this.dashboardGreenhouse();
-    const t = gh?.params.find((p) => p.name === 'temperature')?.current;
-    return {
-      temperatureC: typeof t === 'number' && Number.isFinite(t) ? t : undefined,
-    };
-  });
 
   private readonly dashboardGreenhouseId$ = toObservable(this.dashboardGreenhouseId);
 

@@ -25,10 +25,7 @@
       </div>
     }
   </div>
-  <aurelis-plant-current-params
-    [plant]="plant"
-    [greenhouseTemperatureC]="greenhouseClimate().temperatureC"
-  ></aurelis-plant-current-params>
+  <aurelis-plant-current-params [plant]="plant"></aurelis-plant-current-params>
   <div class="right-side">
     <div class="chart-wrapper">
       <canvas id="plant-preview-chart-{{ plant.id }}"></canvas>
