@@ -144,12 +144,20 @@ $params-icon-size: 22px;
         text-transform: uppercase;
         color: color.$ashy;
         min-width: 2.25rem;
+
+        @media (max-width: bp.$tablet) {
+          font-size: 11px;
+        }
       }
 
       .metric-value {
         margin: 0;
         min-width: 2.75rem;
         font-size: font.$size-smallest;
+
+        @media (max-width: bp.$tablet) {
+          font-size: font.$size-small;
+        }
       }
 
       .icon-wrapper {

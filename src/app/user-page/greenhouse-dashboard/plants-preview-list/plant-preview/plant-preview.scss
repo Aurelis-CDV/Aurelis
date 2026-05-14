@@ -49,6 +49,15 @@ $plant-icon-size: 36px;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+
+          @media (max-width: bp.$tablet) {
+            white-space: normal;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            text-overflow: unset;
+          }
         }
       }
 

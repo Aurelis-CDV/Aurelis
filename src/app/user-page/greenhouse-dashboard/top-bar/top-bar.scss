@@ -4,6 +4,7 @@
 @use '../../../../styles/breakpoints' as bp;
 
 $icon-size: 32px;
+$icon-size-tablet: 40px;
 
 :host {
   flex-shrink: 0;
@@ -30,10 +31,6 @@ $icon-size: 32px;
         padding: margin.$small;
       }
 
-      @media (max-width: bp.$dashboard-compact) {
-        padding: margin.$big;
-      }
-
       @media (max-width: bp.$narrow) {
         padding: margin.$small;
       }
@@ -49,7 +46,12 @@ $icon-size: 32px;
         line-height: 1.2;
 
         @media (max-width: bp.$tablet) {
-          font-size: clamp(1.1rem, 4.2vw, #{font.$size-mid});
+          font-size: clamp(1.125rem, 4.5vw, #{font.$size-mid});
+          line-height: 1.25;
+        }
+
+        @media (max-width: bp.$phone) {
+          font-size: clamp(1.05rem, 5vw, 1.25rem);
         }
       }
     }
@@ -68,6 +70,15 @@ $icon-size: 32px;
       .button-wrapper {
         width: $icon-size;
         height: $icon-size;
+        min-width: $icon-size;
+        min-height: $icon-size;
+
+        @media (max-width: bp.$tablet) {
+          width: $icon-size-tablet;
+          height: $icon-size-tablet;
+          min-width: $icon-size-tablet;
+          min-height: $icon-size-tablet;
+        }
 
         cursor: pointer;
         padding: 0;
