@@ -10,8 +10,10 @@ $plant-icon-size: 36px;
   position: relative;
   box-sizing: border-box;
   min-height: 0;
-  height: 100%;
+  // Uniform tiles: same width (column) × same height as every other cell (4:5 box from column width).
+  aspect-ratio: 0.8;
   width: 100%;
+  height: auto;
 
   display: flex;
   flex-direction: column;
@@ -32,7 +34,7 @@ $plant-icon-size: 36px;
 
     background: color.$white;
     border-radius: 10px;
-    overflow: visible;
+    overflow: hidden;
 
     .plant-preview-top-bar {
       flex-shrink: 0;
@@ -97,10 +99,17 @@ $plant-icon-size: 36px;
 
       .chart-wrapper {
         flex: 1 1 auto;
-        min-height: min(160px, max(140px, 22vh));
+        min-height: 0;
         min-width: 0;
         position: relative;
         width: 100%;
+        overflow: hidden;
+        isolation: isolate;
+
+        canvas {
+          display: block;
+          max-width: 100%;
+        }
       }
     }
   }
@@ -125,14 +134,10 @@ $plant-icon-size: 36px;
   }
 
   @media (max-width: bp.$narrow) {
-    height: auto;
-    min-height: 0;
-
     .plant-preview-wrapper {
-      height: auto;
+      flex: 1 1 auto;
       min-height: 0;
-      flex: 0 1 auto;
-      overflow: visible;
+      overflow: hidden;
 
       .right-side {
         flex: 1 1 auto;
@@ -140,9 +145,8 @@ $plant-icon-size: 36px;
         width: 100%;
 
         .chart-wrapper {
-          flex: 0 0 auto;
-          min-height: min(180px, max(150px, 34svh));
-          max-height: none;
+          flex: 1 1 auto;
+          min-height: 0;
         }
       }
     }

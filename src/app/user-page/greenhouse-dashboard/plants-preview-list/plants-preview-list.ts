@@ -36,23 +36,11 @@ export class PlantsPreviewList implements AfterViewChecked {
     () => (this.greenhouseData()?.plants?.length ?? 0) < 6,
   );
 
-  private resizeObserver?: ResizeObserver;
+  private chartLayoutObservers: ResizeObserver[] = [];
 
   constructor(private elementRef: ElementRef) {
-    queueMicrotask(() => {
-      const el = this.elementRef.nativeElement as HTMLElement;
-      const notify = (): void =>
-        queueMicrotask(() => {
-          Object.values(this.plantPreviewChartsByPlantId).forEach((chart) => chart.resize?.());
-        });
-
-      notify();
-      this.resizeObserver = new ResizeObserver(notify);
-      this.resizeObserver.observe(el);
-      this.destroyRef.onDestroy(() => {
-        this.resizeObserver?.disconnect();
-        this.resizeObserver = undefined;
-      });
+    this.destroyRef.onDestroy(() => {
+      this.disconnectChartLayoutObservers();
     });
   }
 
@@ -63,6 +51,7 @@ export class PlantsPreviewList implements AfterViewChecked {
 
     if (fingerprint !== this.previousPlantFingerprint) {
       if (this.previousPlantFingerprint !== '') {
+        this.disconnectChartLayoutObservers();
         for (const chart of Object.values(this.plantPreviewChartsByPlantId)) {
           chart.destroy();
         }
@@ -90,9 +79,42 @@ export class PlantsPreviewList implements AfterViewChecked {
     plants.forEach((plant: any) => this.setPlantPreviewLineChart(plant, minMax));
 
     this.chartsPrinted = true;
-    queueMicrotask(() =>
-      Object.values(this.plantPreviewChartsByPlantId).forEach((chart) => chart.resize?.()),
-    );
+    queueMicrotask(() => {
+      Object.values(this.plantPreviewChartsByPlantId).forEach((chart) => chart.resize?.());
+      this.attachChartLayoutObservers(plants);
+    });
+  }
+
+  private disconnectChartLayoutObservers(): void {
+    for (const ro of this.chartLayoutObservers) {
+      ro.disconnect();
+    }
+    this.chartLayoutObservers = [];
+  }
+
+  /** Grid column widths can change without the list host changing size; observe each chart box. */
+  private attachChartLayoutObservers(plants: { id: string }[]): void {
+    this.disconnectChartLayoutObservers();
+    const root = this.elementRef.nativeElement as HTMLElement;
+
+    for (const plant of plants) {
+      const chart = this.plantPreviewChartsByPlantId[plant.id];
+      if (!chart) {
+        continue;
+      }
+
+      const canvas = root.querySelector(`#plant-preview-chart-${plant.id}`);
+      const wrapper = canvas?.parentElement;
+      if (!(canvas instanceof HTMLCanvasElement) || !wrapper) {
+        continue;
+      }
+
+      const ro = new ResizeObserver(() => {
+        queueMicrotask(() => chart.resize?.());
+      });
+      ro.observe(wrapper);
+      this.chartLayoutObservers.push(ro);
+    }
   }
 
   private setPlantPreviewLineChart(plant: any, minMax: any) {
@@ -118,8 +140,20 @@ export class PlantsPreviewList implements AfterViewChecked {
             borderColor: chartColor,
             fill: true,
             tension: 0.5,
+            // 0 = clip at chart area; `false` lets fills draw outside the canvas onto sibling tiles.
+            clip: 0,
             backgroundColor: (context: any) => {
-              const gradientBg = context.chart.ctx.createLinearGradient(0, 0, 0, 200);
+              const { chart } = context;
+              const { ctx, chartArea } = chart;
+              if (!chartArea) {
+                return 'rgba(108, 171, 215, 0.12)';
+              }
+              const gradientBg = ctx.createLinearGradient(
+                0,
+                chartArea.top,
+                0,
+                chartArea.bottom,
+              );
 
               gradientBg.addColorStop(0, 'rgba(108, 171, 215, 0.3)');
               gradientBg.addColorStop(0.5, 'rgba(108, 171, 215, 0.15)');
@@ -131,7 +165,6 @@ export class PlantsPreviewList implements AfterViewChecked {
         ],
       },
       options: {
-        clip: false,
         responsive: true,
         resizeDelay: 100,
         maintainAspectRatio: false,
