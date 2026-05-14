@@ -5,7 +5,7 @@
   align-self: stretch;
   box-sizing: border-box;
   width: 100%;
-  height: 100%;
+  height: auto;
   min-height: 0;
   min-width: 0;
   overflow-x: clip;
@@ -17,6 +17,7 @@
   grid-auto-rows: auto;
   align-content: start;
   justify-items: stretch;
+  align-items: stretch;
   gap: margin.$small;
 
   @media (max-width: bp.$dashboard-compact) {
@@ -40,11 +41,7 @@
     gap: margin.$smallest;
   }
 
-  // Equal `1fr` rows are removed — `auto` rows keep each card fully visible; dashboard grid assigns vertical space.
   @media (max-width: bp.$narrow) {
-    height: auto;
-    min-height: 0;
     align-self: stretch;
-    align-content: start;
   }
 }

@@ -7,48 +7,42 @@
 :host {
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto;
-  flex-grow: 1;
-  min-height: min(280px, 38vh);
+  flex: 0 0 auto;
+  flex-grow: 0;
   min-width: 0;
   overflow-x: clip;
   overflow-y: visible;
 
   width: 100%;
 
-  // Carousel uses `height: 100%`; this host must have a resolvable height (not only min-height + height:auto).
+  // Fixed chart viewport: full chart is in layout flow; user scrolls the dashboard when it exceeds the window.
   aurelis-carousel {
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     min-width: 0;
-    min-height: 0;
     width: 100%;
-    height: 100%;
+    height: 460px;
+    min-height: 400px;
   }
 
-  // Narrow widths: generous block size for title + chart + dots (no max-height — avoids clipping charts).
   @media (max-width: bp.$narrow) {
-    flex: 0 0 auto;
-    flex-grow: 0;
-    min-height: min(320px, 52svh);
-    height: min(400px, 72svh);
+    aurelis-carousel {
+      height: 420px;
+      min-height: 360px;
+    }
   }
 
   @media (max-width: bp.$tablet) {
-    min-height: min(300px, 48svh);
-    height: min(380px, 68svh);
+    aurelis-carousel {
+      height: 400px;
+      min-height: 340px;
+    }
   }
 
   @media (max-width: bp.$phone) {
-    min-height: min(280px, 46svh);
-    height: min(360px, 64svh);
-  }
-
-  // 769px–1024px: a bit more chart room than phones (must follow generic `narrow` + `tablet` + `phone`).
-  @media (max-width: bp.$narrow) and (min-width: #{bp.$tablet + 1px}) {
-    flex: 0 0 auto;
-    flex-grow: 0;
-    min-height: min(320px, 50svh);
-    height: min(420px, 70svh);
+    aurelis-carousel {
+      height: 360px;
+      min-height: 320px;
+    }
   }
 }
 
@@ -97,7 +91,7 @@
     position: relative;
     width: 100%;
     min-width: 0;
-    overflow: visible;
+    overflow: hidden;
 
     @media (max-width: bp.$narrow) {
       min-height: min(220px, max(180px, 32svh));
