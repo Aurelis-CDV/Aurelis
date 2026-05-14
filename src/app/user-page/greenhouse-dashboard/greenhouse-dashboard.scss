@@ -33,6 +33,9 @@
     min-height: 0;
     flex: 1 1 auto;
     height: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
   }
 
   @media (max-width: bp.$phone) {
@@ -63,9 +66,13 @@
     }
 
     @media (max-width: bp.$tablet) {
+      flex: 0 0 auto;
+      min-height: 0;
       padding: margin.$small;
       gap: margin.$small;
-      grid-template-rows: auto minmax(0, 1fr);
+      // Both tracks size to content; host scrolls so plants + chart stay usable (no zero-height chart).
+      grid-template-rows: auto auto;
+      align-content: start;
       overflow-x: clip;
     }
 
@@ -97,6 +104,11 @@
     > aurelis-plants-preview-list {
       flex: 1 1 auto;
       min-width: 0;
+
+      @media (max-width: bp.$tablet) {
+        flex: 0 0 auto;
+        min-height: 0;
+      }
     }
 
     > aurelis-current-parameters {
@@ -129,5 +141,10 @@
     height: 100%;
     align-self: stretch;
     overflow-x: clip;
+
+    @media (max-width: bp.$tablet) {
+      flex: 0 0 auto;
+      height: auto;
+    }
   }
 }

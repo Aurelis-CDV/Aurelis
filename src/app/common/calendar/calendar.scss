@@ -1,6 +1,7 @@
 @use '../../../styles/colors' as color;
 @use '../../../styles/margins' as margin;
 @use '../../../styles/fonts' as font;
+@use '../../../styles/breakpoints' as bp;
 
 @use '../../../styles/mixins' as mixin;
 
@@ -15,16 +16,33 @@
     border-radius: 10px;
     padding: margin.$big;
 
+    @media (max-width: bp.$tablet) {
+      padding: margin.$small;
+      border-radius: 8px;
+    }
+
+    @media (max-width: bp.$phone) {
+      padding: margin.$smallest margin.$small;
+    }
+
     .calendar-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: margin.$small;
 
+      @media (max-width: bp.$phone) {
+        margin-bottom: margin.$smallest;
+      }
+
       h3 {
         margin: 0;
         font-size: font.$size-small;
         font-weight: font.$weight-semibold;
+
+        @media (max-width: bp.$phone) {
+          font-size: font.$size-smallest;
+        }
       }
 
       .month-control {
@@ -36,6 +54,12 @@
         color: color.$white;
         font-size: 1rem;
         cursor: pointer;
+
+        @media (max-width: bp.$phone) {
+          width: 28px;
+          height: 28px;
+          font-size: 0.85rem;
+        }
       }
     }
 
@@ -44,16 +68,28 @@
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
       gap: margin.$smallest;
+
+      @media (max-width: bp.$phone) {
+        gap: 2px;
+      }
     }
 
     .weekdays {
       margin-bottom: 8px;
+
+      @media (max-width: bp.$phone) {
+        margin-bottom: 4px;
+      }
 
       span {
         text-align: center;
         font-size: 0.8rem;
         font-weight: 600;
         color: color.$logo-green;
+
+        @media (max-width: bp.$phone) {
+          font-size: 0.65rem;
+        }
       }
     }
 
@@ -63,6 +99,19 @@
         background: color.$white;
         border-radius: 10px;
         min-height: 34px;
+
+        @media (max-width: bp.$tablet) {
+          min-height: 30px;
+          border-radius: 8px;
+          font-size: 0.85rem;
+          padding: 2px;
+        }
+
+        @media (max-width: bp.$phone) {
+          min-height: 26px;
+          border-radius: 6px;
+          font-size: 0.8rem;
+        }
         color: color.$text;
         cursor: default;
 

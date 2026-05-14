@@ -15,11 +15,11 @@ $params-icon-size: 24px;
 
   .left-side {
     width: fit-content;
-    height: 100%;
+    height: auto;
 
     .plant-params {
       width: fit-content;
-      height: 100%;
+      height: auto;
 
       display: flex;
       justify-content: center;
@@ -51,7 +51,7 @@ $params-icon-size: 24px;
 
       .param-wrapper {
         width: fit-content;
-        height: 100%;
+        height: auto;
 
         display: flex;
         justify-content: start;
@@ -89,7 +89,7 @@ $params-icon-size: 24px;
 
   .right-side {
     width: 100%;
-    height: 100%;
+    height: auto;
 
     overflow: hidden;
 
