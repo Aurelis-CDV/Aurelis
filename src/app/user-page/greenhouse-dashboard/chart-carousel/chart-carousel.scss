@@ -13,7 +13,7 @@
 
   width: 100%;
 
-  @media (max-width: bp.$tablet) {
+  @media (max-width: bp.$narrow) {
     flex: 1 1 auto;
     min-height: min(300px, 42vh);
   }
@@ -49,7 +49,7 @@
     position: relative;
     width: 100%;
 
-    @media (max-width: bp.$tablet) {
+    @media (max-width: bp.$narrow) {
       min-height: min(220px, 32vh);
     }
   }

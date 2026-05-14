@@ -110,7 +110,7 @@ $item-transition: left 0.5s linear;
     transform: rotate(180deg);
   }
 
-  @media (max-width: bp.$tablet) {
+  @media (max-width: bp.$narrow) {
     grid-template-columns: 36px minmax(0, 1fr) 36px;
 
     .prev-button,

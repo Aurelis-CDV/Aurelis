@@ -17,7 +17,7 @@
   justify-items: stretch;
   gap: margin.$big;
 
-  @media (max-width: max(bp.$tablet, 900px)) {
+  @media (max-width: bp.$plant-grid-two-cols) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 

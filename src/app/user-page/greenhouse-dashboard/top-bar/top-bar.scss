@@ -26,6 +26,10 @@ $icon-size: 36px;
     .greenhouse-name-wrapper {
       padding: margin.$huge;
 
+      @media (max-width: bp.$narrow) {
+        padding: margin.$big;
+      }
+
       @media (max-width: bp.$tablet) {
         padding: margin.$big margin.$small margin.$big margin.$big;
       }
