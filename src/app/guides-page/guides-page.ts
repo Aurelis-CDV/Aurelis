@@ -115,11 +115,15 @@ export class GuidesPage {
 
     request$.pipe(finalize(() => this.isLoading.set(false))).subscribe({
       next: (response) => {
+        // eslint-disable-next-line no-console -- debug: inspect Perenual list/search in DevTools
+        console.log('[Aurelis] Perenual species-list response', response);
         this.plants.set(response.data);
         this.currentPage.set(response.current_page);
         this.lastPage.set(Math.max(1, response.last_page));
       },
-      error: () => {
+      error: (err) => {
+        // eslint-disable-next-line no-console -- debug
+        console.error('[Aurelis] Perenual species-list fetch failed', err);
         this.errorMessage.set('Could not load plant guides. Please check your Perenual API key.');
       },
     });
@@ -142,9 +146,13 @@ export class GuidesPage {
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
         next: (details) => {
+          // eslint-disable-next-line no-console -- debug: inspect Perenual detail payloads in DevTools
+          console.log('[Aurelis] Perenual favourite plant details', details);
           this.favoritePlants.set(details);
         },
-        error: () => {
+        error: (err) => {
+          // eslint-disable-next-line no-console -- debug
+          console.error('[Aurelis] Perenual favourite plants fetch failed', err);
           this.errorMessage.set(
             'Could not load favourite plants. Please check your Perenual API key.',
           );

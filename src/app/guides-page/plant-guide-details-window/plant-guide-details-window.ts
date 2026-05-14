@@ -58,9 +58,13 @@ export class PlantGuideDetailsWindow {
       .pipe(finalize(() => this.isLoading.set(false)))
       .subscribe({
         next: (details) => {
+          // eslint-disable-next-line no-console -- debug: inspect Perenual species detail in DevTools
+          console.log('[Aurelis] Perenual species detail response', { plantId, details });
           this.plantDetails.set(details);
         },
-        error: () => {
+        error: (err) => {
+          // eslint-disable-next-line no-console -- debug
+          console.error('[Aurelis] Perenual species detail fetch failed', { plantId, err });
           this.errorMessage.set('Could not load plant details from Perenual API.');
         },
       });
