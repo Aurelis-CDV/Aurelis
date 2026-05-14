@@ -7,10 +7,6 @@ import {
 } from '../../interfaces/greenhouses-data.interface';
 import { WeatherApiService } from './weather-api.service';
 
-/**
- * Caches outdoor (WeatherAPI) conditions per greenhouse id when that greenhouse is active on the dashboard.
- * Not persisted on greenhouse entities.
- */
 @Injectable({
   providedIn: 'root',
 })
@@ -28,7 +24,6 @@ export class GreenhouseOutdoorWeatherService {
   public readonly outdoorWeatherByGreenhouseId = this.weatherByGreenhouseId.asReadonly();
   public readonly outdoorWeatherLoadingByGreenhouseId = this.loadingGreenhouseIds.asReadonly();
 
-  /** Called when the dashboard-bound greenhouse changes; fetches and caches weather by `gh.id`. */
   public loadOutdoorWeatherForDashboardGreenhouse(gh: GreenhouseData | undefined): void {
     this.activeRequest?.unsubscribe();
     this.activeRequest = null;

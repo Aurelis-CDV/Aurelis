@@ -2,6 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { Carousel } from '../../common/carousel/carousel';
 import { PopupWindow } from '../../common/popup-window/popup-window';
 import { DashboardSignalsService } from '../../services/dashboard-signals.service';
+import { GreenhousesDataService } from '../../services/data.service';
 import { PlantDetails } from './plant-details/plant-details';
 
 @Component({
@@ -12,6 +13,7 @@ import { PlantDetails } from './plant-details/plant-details';
 })
 export class PlantsDetailsWindow {
   private readonly dashboardSignalsService = inject(DashboardSignalsService);
+  protected readonly greenhousesDataService = inject(GreenhousesDataService);
 
   public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
 
@@ -31,9 +33,14 @@ export class PlantsDetailsWindow {
     return idx >= 0 ? idx : 0;
   });
 
-  constructor() {}
-
   public hidePlantDetailsWindow(): void {
     this.dashboardSignalsService.setIsPlantDetailsWindowOpened(false);
+  }
+
+  protected reloadGreenhouseDataFromDetails(): void {
+    if (this.greenhousesDataService.isLoading()) {
+      return;
+    }
+    this.greenhousesDataService.fetchGreenhousesData();
   }
 }

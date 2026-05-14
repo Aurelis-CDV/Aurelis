@@ -1,4 +1,3 @@
-/** Build-time env keys inlined by @ngx-env/builder (local `.env` or CI/Netlify env). */
 declare namespace NodeJS {
   interface ProcessEnv {
     readonly NG_APP_ENV?: string;

@@ -10,6 +10,7 @@ import { Refresh } from '../icons/refresh/refresh';
 })
 export class PopupWindow {
   public readonly showRefresh = input<boolean>(false);
+  public readonly refreshDisabled = input<boolean>(false);
 
   public readonly closeWindow = output<void>();
   public readonly refreshClick = output<void>();

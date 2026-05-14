@@ -10,6 +10,7 @@ import { Chart } from 'chart.js/auto';
 import { PlantPreview } from './plant-preview/plant-preview';
 import { PlantPreviewAddSlot } from './plant-preview-add-slot/plant-preview-add-slot';
 import { DashboardSignalsService } from '../../../services/dashboard-signals.service';
+import { GreenhousesDataService } from '../../../services/data.service';
 
 const chartColor = '#6cabd7';
 
@@ -27,6 +28,7 @@ export class PlantsPreviewList implements AfterViewChecked {
   private previousPlantFingerprint = '';
 
   private readonly dashboardSignalsService = inject(DashboardSignalsService);
+  private readonly greenhousesDataService = inject(GreenhousesDataService);
   private readonly destroyRef = inject(DestroyRef);
   public readonly greenhouseData = this.dashboardSignalsService.getDashboardGreenhouseData();
 
@@ -56,7 +58,8 @@ export class PlantsPreviewList implements AfterViewChecked {
 
   public ngAfterViewChecked(): void {
     const plants = this.greenhouseData()?.plants ?? [];
-    const fingerprint = plants.map((plant: { id: string }) => plant.id).join('|');
+    const revision = this.greenhousesDataService.greenhouseDataRevision();
+    const fingerprint = `${revision}|${plants.map((plant: { id: string }) => plant.id).join('|')}`;
 
     if (fingerprint !== this.previousPlantFingerprint) {
       if (this.previousPlantFingerprint !== '') {

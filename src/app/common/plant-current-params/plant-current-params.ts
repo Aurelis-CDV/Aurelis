@@ -19,9 +19,7 @@ import { WaterDrop } from '../icons/water-drop/water-drop';
 })
 export class PlantCurrentParams {
   @Input() plant!: PlantData;
-  /** Indoor air temperature (°C) for this greenhouse; omit when unknown. */
   @Input() public greenhouseTemperatureC: number | undefined = undefined;
-  /** Indoor air humidity (%); omit when unknown. */
   @Input() public greenhouseAirHumidityPercent: number | undefined = undefined;
 
   public getPlantConditionDescription(condition: string): string {

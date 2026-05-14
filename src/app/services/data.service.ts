@@ -13,7 +13,6 @@ import {
 import { PlantData } from '../../interfaces/plant-data.interface';
 import { derivePlantCondition, enrichGreenhouseWithDerivedPlantConditions } from '../utils/derive-plant-condition';
 
-/** Raw JSON from `GET .../greenhouses/{id}/frontend` (field names may differ from app models). */
 interface GreenhouseFrontendApiDto {
   name?: unknown;
   id?: unknown;
@@ -248,6 +247,9 @@ export class GreenhousesDataService {
   public readonly isLoading: WritableSignal<boolean> = signal<boolean>(false);
   public readonly loadError = signal<string | null>(null);
 
+  private readonly greenhouseDataRevisionInner = signal(0);
+  public readonly greenhouseDataRevision = this.greenhouseDataRevisionInner.asReadonly();
+
   public constructor() {
     this.fetchGreenhousesData();
   }
@@ -386,7 +388,10 @@ export class GreenhousesDataService {
           this.greenhousesData.set([]);
           return of(undefined);
         }),
-        finalize(() => this.isLoading.set(false)),
+        finalize(() => {
+          this.isLoading.set(false);
+          this.greenhouseDataRevisionInner.update((n) => n + 1);
+        }),
       )
       .subscribe();
   }
@@ -722,7 +727,6 @@ export class GreenhousesDataService {
     } catch {}
   }
 
-  /** Clears locally persisted watering history for the current Auth0 user (this device only). */
   public clearPersistedWateringHistory(): void {
     if (typeof window === 'undefined' || !window.localStorage) {
       return;
