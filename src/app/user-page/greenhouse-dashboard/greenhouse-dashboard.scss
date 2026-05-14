@@ -20,29 +20,29 @@
   display: flex;
   flex-direction: column;
 
-  padding: margin.$big;
+  padding: margin.$huge;
 
   @media (max-width: bp.$dashboard-compact) {
-    padding: margin.$small;
+    padding: margin.$big;
   }
 
   // Short laptop / zoomed windows: keep vertical rhythm without eating the chart.
   @media (max-height: 720px) and (min-width: #{bp.$tablet + 1px}) {
-    padding: margin.$small;
+    padding: margin.$big;
   }
 
   @media (max-width: bp.$narrow) {
     max-width: none;
-    padding: margin.$small;
-    padding-bottom: calc(#{margin.$small} + env(safe-area-inset-bottom, 0px));
+    padding: margin.$big;
+    padding-bottom: calc(#{margin.$big} + env(safe-area-inset-bottom, 0px));
     min-height: 0;
     flex: 1 1 auto;
     height: auto;
   }
 
   @media (max-width: bp.$phone) {
-    padding: margin.$smallest;
-    padding-bottom: calc(#{margin.$smallest} + env(safe-area-inset-bottom, 0px));
+    padding: margin.$small;
+    padding-bottom: calc(#{margin.$small} + env(safe-area-inset-bottom, 0px));
   }
 
   .dashboard-split {
@@ -52,41 +52,41 @@
     grid-template-rows: auto auto;
     align-items: stretch;
     align-content: start;
-    gap: margin.$big;
-    padding: margin.$big;
+    gap: margin.$huge;
+    padding: margin.$huge;
     flex: 0 0 auto;
     min-height: 0;
     min-width: 0;
     box-sizing: border-box;
 
     @media (max-width: bp.$dashboard-compact) {
-      padding: margin.$small;
-      gap: margin.$small;
+      padding: margin.$big;
+      gap: margin.$big;
     }
 
     @media (max-width: bp.$narrow) {
       flex: 0 0 auto;
       min-height: 0;
-      padding: margin.$small;
-      gap: margin.$small;
+      padding: margin.$big;
+      gap: margin.$big;
       grid-template-rows: auto auto;
       align-content: start;
       overflow-x: clip;
     }
 
     @media (max-width: bp.$phone) {
-      padding: margin.$smallest;
-      gap: margin.$small;
+      padding: margin.$small;
+      gap: margin.$big;
     }
 
     @media (max-height: 720px) and (min-width: #{bp.$tablet + 1px}) {
-      padding: margin.$small;
-      gap: margin.$small;
+      padding: margin.$big;
+      gap: margin.$big;
     }
 
     @media (max-height: 600px) and (min-width: #{bp.$tablet + 1px}) {
-      padding: margin.$smallest;
-      gap: margin.$smallest;
+      padding: margin.$small;
+      gap: margin.$small;
     }
 
     &--data-empty {
@@ -100,22 +100,22 @@
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    gap: margin.$big;
+    gap: margin.$huge;
     min-width: 0;
     min-height: 0;
     overflow-x: clip;
     overflow-y: visible;
 
     @media (max-width: bp.$dashboard-compact) {
-      gap: margin.$small;
+      gap: margin.$big;
     }
 
     @media (max-height: 720px) and (min-width: #{bp.$tablet + 1px}) {
-      gap: margin.$small;
+      gap: margin.$big;
     }
 
     @media (max-height: 600px) and (min-width: #{bp.$tablet + 1px}) {
-      gap: margin.$smallest;
+      gap: margin.$small;
     }
 
     > aurelis-plants-preview-list {
@@ -145,7 +145,7 @@
       align-items: stretch;
       overflow-x: clip;
       overflow-y: visible;
-      gap: margin.$small;
+      gap: margin.$big;
 
       > aurelis-current-parameters {
         flex: none;

@@ -10,8 +10,8 @@ $plant-icon-size: 36px;
   position: relative;
   box-sizing: border-box;
   min-height: 0;
-  // Uniform tiles: same width (column) × same height as every other cell (4:5 box from column width).
-  aspect-ratio: 0.8;
+  // Uniform square tiles: width = height (1:1) from column width.
+  aspect-ratio: 1;
   width: 100%;
   height: auto;
 
