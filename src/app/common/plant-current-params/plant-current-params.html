@@ -7,17 +7,9 @@
       <div class="metric-body">
         <span class="metric-label">Temp</span>
         <p class="metric-value">{{ temperatureDisplay() }}</p>
-        <aurelis-parameter-health-icon [health]="temperatureHealth()" />
-      </div>
-    </div>
-    <div class="param-wrapper param-wrapper--metric">
-      <div class="icon-wrapper">
-        <aurelis-water-drop></aurelis-water-drop>
-      </div>
-      <div class="metric-body">
-        <span class="metric-label">Air</span>
-        <p class="metric-value">{{ humidityDisplay() }}</p>
-        <aurelis-parameter-health-icon [health]="airHumidityHealth()" />
+        <aurelis-plant-general-condition
+          [condition]="conditionFromParameterHealth(temperatureHealth())"
+        />
       </div>
     </div>
     <div class="param-wrapper param-wrapper--metric">
@@ -27,7 +19,9 @@
       <div class="metric-body">
         <span class="metric-label">Soil</span>
         <p class="metric-value">{{ soilDisplay() }}</p>
-        <aurelis-parameter-health-icon [health]="soilMoistureHealth()" />
+        <aurelis-plant-general-condition
+          [condition]="conditionFromParameterHealth(soilMoistureHealth())"
+        />
       </div>
     </div>
     <div class="param-wrapper param-wrapper--condition">

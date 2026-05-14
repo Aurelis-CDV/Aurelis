@@ -19,14 +19,15 @@
     <div class="plant-name-wrapper">
       <p>{{ plant.name }}</p>
     </div>
-    <div class="plant-preview-image-wrapper">
-      <img src="{{ plant.preview_url }}" alt="Plant preview" />
-    </div>
+    @if (plant.preview_url.trim()) {
+      <div class="plant-preview-image-wrapper">
+        <img [src]="plant.preview_url" alt="Plant preview" />
+      </div>
+    }
   </div>
   <aurelis-plant-current-params
     [plant]="plant"
     [greenhouseTemperatureC]="greenhouseClimate().temperatureC"
-    [greenhouseAirHumidityPercent]="greenhouseClimate().airHumidityPercent"
   ></aurelis-plant-current-params>
   <div class="right-side">
     <div class="chart-wrapper">

@@ -26,10 +26,8 @@ export class PlantPreview {
   protected readonly greenhouseClimate = computed(() => {
     const gh = this.dashboardGreenhouse();
     const t = gh?.params.find((p) => p.name === 'temperature')?.current;
-    const h = gh?.params.find((p) => p.name === 'humidity')?.current;
     return {
       temperatureC: typeof t === 'number' && Number.isFinite(t) ? t : undefined,
-      airHumidityPercent: typeof h === 'number' && Number.isFinite(h) ? h : undefined,
     };
   });
 

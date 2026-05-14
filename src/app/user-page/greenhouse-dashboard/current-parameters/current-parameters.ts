@@ -2,12 +2,17 @@ import { Component, computed, inject } from '@angular/core';
 import { Temperature } from '../../../common/icons/temperature/temperature';
 import { WaterDrop } from '../../../common/icons/water-drop/water-drop';
 import { Sun } from '../../../common/icons/sun/sun';
+import { ParameterHealthIcon } from '../../../common/icons/parameter-health-icon/parameter-health-icon';
 import { DashboardSignalsService } from '../../../services/dashboard-signals.service';
 import { GreenhouseOutdoorWeatherService } from '../../../services/greenhouse-outdoor-weather.service';
+import {
+  airHumidityParameterHealth,
+  temperatureParameterHealth,
+} from '../../../utils/derive-plant-condition';
 
 @Component({
   selector: 'aurelis-current-parameters',
-  imports: [Temperature, WaterDrop, Sun],
+  imports: [Temperature, WaterDrop, Sun, ParameterHealthIcon],
   templateUrl: './current-parameters.html',
   styleUrl: './current-parameters.scss',
 })
@@ -50,7 +55,20 @@ export class CurrentParameters {
     return raw >= 1 ? 'On' : 'Off';
   });
 
+  protected readonly indoorTemperatureHealth = computed(() =>
+    temperatureParameterHealth(this.paramCurrent('temperature')),
+  );
+
+  protected readonly indoorHumidityHealth = computed(() =>
+    airHumidityParameterHealth(this.paramCurrent('humidity')),
+  );
+
   public getValue(type: string): number {
     return this.greenhouseData()?.params.find((param) => param.name === type)?.current || 0;
+  }
+
+  private paramCurrent(name: string): number | undefined {
+    const v = this.greenhouseData()?.params.find((p) => p.name === name)?.current;
+    return typeof v === 'number' && Number.isFinite(v) ? v : undefined;
   }
 }

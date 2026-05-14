@@ -1,5 +1,5 @@
 import {
-  AfterViewChecked,
+  AfterViewInit,
   Component,
   computed,
   DestroyRef,
@@ -8,6 +8,7 @@ import {
   inject,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   SimpleChanges,
   signal,
@@ -41,10 +42,7 @@ const RANGE_SPAN_SEC: Record<ChartRangePreset, number> = {
 
 function isChartRangePreset(v: string): v is ChartRangePreset {
   return (
-    v === 'last-1-hour' ||
-    v === 'last-24-hours' ||
-    v === 'last-7-days' ||
-    v === 'last-1-month'
+    v === 'last-1-hour' || v === 'last-24-hours' || v === 'last-7-days' || v === 'last-1-month'
   );
 }
 
@@ -68,7 +66,7 @@ function unixRangeForPreset(preset: ChartRangePreset): { from: number; to: numbe
   templateUrl: './plant-details.html',
   styleUrl: './plant-details.scss',
 })
-export class PlantDetails implements AfterViewChecked, OnChanges, OnInit {
+export class PlantDetails implements AfterViewInit, OnChanges, OnDestroy, OnInit {
   @Input()
   public plant!: PlantData;
 
@@ -77,6 +75,7 @@ export class PlantDetails implements AfterViewChecked, OnChanges, OnInit {
   private chartBoundPlantId: string | null = null;
   private lastChartFingerprint = '';
   private chartRequestSeq = 0;
+  private chartResizeObserver: ResizeObserver | undefined;
 
   protected readonly chartRangeOptions: CustomSelectOption[] = [
     { label: 'Last 1 hour', value: 'last-1-hour' },
@@ -98,17 +97,16 @@ export class PlantDetails implements AfterViewChecked, OnChanges, OnInit {
   private readonly measurements = inject(GreenhouseMeasurementsService);
   private readonly greenhousesDataService = inject(GreenhousesDataService);
 
-  protected readonly dashboardGreenhouseId = this.dashboardSignalsService.getDashboardGreenhouseId();
+  protected readonly dashboardGreenhouseId =
+    this.dashboardSignalsService.getDashboardGreenhouseId();
 
   private readonly dashboardGreenhouse = this.dashboardSignalsService.getDashboardGreenhouseData();
 
   protected readonly greenhouseClimate = computed(() => {
     const gh = this.dashboardGreenhouse();
     const t = gh?.params.find((p) => p.name === 'temperature')?.current;
-    const h = gh?.params.find((p) => p.name === 'humidity')?.current;
     return {
       temperatureC: typeof t === 'number' && Number.isFinite(t) ? t : undefined,
-      airHumidityPercent: typeof h === 'number' && Number.isFinite(h) ? h : undefined,
     };
   });
 
@@ -127,6 +125,16 @@ export class PlantDetails implements AfterViewChecked, OnChanges, OnInit {
     }
     this.dataRevisionLatch = rev;
     this.loadChartFromApi();
+  });
+
+  private readonly chartDataLayoutEffect = effect(() => {
+    this.chartSoilPoints();
+    this.chartRangeKey();
+    const id = this.plant?.id;
+    if (!id) {
+      return;
+    }
+    this.scheduleChartRedraw();
   });
 
   public ngOnInit(): void {
@@ -172,11 +180,8 @@ export class PlantDetails implements AfterViewChecked, OnChanges, OnInit {
       return;
     }
     this.destroyChart();
+    this.chartSoilPoints.set([]);
     this.loadChartFromApi();
-  }
-
-  public ngAfterViewChecked(): void {
-    this.syncChart();
   }
 
   private loadChartFromApi(): void {
@@ -221,6 +226,37 @@ export class PlantDetails implements AfterViewChecked, OnChanges, OnInit {
     this.lastChartFingerprint = '';
   }
 
+  private scheduleChartRedraw(): void {
+    queueMicrotask(() => {
+      this.syncChart();
+      requestAnimationFrame(() => {
+        this.chart?.resize();
+        requestAnimationFrame(() => {
+          this.chart?.resize();
+          this.chart?.update('none');
+        });
+      });
+    });
+  }
+
+  public ngAfterViewInit(): void {
+    const host = this.elementRef.nativeElement as HTMLElement;
+    const wrapper = host.querySelector('.chart-wrapper');
+    if (wrapper instanceof HTMLElement) {
+      this.chartResizeObserver = new ResizeObserver(() => {
+        this.chart?.resize();
+      });
+      this.chartResizeObserver.observe(wrapper);
+    }
+    this.scheduleChartRedraw();
+  }
+
+  public ngOnDestroy(): void {
+    this.chartResizeObserver?.disconnect();
+    this.chartResizeObserver = undefined;
+    this.destroyChart();
+  }
+
   private syncChart(): void {
     if (!this.plant?.id) {
       return;
@@ -261,8 +297,7 @@ export class PlantDetails implements AfterViewChecked, OnChanges, OnInit {
               tension: 0.5,
               backgroundColor: (context: any) => {
                 const chart = context.chart;
-                const h =
-                  typeof chart.height === 'number' && chart.height > 1 ? chart.height : 220;
+                const h = typeof chart.height === 'number' && chart.height > 1 ? chart.height : 220;
                 const gradientBg = context.chart.ctx.createLinearGradient(0, 0, 0, h);
 
                 gradientBg.addColorStop(0, `rgba(${soilMoistureColor}, 0.3)`);
@@ -277,7 +312,7 @@ export class PlantDetails implements AfterViewChecked, OnChanges, OnInit {
         options: {
           clip: false,
           responsive: true,
-          resizeDelay: 100,
+          resizeDelay: 0,
           maintainAspectRatio: false,
           layout: {
             autoPadding: true,
@@ -332,14 +367,6 @@ export class PlantDetails implements AfterViewChecked, OnChanges, OnInit {
       this.chart = new Chart(plantCanvasEl, config);
       this.chartBoundPlantId = this.plant.id;
       this.lastChartFingerprint = fingerprint;
-
-      queueMicrotask(() => {
-        this.chart?.resize();
-        requestAnimationFrame(() => {
-          this.chart?.resize();
-          window.setTimeout(() => this.chart?.resize(), 140);
-        });
-      });
     } catch {
       this.destroyChart();
     }
