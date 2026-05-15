@@ -1,3 +1,9 @@
 [build]
   command = "npm run build"
-  publish = "dist/aurelis/browser/browser"
+  publish = "dist/aurelis/browser"
+
+# SPA fallback: let Angular Router handle client-side routes on refresh/direct links
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
